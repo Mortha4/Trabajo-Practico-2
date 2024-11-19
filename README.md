@@ -20,7 +20,7 @@ patches will be merged once all team members have reviewed them.
 ## Collaborators
 * Fernandez, Jose Luis 
 * Kupa, Martin Ariel
-* Fasani, Ignacio
+* Fasani, Ignacio Daniel
 * Argerich, Mariano
 
 ## Build and Deployment
