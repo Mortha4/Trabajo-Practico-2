@@ -23,6 +23,14 @@ patches will be merged once all team members have reviewed them.
 * Fasani, Ignacio Daniel
 * Argerich, Mariano
 
+## Assignment requirements
+* A web application with Client-Side Rendering and at least three views
+* A REST api supporting basic CRUD operations
+* Public deployment and hosting of the application
+* Use of git and github with a clean commit history
+* Persistent state in a relational database
+
+
 ## Build and Deployment
 * TODO
 
