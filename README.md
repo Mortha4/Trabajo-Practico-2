@@ -15,3 +15,4 @@ la carrera de Ingeniería Informática de la Universidad de Buenos Aires.
 ## Integrantes
 * Fernandez, Jose Luis 
 * Kupa, Martin Ariel
+* Fasani, Ignacio Daniel
