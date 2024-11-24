@@ -1,0 +1,166 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+    provider        = "prisma-client-js"
+    previewFeatures = ["views"]
+}
+
+datasource db {
+    provider = "postgres"
+    url      = env("DATABASE_URL")
+}
+
+/// User is separate from UserData to allow for soft-deleting personal information
+model User {
+    id             Int                    @id @default(autoincrement()) @map("pk_user_id")
+    username       String?                @unique @map("fk_username_uq") @db.VarChar(32) /// NULL value implies deleted user
+    deletedAt      DateTime?              @map("deleted_at") @db.Timestamptz()
+    data           UserData?              @relation(name: "username_user_data", map: "cstr__User__username__fk__UserData", fields: [username], references: [username], onDelete: SetNull, onUpdate: Cascade) /// DEFERRABLE INITIALLY DEFERRED
+    data_          UserData?              @relation(name: "user_data") /// DO NOT USE, use User.data instead
+    tradesOffered  TradeOffer[]           @relation(name: "offerer")
+    tradesReceived TradeOffer[]           @relation(name: "receiver")
+    collection     CollectionEntry[]      @relation(name: "user")
+    packsOpened    CardPackHistoryEntry[] @relation(name: "user")
+}
+
+/// Cascade deletes implemented through tg_UserData_BeforeDelete
+model UserData {
+    username           String        @id @map("pk_username") @db.VarChar(32)
+    profileName        String        @map("profile_name") @db.VarChar(100)
+    email              String        @unique @map("email_uq") @db.VarChar(255)
+    profilePicturePath String        @default("public/default-profile-picture.svg") @map("profile_picture_path") @db.VarChar(255)
+    password           String        @db.VarChar(20) // TODO: implement hashing
+    privilege          UserPrivilege @default(Standard)
+    createdAt          DateTime      @default(now()) @map("created_at") @db.Timestamptz()
+    modifiedAt         DateTime?     @updatedAt @map("modified_at") @db.Timestamptz()
+    user               User          @relation(name: "user_data", fields: [username], references: [username], map: "cstr__UserData__username__fk__User__username") /// DEFERRABLE INITIALLY DEFERRED
+    user_              User?         @relation(name: "username_user_data") /// DO NOT USE, use UserData.user instead
+}
+
+enum UserPrivilege {
+    Administrator
+    Standard
+}
+
+model CardPack {
+    id               Int                    @id @default(autoincrement()) @map("pk_pack_id")
+    name             String                 @unique @map("name_uq") @db.VarChar(100)
+    title            String                 @db.VarChar(60)
+    wrapperImagePath String                 @default("public/placeholder-image.svg") @map("wrapper_image_path") @db.VarChar(255)
+    createdAt        DateTime               @default(now()) @map("created_at") @db.Timestamptz()
+    modifiedAt       DateTime?              @updatedAt @map("modified_at") @db.Timestamptz()
+    openingStats     CardPackHistoryEntry[] @relation(name: "card_pack")
+}
+
+enum CardSeason {
+    Season1
+    Season2
+    Season3
+    Season4
+    Season5
+}
+
+enum CardRarity {
+    Common
+    Rare
+}
+
+model Card {
+    id                    Int                @id @default(autoincrement()) @map("pk_card_id")
+    name                  String             @unique @map("name_uq") @db.VarChar(100)
+    title                 String             @db.VarChar(60)
+    season                CardSeason
+    description           String             @db.VarChar(200)
+    rarity                CardRarity
+    artPath               String             @default("public/placeholder-image.svg") @map("art_path") @db.VarChar(255)
+    createdAt             DateTime           @default(now()) @map("created_at") @db.Timestamptz()
+    modifiedAt            DateTime?          @updatedAt @map("modified_at") @db.Timestamptz()
+    tradeAppearances      TradeOfferDetail[] @relation(name: "card")
+    collectionAppearances CollectionEntry[]  @relation(name: "card")
+}
+
+enum TradeStatus {
+    Pending
+    Cancelled
+    Denied
+    Accepted
+}
+
+enum TradeOfferType {
+    PublicOffer
+    PrivateOffer
+}
+
+model TradeOffer {
+    id             Int                @id @default(autoincrement()) @map("pk_trade_id")
+    status         TradeStatus        @default(Pending)
+    closedAt       DateTime?          @map("closed_at") @db.Timestamptz() /// Tracks when the status changed from 'Pending', note that a expired offer has a status of 'Pending' and hence it is not tracked in this field
+    expirationDate DateTime?          @map("expiration_date") @db.Timestamptz()
+    offerType      TradeOfferType     @default(PublicOffer) @map("offer_type")
+    offererId      Int                @map("fk_offerer_id") /// cascade delete enforced through tg_UserData_BeforeDelete
+    receiverId     Int?               @map("fk_receiver_id") /// cascade delete enforced through tg_UserData_BeforeDelete
+    details        TradeOfferDetail[] @relation(name: "offer")
+    createdAt      DateTime           @default(now()) @map("created_at") @db.Timestamptz()
+    modifiedAt     DateTime?          @updatedAt @map("modified_at") @db.Timestamptz()
+    offerer        User               @relation(name: "offerer", map: "cstr__TradeOffer__offerer__fk__User", fields: [offererId], references: [id])
+    receiver       User?              @relation(name: "receiver", map: "cstr__TradeOffer__receiver__fk__User", fields: [receiverId], references: [id])
+}
+
+view TradeOfferInfo {
+    id             Int            @id @map("pk_trade_id")
+    status         TradeStatus
+    closedAt       DateTime?      @map("closed_at") @db.Timestamptz() /// Tracks when the status changed from 'Pending', note that a expired offer has a status of 'Pending' and hence it is not tracked in this field
+    expirationDate DateTime?      @map("expiration_date") @db.Timestamptz()
+    offerType      TradeOfferType @map("offer_type")
+    offererId      Int            @map("fk_offerer_id")
+    receiverId     Int?           @map("fk_receiver_id")
+    createdAt      DateTime       @map("created_at") @db.Timestamptz()
+    modifiedAt     DateTime?      @map("modified_at") @db.Timestamptz()
+    hasExpired     Boolean        @map("has_expired") @db.Boolean
+
+    @@map("vw_TradeOfferInfo")
+}
+
+enum TradeOfferDetailType {
+    Offered
+    Requested
+}
+
+model TradeOfferDetail {
+    offer      TradeOffer           @relation(name: "offer", map: "cstr__TradeOfferDetail__offer__fk__TradeOffer", fields: [offerId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    offerId    Int                  @map("fk_offer_id")
+    cardId     Int                  @map("fk_card_id")
+    amount     Int
+    detailType TradeOfferDetailType @map("detail_type")
+    card       Card                 @relation(name: "card", map: "cstr__TradeOfferDetail__card__fk__Card", fields: [cardId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@id([offerId, cardId])
+}
+
+model CollectionEntry {
+    cardId     Int       @map("fk_card_id")
+    userId     Int       @map("fk_user_id") /// cascade delete enforced through tg_UserData_BeforeDelete
+    amount     Int
+    createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+    modifiedAt DateTime? @updatedAt @map("modified_at") @db.Timestamptz()
+    card       Card      @relation(name: "card", map: "cstr__CollectionEntry__card__fk__Card", fields: [cardId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    user       User      @relation(name: "user", map: "cstr__CollectionEntry__user__fk__User", fields: [userId], references: [id])
+
+    @@id([userId, cardId])
+}
+
+model CardPackHistoryEntry {
+    cardPackId   Int       @map("fk_pack_id")
+    userId       Int       @map("fk_user_id") /// cascade delete enforced through tg_UserData_BeforeDelete
+    amountOpened Int       @map("amount_opened")
+    createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz()
+    modifiedAt   DateTime? @updatedAt @map("modified_at") @db.Timestamptz()
+    cardPack     CardPack  @relation(name: "card_pack", map: "cstr__CardPackHistoryEntry__pack__fk__CardPack", fields: [cardPackId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    user         User      @relation(name: "user", map: "cstr__CardPackHistoryEntry__user__fk__User", fields: [userId], references: [id])
+
+    @@id([userId, cardPackId])
+}
