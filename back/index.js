@@ -1,3 +1,8 @@
-await Promise.resolve();
+import { PrismaClient } from "@prisma/client";
 
-console.log("Testing top level await");
+const prisma = new PrismaClient();
+
+const allUsers = await prisma.user.findMany();
+console.log(allUsers);
+
+await prisma.$disconnect();
