@@ -1,0 +1,145 @@
+<navbar id="site-navigation" class="tabs has-background-grey m-0">
+      <div
+        class="navbar-brand is-hidden-mobile is-align-items-center box p-0 is-radiusless"
+      >
+        <i class="fa-solid fa-icons navbar-item"></i>
+        <span class="is-size-4">Project</span>
+      </div>
+      <ul>
+        <div>
+          <li class="is-active">
+            <a href="#Home" class="navbar-item">
+              <i class="fa-solid fa-house fa-fw"></i>
+              <span class="is-hidden-mobile">Home</span>
+            </a>
+          </li>
+          <li>
+            <a href="#Collection" class="navbar-item">
+              <i class="fa-regular fa-clone fa-fw"></i>
+              <span class="is-hidden-mobile">Collection</span>
+            </a>
+          </li>
+          <li>
+            <a href="#Market" class="navbar-item">
+              <i class="fa-solid fa-store fa-fw"></i>
+              <span class="is-hidden-mobile">Market</span>
+            </a>
+          </li>
+          <li>
+            <a href="#History" class="navbar-item">
+              <i class="fa-regular fa-handshake fa-fw"></i>
+              <span class="is-hidden-mobile">Trade History</span>
+            </a>
+          </li>
+        </div>
+        <div class="is-hidden-mobile">
+          <li>
+            <a href="" class="navbar-item">
+              <i class="fa-solid fa-circle-user fa-fw"></i>
+              <span class="is-hidden-mobile">Settings</span>
+            </a>
+          </li>
+          <li class="">
+            <a href="" class="navbar-item">
+              <i class="fa-solid fa-arrow-right-from-bracket fa-fw"></i>
+              <span class="is-hidden-mobile">Log out</span>
+            </a>
+          </li>
+        </div>
+      </ul>
+    </navbar>
+
+<style>
+:root {
+  --logo-size: var(--bulma-size-3);
+  --logo-padding: var(--bulma-size-large);
+}
+navbar#site-navigation > ul li > a > i {
+  font-size: var(--bulma-size-5);
+}
+/* Mobile only */
+@media (max-width: 768px) {
+  :root {
+    --navbar-height: 30px;
+    --navbar-width: 100vw;
+  }
+
+  body {
+    margin-bottom: var(--navbar-height);
+  }
+
+navbar#site-navigation {
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  width: var(--navbar-width);
+}
+
+navbar#site-navigation > ul,
+navbar#site-navigation > ul > div {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+}
+
+/* Desktop only */
+@media (min-width: 769px) {
+  :root {
+    --navbar-collapsed-width: calc(var(--logo-size) + 2 * var(--logo-padding));
+    --navbar-extended-width: 200px;
+    --navbar-height: 100vh;
+  }
+
+  body {
+    margin-left: var(--navbar-collapsed-width);
+  }
+
+  navbar#site-navigation {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: var(--navbar-height);
+    display: inline-flex;
+    flex-direction: column;
+    max-width: var(--navbar-collapsed-width);
+    overflow-x: hidden;
+    transition: max-width 400ms ease-in-out;
+    transition-delay: 0;
+  }
+navbar#site-navigation > .navbar-brand > i {
+  font-size: var(--logo-size);
+  padding: var(--logo-padding);
+}
+  navbar#site-navigation > ul,
+  navbar#site-navigation > ul > div {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  navbar#site-navigation > ul {
+    flex-grow: 1;
+    justify-content: space-between;
+  }
+
+  navbar#site-navigation > ul li > a {
+    justify-content: start;
+    padding-right: 0;
+    padding-left: 0;
+    gap: 0;
+  }
+
+  navbar#site-navigation > ul li > a > i {
+    min-width: var(--navbar-collapsed-width);
+    font-size: var(--bulma-size-5);
+  }
+  navbar#site-navigation > ul li > a > span {
+    min-width: calc(var(--navbar-extended-width) - var(--navbar-collapsed-width));
+  }
+  navbar#site-navigation:hover {
+    max-width: var(--navbar-extended-width);
+  }
+}
+
+</style>
