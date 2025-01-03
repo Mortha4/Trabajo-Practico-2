@@ -1,28 +1,16 @@
 services:
+
   db:
-    build: 
-      docker/db.dockerfile
-    env_file:
-      - path: docker/db.env
+    image: postgres:17.2
+    container_name: database
+    environment:
+      POSTGRES_PASSWORD: dbpassword
+      POSTGRES_USER: dbuser
+      POSTGRES_DB: brakingbadDB
     ports:
-      - 3306:3306
-
-    healthcheck:
-      test: ["CMD", "", "--inno"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
-
-  phpmyadmin:
-    image:  phpmyadmin/phpadmin.env
-    env_file:
-      - path: docker/phpadmin.env
-    ports:
-      - 3307:80
-    depends_on:
-      db:
-        condition: service_healthy
+      - 5432:5432
+    volumes:
+      - ./psql_data:/var/lib/postgresql/data
 
   web:
     build:
