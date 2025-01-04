@@ -4,8 +4,9 @@ RUN mkdir -p /home/app
 
 COPY . /home/app 
 
-EXPOSE 3000
+EXPOSE 5432
 
 VOLUME ["/var/lib/postgresql/data"]
 
 CMD ["postgres"]
+
