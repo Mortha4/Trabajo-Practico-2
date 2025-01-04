@@ -6,6 +6,8 @@ COPY package*.json ./
 
 RUN npm install
 
+COPY . /home/app 
+
 EXPOSE 80
 
 CMD ["npm", "start"]
