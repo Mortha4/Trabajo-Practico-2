@@ -1,10 +1,14 @@
 services:
-
+<<<<<<< HEAD
   db:
     image: postgres:17.2
 
     build:
+
       dockerfile: docker/db.dockerfile
+
+      dockerfile: back/docker/db.dockerfile
+
 
     env_file:
       - path: db.env
@@ -23,7 +27,11 @@ services:
     image: node:23-alpine3.20 
 
     build:
+<<<<<<< HEAD
       dockerfile: docker/back.dockerfile
+
+      dockerfile: back/docker/back.dockerfile
+
       
     container_name: back
 
