@@ -1,5 +1,5 @@
 services:
-<<<<<<< HEAD
+
   db:
     image: postgres:17.2
 
@@ -27,7 +27,7 @@ services:
     image: node:23-alpine3.20 
 
     build:
-<<<<<<< HEAD
+
       dockerfile: docker/back.dockerfile
 
       dockerfile: back/docker/back.dockerfile
