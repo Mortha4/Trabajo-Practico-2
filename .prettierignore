@@ -5,3 +5,4 @@
 *.drawio
 **/.astro
 **/.vscode
+**/psql_data
