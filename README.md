@@ -36,14 +36,12 @@ patches will be merged once all team members have reviewed them.
 - Persistent state in a relational database
 
 <<<<<<< HEAD
+
 ## Tooling
 
 - Docker
-- Prettier
-=======
-## Build and Deployment
+- # Prettier
 
-- TODO
->>>>>>> a9944b9 (Implement demo navbar and transition to Astro)
+## Build and Deployment
 
 [1]: https://trello.com/b/FrVAu7L0/tp2-intro "Trello"
