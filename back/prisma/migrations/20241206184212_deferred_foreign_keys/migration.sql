@@ -1,5 +1,0 @@
-ALTER TABLE "User"
-ALTER CONSTRAINT "cstr__User__username__fk__UserData" DEFERRABLE INITIALLY DEFERRED;
-
-ALTER TABLE "UserData"
-ALTER CONSTRAINT "cstr__UserData__username__fk__User__username" DEFERRABLE INITIALLY DEFERRED;
