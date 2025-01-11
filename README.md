@@ -35,9 +35,13 @@ patches will be merged once all team members have reviewed them.
 - Use of git and github with a clean commit history
 - Persistent state in a relational database
 
+<<<<<<< HEAD
+
 ## Tooling
 
 - Docker
-- Prettier
+- # Prettier
+
+## Build and Deployment
 
 [1]: https://trello.com/b/FrVAu7L0/tp2-intro "Trello"

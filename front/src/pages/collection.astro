@@ -1,0 +1,162 @@
+---
+// TODO: Collection stats should be queried at runtime
+import Layout from "../layouts/Layout.astro";
+import UserPortalNavbar from "../components/UserPortalNavbar.astro";
+import ProfileLayout from "../layouts/ProfileLayout.astro";
+import CardPack from "../components/CardPack.astro";
+---
+
+<Layout title="Collection">
+    <UserPortalNavbar />
+    <main>
+        <ProfileLayout
+            container-class="is-flex is-justify-content-space-around is-align-items-stretch"
+        >
+            <div
+                class="stats-flex is-flex is-flex-grow-1 is-justify-content-center is-align-items-center"
+            >
+                <div>
+                    <h2 class="is-size-4-tablet is-size-5-mobile">Collected</h2>
+                    <h4>0/20</h4>
+                </div>
+                <div>
+                    <h2 class="is-size-4-tablet is-size-5-mobile">Seen</h2>
+                    <h4>0/20</h4>
+                </div>
+            </div>
+            <div
+                class="packs-flex is-hidden-mobile is-flex-grow-2 is-justify-content-space-around is-flex-wrap-wrap"
+            >
+                <CardPack
+                    compact
+                    pack-title="Goofy ahh pack"
+                    last-opened={new Date(
+                        new Date().getDate() - 1000 * 60 * 60 * 10
+                    ).toISOString()}
+                />
+                <CardPack
+                    compact
+                    class="is-hidden-touch is-hidden-desktop-only"
+                    compact
+                    pack-title="Rumbumptious pack"
+                    last-opened={new Date(
+                        new Date().getDate() - 1000 * 10
+                    ).toISOString()}
+                />
+            </div>
+        </ProfileLayout>
+        <section class="collection p-5">
+            <div class="test-card"></div>
+            <div class="test-card"></div>
+            <div class="test-card"></div>
+            <div class="test-card"></div>
+            <div class="test-card"></div>
+            <div class="test-card"></div>
+            <div class="test-card"></div>
+            <div class="test-card"></div>
+            <div class="test-card"></div>
+            <div class="test-card"></div>
+            <div class="test-card"></div>
+            <div class="test-card"></div>
+            <div class="test-card"></div>
+            <div class="test-card"></div>
+            <div class="test-card"></div>
+            <div class="test-card"></div>
+            <div class="test-card"></div>
+            <div class="test-card"></div>
+            <div class="test-card"></div>
+            <div class="test-card"></div>
+            <!-- <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Repudiandae cum excepturi suscipit. Amet, perferendis ipsam?
+                Delectus nam vitae, aliquid iusto ipsum fugit, quasi tempore
+                eveniet excepturi ex quaerat! Enim, reiciendis.
+            </p>
+            <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Repudiandae cum excepturi suscipit. Amet, perferendis ipsam?
+                Delectus nam vitae, aliquid iusto ipsum fugit, quasi tempore
+                eveniet excepturi ex quaerat! Enim, reiciendis.
+            </p>
+            <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                Repudiandae cum excepturi suscipit. Amet, perferendis ipsam?
+                Delectus nam vitae, aliquid iusto ipsum fugit, quasi tempore
+                eveniet excepturi ex quaerat! Enim, reiciendis.
+            </p> -->
+        </section>
+    </main>
+</Layout>
+<style>
+    section.collection {
+        display: grid;
+        height: 100%;
+        gap: 10px;
+        justify-content: space-around;
+        align-content: space-around;
+        grid-template-rows: repeat(auto-fill, calc(200px * 7 / 5));
+        grid-template-columns: repeat(auto-fill, 200px);
+    }
+
+    div.test-card {
+        aspect-ratio: 5 / 7;
+        width: 200px;
+        height: auto;
+        background-color: blue;
+    }
+
+    :global(.profile-banner-container) {
+        min-height: 5rem;
+    }
+
+    div.packs-flex {
+        display: flex;
+        gap: 10px;
+    }
+
+    div.packs-flex > :global(.card-pack) {
+        height: 100%;
+    }
+
+    div.stats-flex h2,
+    div.stats-flex h4 {
+        width: 8rem;
+        text-align: right;
+    }
+
+    div.stats-flex {
+        flex-direction: row;
+        flex-basis: 8rem;
+    }
+
+    @container (max-width: 700px) and (min-height: 6rem /* Hacky way to check if the container is not wrapped */) {
+        div.stats-flex {
+            flex-direction: column;
+        }
+    }
+
+    @container (max-width: 500px) {
+        :global(div.packs-flex > div.card-pack:last-of-type) {
+            display: none !important;
+        }
+    }
+
+    @container (height: 5rem /* Hacky way to check if the container is wrapped */) {
+        div.packs-flex {
+            display: none;
+        }
+    }
+
+    @media (max-width: 768px) {
+        :global(.profile-banner-container) {
+            min-height: 3rem;
+        }
+        div.stats-flex {
+            flex-direction: row;
+        }
+        div.stats-flex h2,
+        div.stats-flex h4 {
+            text-align: center;
+        }
+    }
+</style>

@@ -1,0 +1,172 @@
+---
+// TODO: Consider using grid for layout purposes instead of margin
+// TODO: active link should be determined at compile time, not runtime
+---
+
+<script>
+    const route = new URL(window.location.toString()).pathname;
+    const routeToIdMap: Record<string, string> = {
+        "/home": "home-link",
+        "/collection": "collection-link",
+        "/market": "market-link",
+        "/trade": "trades-link",
+    };
+    document.getElementById(routeToIdMap[route])?.classList.add("is-active");
+</script>
+<navbar id="site-navigation" class="tabs has-background-grey m-0">
+    <div
+        class="navbar-brand is-hidden-mobile is-align-items-center box p-0 is-radiusless"
+    >
+        <label for="sidebar-toggle" class="fa-solid fa-icons navbar-item">
+            <input class="is-hidden" id="sidebar-toggle" type="checkbox" />
+        </label>
+        <span class="is-size-4">Project</span>
+    </div>
+    <ul class="is-flex">
+        <div class="is-flex">
+            <li id="home-link">
+                <a href="#Home" class="navbar-item">
+                    <i class="is-size-5 fa-solid fa-house fa-fw"></i>
+                    <span class="is-hidden-mobile">Home</span>
+                </a>
+            </li>
+            <li id="collection-link">
+                <a href="#Collection" class="navbar-item">
+                    <i class="is-size-5 fa-regular fa-clone fa-fw"></i>
+                    <span class="is-hidden-mobile">Collection</span>
+                </a>
+            </li>
+            <li id="market-link">
+                <a href="#Market" class="navbar-item">
+                    <i class="is-size-5 fa-solid fa-store fa-fw"></i>
+                    <span class="is-hidden-mobile">Market</span>
+                </a>
+            </li>
+            <li id="trades-link">
+                <a href="#History" class="navbar-item">
+                    <i class="is-size-5 fa-regular fa-handshake fa-fw"></i>
+                    <span class="is-hidden-mobile">Trade History</span>
+                </a>
+            </li>
+        </div>
+        <div class="is-flex is-hidden-mobile">
+            <li>
+                <a href="" class="navbar-item">
+                    <i class="is-size-5 fa-solid fa-circle-user fa-fw"></i>
+                    <span class="is-hidden-mobile">Settings</span>
+                </a>
+            </li>
+            <li class="">
+                <a href="" class="navbar-item">
+                    <i
+                        class="is-size-5 fa-solid fa-arrow-right-from-bracket fa-fw"
+                    ></i>
+                    <span class="is-hidden-mobile">Log out</span>
+                </a>
+            </li>
+        </div>
+    </ul>
+</navbar>
+
+<style>
+    :root {
+        --logo-size: var(--bulma-size-3);
+        --logo-padding: var(--bulma-size-large);
+        --navbar-collapsed-width: calc(
+            var(--logo-size) + 2 * var(--logo-padding)
+        );
+        --navbar-extended-width: 200px;
+    }
+
+    /* Mobile only */
+    @media (max-width: 768px) {
+        :root {
+            --navbar-height: 30px;
+            --navbar-width: 100vw;
+        }
+
+        navbar + :global(main) {
+            margin-bottom: var(--navbar-height);
+        }
+
+        navbar {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            z-index: 1;
+            width: var(--navbar-width);
+        }
+
+        ul,
+        ul > div {
+            flex-direction: row;
+            justify-content: center;
+        }
+    }
+
+    /* Desktop only */
+    @media (min-width: 769px) {
+        :root {
+            --navbar-height: 100vh;
+            --navbar-width: var(--navbar-collapsed-width);
+        }
+
+        navbar + :global(main) {
+            margin-left: var(--navbar-collapsed-width);
+        }
+
+        navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: var(--navbar-height);
+            display: inline-flex;
+            flex-direction: column;
+            max-width: var(--navbar-width);
+            overflow-x: hidden;
+            transition: max-width 400ms ease-in-out;
+            transition-delay: 0;
+            z-index: 1;
+        }
+
+        .navbar-brand > label {
+            font-size: var(--logo-size);
+            padding: var(--logo-padding);
+        }
+
+        navbar:has(> .navbar-brand input:checked) {
+            --navbar-width: var(--navbar-extended-width);
+        }
+
+        ul,
+        ul > div {
+            flex-direction: column;
+            align-items: stretch;
+        }
+
+        ul {
+            flex-grow: 1;
+            justify-content: space-between;
+        }
+
+        li > a {
+            justify-content: start;
+            padding-right: 0;
+            padding-left: 0;
+            gap: 0;
+        }
+
+        li > a > i {
+            min-width: var(--navbar-collapsed-width);
+        }
+
+        li > a > span {
+            min-width: calc(
+                var(--navbar-extended-width) - var(--navbar-collapsed-width)
+            );
+        }
+        navbar:hover {
+            --navbar-width: var(--navbar-extended-width);
+        }
+    }
+</style>
