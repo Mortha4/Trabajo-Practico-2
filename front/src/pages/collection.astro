@@ -4,6 +4,9 @@ import Layout from "../layouts/Layout.astro";
 import UserPortalNavbar from "../components/UserPortalNavbar.astro";
 import ProfileLayout from "../layouts/ProfileLayout.astro";
 import CardPack from "../components/CardPack.astro";
+import Card from "../components/Card.astro";
+import CardFilter from "../components/CardFilter.astro";
+import RadioTabs from "../components/RadioTabs.astro";
 ---
 
 <Layout title="Collection">
@@ -46,26 +49,92 @@ import CardPack from "../components/CardPack.astro";
             </div>
         </ProfileLayout>
         <section class="collection p-5">
-            <div class="test-card"></div>
-            <div class="test-card"></div>
-            <div class="test-card"></div>
-            <div class="test-card"></div>
-            <div class="test-card"></div>
-            <div class="test-card"></div>
-            <div class="test-card"></div>
-            <div class="test-card"></div>
-            <div class="test-card"></div>
-            <div class="test-card"></div>
-            <div class="test-card"></div>
-            <div class="test-card"></div>
-            <div class="test-card"></div>
-            <div class="test-card"></div>
-            <div class="test-card"></div>
-            <div class="test-card"></div>
-            <div class="test-card"></div>
-            <div class="test-card"></div>
-            <div class="test-card"></div>
-            <div class="test-card"></div>
+            <div class="filter">
+                <CardFilter class="pt-4 pb-3 is-flex-grow-1" />
+                <div class="grouping">
+                    <RadioTabs class="pt-4 pb-3">
+                        <li>
+                            <label>
+                                Season
+                                <input
+                                    checked
+                                    name="grouping"
+                                    value="season"
+                                    type="radio"
+                                    autocomplete="off"
+                                />
+                            </label>
+                        </li>
+                        <li>
+                            <label>
+                                Rarity
+                                <input
+                                    name="grouping"
+                                    value="rarity"
+                                    type="radio"
+                                    autocomplete="off"
+                                />
+                            </label>
+                        </li>
+                    </RadioTabs>
+                </div>
+            </div>
+            <div class="cards">
+                <h1 class="subtitle is-size-3">Season 1<hr /></h1>
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <h1 class="subtitle is-size-3 m-0 mt-6">Season 2<hr /></h1>
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <h1 class="subtitle is-size-3 m-0 mt-6">Season 3<hr /></h1>
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+                <Card />
+            </div>
             <!-- <p>
                 Lorem ipsum dolor sit amet consectetur adipisicing elit.
                 Repudiandae cum excepturi suscipit. Amet, perferendis ipsam?
@@ -88,21 +157,39 @@ import CardPack from "../components/CardPack.astro";
     </main>
 </Layout>
 <style>
-    section.collection {
+    .collection > .cards {
         display: grid;
         height: 100%;
         gap: 10px;
-        justify-content: space-around;
+        justify-content: space-between;
         align-content: space-around;
-        grid-template-rows: repeat(auto-fill, calc(200px * 7 / 5));
-        grid-template-columns: repeat(auto-fill, 200px);
+        grid-template-columns: repeat(auto-fill, 2.5in);
+        grid-auto-rows: auto;
     }
 
-    div.test-card {
-        aspect-ratio: 5 / 7;
-        width: 200px;
-        height: auto;
-        background-color: blue;
+    .collection > .cards > h1 {
+        grid-column: 1 / -1;
+    }
+
+    .cards > hr {
+        border: 1px solid var(--bulma-subtitle-color);
+    }
+
+    .cards > h1:first-child {
+        margin-top: 0;
+    }
+
+    .cards > h1 {
+        margin: 0;
+        margin-top: var(--bulma-size-6);
+    }
+
+    .filter {
+        position: sticky;
+        top: 0;
+        display: flex;
+        background-color: var(--bulma-body-background-color);
+        gap: 20px;
     }
 
     :global(.profile-banner-container) {

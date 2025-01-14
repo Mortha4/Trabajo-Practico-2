@@ -1,0 +1,70 @@
+<div class="game-card">
+    <div class="front is-flex is-flex-direction-column is-align-items-stretch">
+        <h1>Title</h1>
+        <img src="X_in_box.svg" alt="" />
+        <div class="rarity is-flex is-justify-content-space-between">
+            <div class="hazard">
+                <i class="fa-solid fa-biohazard"></i>
+                <i class="fa-solid fa-biohazard"></i>
+                <i class="fa-solid fa-biohazard"></i>
+            </div>
+            <span>Rarity</span>
+        </div>
+        <p>deez nuts jijiasdjfl jasdklñf fkldjfalñk asdlñfkjalfkj</p>
+    </div>
+    <div class="back">
+        <img src="" alt="" class="brand" />
+    </div>
+</div>
+<style>
+    .game-card {
+        min-width: 2.5in;
+        min-height: 3.5in;
+        border-radius: 3.5mm;
+        background-color: red;
+        border: solid white 5px;
+        padding: 5px;
+        aspect-ratio: 5 / 7;
+    }
+
+    .front,
+    .back {
+        width: 100%;
+        height: 100%;
+    }
+
+    h1 {
+        text-align: center;
+        font-weight: 900;
+        font-size: large;
+    }
+
+    p {
+        display: flex;
+        font-size: 0.9rem;
+        background-color: white;
+        flex-basis: content;
+        padding: 1px;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        min-height: 0;
+        flex-grow: 1;
+        overflow: scroll;
+    }
+
+    img {
+        aspect-ratio: 6 / 4;
+        width: 100%;
+        height: auto;
+        background-color: aqua;
+        border-radius: 1.5mm;
+    }
+
+    .game-card .back {
+        display: none;
+    }
+
+    .front {
+    }
+</style>

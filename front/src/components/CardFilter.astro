@@ -1,0 +1,160 @@
+---
+/**
+ *
+ */
+// TODO: remove inline javascript on input fields and write a better function (allow keys)
+const { class: classList } = Astro.props;
+---
+
+<script>
+    function handleSubmit(event: SubmitEvent) {
+        event.preventDefault();
+
+        const formData = new FormData(event.target as HTMLFormElement);
+        const urlParams = new URLSearchParams();
+
+        for (const [key, value] of formData.entries())
+            if (value.toString().trim() !== "")
+                urlParams.append(key, value.toString());
+
+        console.log(urlParams.toString());
+    }
+    document
+        .getElementById("card-filter-form")
+        ?.addEventListener("submit", handleSubmit);
+</script>
+<form class:list={[classList]} id="card-filter-form" action="/cards">
+    <div class="field has-addons">
+        <div class="control has-icons-left is-expanded">
+            <input class="input" type="search" name="title" />
+            <label id="test" class="icon is-small is-left">
+                <i class="fa fa-filter"></i>
+                <input type="checkbox" hidden id="advanced-search-toggle" />
+            </label>
+        </div>
+        <div class="control">
+            <button class="button is-info" type="submit">
+                <span>
+                    <i class="fas fa-search"></i>
+                </span>
+            </button>
+        </div>
+    </div>
+    <div class="advanced-search">
+        <fieldset name="rarity[]" class="is-flex is-flex-wrap-wrap checkboxes">
+            <legend class="label"> Choose the rarities <br /> </legend>
+            <label class="checkbox">
+                <input type="checkbox" name="rarity[]" value="Common" id="" />
+                1 Hazard
+            </label>
+            <label class="checkbox">
+                <input type="checkbox" name="rarity[]" value="Uncommon" id="" />
+                2 Hazard
+            </label>
+            <label class="checkbox">
+                <input type="checkbox" name="rarity[]" value="Rare" id="" />
+                3 Hazard
+            </label>
+            <label class="checkbox">
+                <input type="checkbox" name="rarity[]" value="Epic" id="" />
+                4 Hazard
+            </label>
+        </fieldset>
+        <fieldset name="season[]" class="is-flex is-flex-wrap-wrap checkboxes">
+            <legend class="label"> Choose the seasons <br /> </legend>
+            <label class="checkbox">
+                <input type="checkbox" name="season[]" value="Season1" id="" />
+                Season 1
+            </label>
+            <label class="checkbox">
+                <input type="checkbox" name="season[]" value="Season2" id="" />
+                Season 2
+            </label>
+            <label class="checkbox">
+                <input type="checkbox" name="season[]" value="Season3" id="" />
+                Season 3
+            </label>
+            <label class="checkbox">
+                <input type="checkbox" name="season[]" value="Season4" id="" />
+                Season 4
+            </label>
+            <label class="checkbox">
+                <input type="checkbox" name="season[]" value="Season5" id="" />
+                Season 5
+            </label>
+        </fieldset>
+        <div class="quantity field">
+            <div class="control is-flex">
+                <label class="label m-0"> Quantity between: </label>
+                <input
+                    class="input"
+                    maxlength="9"
+                    pattern="[0-9]+"
+                    inputmode="numeric"
+                    type="text"
+                    name="minimumQuantity"
+                    onkeydown="return (isFinite(Number(event.key)) && event.key !== ' ') || event.key === 'Delete' || event.key === 'Backspace'"
+                />
+                <span>and</span>
+                <input
+                    class="input"
+                    maxlength="9"
+                    pattern="[0-9]+"
+                    inputmode="numeric"
+                    type="text"
+                    name="maximumQuantity"
+                    onkeydown="return (isFinite(Number(event.key)) && event.key !== ' ') || event.key === 'Delete' || event.key === 'Backspace'"
+                />
+            </div>
+        </div>
+    </div>
+</form>
+<style>
+    @media (max-width: 768px) {
+        .field.quantity .control {
+            flex-direction: column;
+        }
+    }
+
+    .field.quantity label,
+    .field.quantity span {
+        display: flex;
+        align-items: center;
+    }
+
+    .field.quantity .control {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .field.quantity .control input {
+        max-width: 7rem;
+    }
+
+    label.icon:has(input#advanced-search-toggle) {
+        pointer-events: all;
+    }
+
+    form {
+        position: relative;
+    }
+
+    div.advanced-search {
+        display: none;
+        background-color: var(--bulma-body-background-color);
+        border: solid white 1px;
+        border-radius: 10px;
+        margin-top: var(--bulma-field-block-spacing);
+        padding: var(--bulma-size-5);
+        position: absolute;
+        width: 100%;
+        max-width: fit-content;
+    }
+
+    form:has(input#advanced-search-toggle:checked) > div.advanced-search {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+</style>
