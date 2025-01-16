@@ -4,73 +4,72 @@ import { Fragment } from "astro/jsx-runtime";
 ---
 
 <Fragment>
-<fieldset name="rarity[]" class="is-flex is-flex-wrap-wrap checkboxes">
-    <legend class="label"> Choose the rarities <br /> </legend>
-    <label class="checkbox">
-        <input type="checkbox" name="rarity[]" value="Common" id="" />
-        1 Hazard
-    </label>
-    <label class="checkbox">
-        <input type="checkbox" name="rarity[]" value="Uncommon" id="" />
-        2 Hazard
-    </label>
-    <label class="checkbox">
-        <input type="checkbox" name="rarity[]" value="Rare" id="" />
-        3 Hazard
-    </label>
-    <label class="checkbox">
-        <input type="checkbox" name="rarity[]" value="Epic" id="" />
-        4 Hazard
-    </label>
-</fieldset>
-<fieldset name="season[]" class="is-flex is-flex-wrap-wrap checkboxes">
-    <legend class="label"> Choose the seasons <br /> </legend>
-    <label class="checkbox">
-        <input type="checkbox" name="season[]" value="Season1" id="" />
-        Season 1
-    </label>
-    <label class="checkbox">
-        <input type="checkbox" name="season[]" value="Season2" id="" />
-        Season 2
-    </label>
-    <label class="checkbox">
-        <input type="checkbox" name="season[]" value="Season3" id="" />
-        Season 3
-    </label>
-    <label class="checkbox">
-        <input type="checkbox" name="season[]" value="Season4" id="" />
-        Season 4
-    </label>
-    <label class="checkbox">
-        <input type="checkbox" name="season[]" value="Season5" id="" />
-        Season 5
-    </label>
-</fieldset>
-<div class="quantity field">
-    <div class="control is-flex">
-        <label class="label m-0"> Quantity between: </label>
-        <input
-            class="input"
-            maxlength="9"
-            pattern="[0-9]+"
-            inputmode="numeric"
-            type="text"
-            name="minimumQuantity"
-            onkeydown="return (isFinite(Number(event.key)) && event.key !== ' ') || event.key === 'Delete' || event.key === 'Backspace'"
-        />
-        <span>and</span>
-        <input
-            class="input"
-            maxlength="9"
-            pattern="[0-9]+"
-            inputmode="numeric"
-            type="text"
-            name="maximumQuantity"
-            onkeydown="return (isFinite(Number(event.key)) && event.key !== ' ') || event.key === 'Delete' || event.key === 'Backspace'"
-        />
+    <fieldset name="rarity[]" class="is-flex is-flex-wrap-wrap checkboxes">
+        <legend class="label"> Choose the rarities <br /> </legend>
+        <label class="checkbox">
+            <input type="checkbox" name="rarity[]" value="Common" id="" />
+            1 Hazard
+        </label>
+        <label class="checkbox">
+            <input type="checkbox" name="rarity[]" value="Uncommon" id="" />
+            2 Hazard
+        </label>
+        <label class="checkbox">
+            <input type="checkbox" name="rarity[]" value="Rare" id="" />
+            3 Hazard
+        </label>
+        <label class="checkbox">
+            <input type="checkbox" name="rarity[]" value="Epic" id="" />
+            4 Hazard
+        </label>
+    </fieldset>
+    <fieldset name="season[]" class="is-flex is-flex-wrap-wrap checkboxes">
+        <legend class="label"> Choose the seasons <br /> </legend>
+        <label class="checkbox">
+            <input type="checkbox" name="season[]" value="Season1" id="" />
+            Season 1
+        </label>
+        <label class="checkbox">
+            <input type="checkbox" name="season[]" value="Season2" id="" />
+            Season 2
+        </label>
+        <label class="checkbox">
+            <input type="checkbox" name="season[]" value="Season3" id="" />
+            Season 3
+        </label>
+        <label class="checkbox">
+            <input type="checkbox" name="season[]" value="Season4" id="" />
+            Season 4
+        </label>
+        <label class="checkbox">
+            <input type="checkbox" name="season[]" value="Season5" id="" />
+            Season 5
+        </label>
+    </fieldset>
+    <div class="quantity field">
+        <div class="control is-flex">
+            <label class="label m-0"> Quantity between: </label>
+            <input
+                class="input"
+                maxlength="9"
+                pattern="[0-9]+"
+                inputmode="numeric"
+                type="text"
+                name="minimumQuantity"
+                onkeydown="return (isFinite(Number(event.key)) && event.key !== ' ') || event.key === 'Delete' || event.key === 'Backspace'"
+            />
+            <span>and</span>
+            <input
+                class="input"
+                maxlength="9"
+                pattern="[0-9]+"
+                inputmode="numeric"
+                type="text"
+                name="maximumQuantity"
+                onkeydown="return (isFinite(Number(event.key)) && event.key !== ' ') || event.key === 'Delete' || event.key === 'Backspace'"
+            />
+        </div>
     </div>
-</div>
-
 </Fragment>
 <style>
     @media (max-width: 768px) {

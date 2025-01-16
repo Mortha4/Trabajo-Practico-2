@@ -18,11 +18,15 @@ import StickyTopbar from "../components/StickyTopbar.astro";
     <main>
         <ProfileDashboard>
             <div slot="stats">
-                <h2 slot="stat-1" class="is-size-4-tablet is-size-5-mobile">Collected</h2>
+                <h2 slot="stat-1" class="is-size-4-tablet is-size-5-mobile">
+                    Collected
+                </h2>
                 <h4 slot="stat-1">0/20</h4>
             </div>
             <div slot="stats">
-                <h2 slot="stat-2" class="is-size-4-tablet is-size-5-mobile">Seen</h2>
+                <h2 slot="stat-2" class="is-size-4-tablet is-size-5-mobile">
+                    Seen
+                </h2>
                 <h4 slot="stat-2">0/20</h4>
             </div>
             <CardPack
@@ -46,7 +50,12 @@ import StickyTopbar from "../components/StickyTopbar.astro";
         </ProfileDashboard>
         <section class="collection p-5">
             <StickyTopbar>
-                <SearchBar id="card-filter-form" class="is-flex-grow-1" name="title" placeholder="Card name">
+                <SearchBar
+                    id="card-filter-form"
+                    class="is-flex-grow-1"
+                    name="title"
+                    placeholder="Card name"
+                >
                     <CardFilter />
                 </SearchBar>
                 <RadioTabs>
@@ -130,7 +139,7 @@ import StickyTopbar from "../components/StickyTopbar.astro";
                 <Card />
                 <Card />
                 <Card />
-            </div> 
+            </div>
         </section>
     </main>
 </GenericLayout>
@@ -169,5 +178,5 @@ import StickyTopbar from "../components/StickyTopbar.astro";
         background-color: var(--bulma-body-background-color);
         gap: 20px;
         height: var(--logo-height);
-    } 
+    }
 </style>
