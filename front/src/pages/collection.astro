@@ -1,84 +1,80 @@
 ---
 // TODO: Collection stats should be queried at runtime
-import Layout from "../layouts/Layout.astro";
+// TODO: Change RadioTabs to a dropdown on small viewport (width < 550)
+// TODO: Center cards when theres only one column
+import GenericLayout from "../layouts/GenericLayout.astro";
 import UserPortalNavbar from "../components/UserPortalNavbar.astro";
-import ProfileLayout from "../layouts/ProfileLayout.astro";
 import CardPack from "../components/CardPack.astro";
 import Card from "../components/Card.astro";
 import CardFilter from "../components/CardFilter.astro";
 import RadioTabs from "../components/RadioTabs.astro";
+import ProfileDashboard from "../components/ProfileDashboard.astro";
+import SearchBar from "../components/SearchBar.astro";
+import StickyTopbar from "../components/StickyTopbar.astro";
 ---
 
-<Layout title="Collection">
+<GenericLayout title="Collection">
     <UserPortalNavbar />
     <main>
-        <ProfileLayout
-            container-class="is-flex is-justify-content-space-around is-align-items-stretch"
-        >
-            <div
-                class="stats-flex is-flex is-flex-grow-1 is-justify-content-center is-align-items-center"
-            >
-                <div>
-                    <h2 class="is-size-4-tablet is-size-5-mobile">Collected</h2>
-                    <h4>0/20</h4>
-                </div>
-                <div>
-                    <h2 class="is-size-4-tablet is-size-5-mobile">Seen</h2>
-                    <h4>0/20</h4>
-                </div>
+        <ProfileDashboard>
+            <div slot="stats">
+                <h2 slot="stat-1" class="is-size-4-tablet is-size-5-mobile">Collected</h2>
+                <h4 slot="stat-1">0/20</h4>
             </div>
-            <div
-                class="packs-flex is-hidden-mobile is-flex-grow-2 is-justify-content-space-around is-flex-wrap-wrap"
-            >
-                <CardPack
-                    compact
-                    pack-title="Goofy ahh pack"
-                    last-opened={new Date(
-                        new Date().getDate() - 1000 * 60 * 60 * 10
-                    ).toISOString()}
-                />
-                <CardPack
-                    compact
-                    class="is-hidden-touch is-hidden-desktop-only"
-                    compact
-                    pack-title="Rumbumptious pack"
-                    last-opened={new Date(
-                        new Date().getDate() - 1000 * 10
-                    ).toISOString()}
-                />
+            <div slot="stats">
+                <h2 slot="stat-2" class="is-size-4-tablet is-size-5-mobile">Seen</h2>
+                <h4 slot="stat-2">0/20</h4>
             </div>
-        </ProfileLayout>
+            <CardPack
+                slot="card-packs"
+                compact
+                pack-title="Goofy ahh pack"
+                last-opened={new Date(
+                    new Date().getDate() - 1000 * 60 * 60 * 10
+                ).toISOString()}
+            />
+            <CardPack
+                slot="card-packs"
+                compact
+                class="is-hidden-touch is-hidden-desktop-only"
+                compact
+                pack-title="Rumbumptious pack"
+                last-opened={new Date(
+                    new Date().getDate() - 1000 * 10
+                ).toISOString()}
+            />
+        </ProfileDashboard>
         <section class="collection p-5">
-            <div class="filter">
-                <CardFilter class="pt-4 pb-3 is-flex-grow-1" />
-                <div class="grouping">
-                    <RadioTabs class="pt-4 pb-3">
-                        <li>
-                            <label>
-                                Season
-                                <input
-                                    checked
-                                    name="grouping"
-                                    value="season"
-                                    type="radio"
-                                    autocomplete="off"
-                                />
-                            </label>
-                        </li>
-                        <li>
-                            <label>
-                                Rarity
-                                <input
-                                    name="grouping"
-                                    value="rarity"
-                                    type="radio"
-                                    autocomplete="off"
-                                />
-                            </label>
-                        </li>
-                    </RadioTabs>
-                </div>
-            </div>
+            <StickyTopbar>
+                <SearchBar id="card-filter-form" class="is-flex-grow-1" name="title" placeholder="Card name">
+                    <CardFilter />
+                </SearchBar>
+                <RadioTabs>
+                    <li>
+                        <label>
+                            Season
+                            <input
+                                checked
+                                name="grouping"
+                                value="season"
+                                type="radio"
+                                autocomplete="off"
+                            />
+                        </label>
+                    </li>
+                    <li>
+                        <label>
+                            Rarity
+                            <input
+                                name="grouping"
+                                value="rarity"
+                                type="radio"
+                                autocomplete="off"
+                            />
+                        </label>
+                    </li>
+                </RadioTabs>
+            </StickyTopbar>
             <div class="cards">
                 <h1 class="subtitle is-size-3">Season 1<hr /></h1>
                 <Card />
@@ -134,28 +130,10 @@ import RadioTabs from "../components/RadioTabs.astro";
                 <Card />
                 <Card />
                 <Card />
-            </div>
-            <!-- <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Repudiandae cum excepturi suscipit. Amet, perferendis ipsam?
-                Delectus nam vitae, aliquid iusto ipsum fugit, quasi tempore
-                eveniet excepturi ex quaerat! Enim, reiciendis.
-            </p>
-            <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Repudiandae cum excepturi suscipit. Amet, perferendis ipsam?
-                Delectus nam vitae, aliquid iusto ipsum fugit, quasi tempore
-                eveniet excepturi ex quaerat! Enim, reiciendis.
-            </p>
-            <p>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Repudiandae cum excepturi suscipit. Amet, perferendis ipsam?
-                Delectus nam vitae, aliquid iusto ipsum fugit, quasi tempore
-                eveniet excepturi ex quaerat! Enim, reiciendis.
-            </p> -->
+            </div> 
         </section>
     </main>
-</Layout>
+</GenericLayout>
 <style>
     .collection > .cards {
         display: grid;
@@ -190,60 +168,6 @@ import RadioTabs from "../components/RadioTabs.astro";
         display: flex;
         background-color: var(--bulma-body-background-color);
         gap: 20px;
-    }
-
-    :global(.profile-banner-container) {
-        min-height: 5rem;
-    }
-
-    div.packs-flex {
-        display: flex;
-        gap: 10px;
-    }
-
-    div.packs-flex > :global(.card-pack) {
-        height: 100%;
-    }
-
-    div.stats-flex h2,
-    div.stats-flex h4 {
-        width: 8rem;
-        text-align: right;
-    }
-
-    div.stats-flex {
-        flex-direction: row;
-        flex-basis: 8rem;
-    }
-
-    @container (max-width: 700px) and (min-height: 6rem /* Hacky way to check if the container is not wrapped */) {
-        div.stats-flex {
-            flex-direction: column;
-        }
-    }
-
-    @container (max-width: 500px) {
-        :global(div.packs-flex > div.card-pack:last-of-type) {
-            display: none !important;
-        }
-    }
-
-    @container (height: 5rem /* Hacky way to check if the container is wrapped */) {
-        div.packs-flex {
-            display: none;
-        }
-    }
-
-    @media (max-width: 768px) {
-        :global(.profile-banner-container) {
-            min-height: 3rem;
-        }
-        div.stats-flex {
-            flex-direction: row;
-        }
-        div.stats-flex h2,
-        div.stats-flex h4 {
-            text-align: center;
-        }
-    }
+        height: var(--logo-height);
+    } 
 </style>
