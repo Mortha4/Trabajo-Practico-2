@@ -1,0 +1,105 @@
+---
+import TradeDetail from "./TradeDetail.astro";
+
+const {receiver} = Astro.props;
+const isOpen = true;
+const canAccept = true;
+const isPrivate = true;
+const isOfferer = false;
+const isExpired = true;
+---
+<div class="trade card">
+    <div class="card-header users">
+        <div class="offerer">
+            <img src="default-profile-picture.svg" alt="" />
+            <a href="/users/offerer">
+                <h1 class="subtitle has-text-white">Offerer Name</h1> 
+            </a>
+        </div>
+        {receiver && 
+        <div class="receiver">
+            <img src="default-profile-picture.svg" alt="" />
+            <a href="/users/receiver">
+                <h1 class="subtitle has-text-white">Receiver Name</h1>
+            </a>
+        </div>}
+    </div>
+    <div class="details card-content">
+        <TradeDetail class="offered" />
+        <TradeDetail class="requested" />
+    </div>
+    <div class="actions card-footer p-3">
+        {isOpen && 
+        <>
+            {!isOfferer &&
+            <button class="button is-success" disabled={!canAccept}>
+                Accept
+            </button>}
+            {isPrivate && 
+            <button class="button is-danger">
+                Deny
+            </button>}
+            {isOfferer &&
+            <button class="button is-danger">
+                Cancel
+            </button>}
+        </>}
+        {!isOpen && 
+        <p class="has-text-grey">
+            Closed on MM/DD/YYY
+        </p>}
+    </div>
+</div>
+<style>
+    img {
+        width: 4rem;
+        aspect-ratio: 1 / 1;
+        height: auto;
+    }
+    div.trade {
+        max-width: 900px;
+        width: 100%;
+        min-width: 350px;
+    }
+
+    div.users {
+        flex-wrap: nowrap;
+        padding: var(--bulma-size-7);
+    }
+
+    div.users > div {
+        flex-grow: 1;
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: center;
+        gap: 10px;
+    }
+
+    div.users > div.receiver {
+        flex-direction: row-reverse;
+    }
+    div.users > div.receiver h1 {
+        text-align: right;
+    }
+
+    div.actions {
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    div.details {
+        display: flex;
+        flex-wrap: nowrap;
+        align-items: stretch;
+        max-height: 200px;
+    }
+
+    :global(div.details > ul) {
+        flex-grow: 1;
+        flex-basis: 0;
+    }
+
+    :global(div.details > ul:first-child) {
+        border-right: 2px solid white;
+    }
+</style>
