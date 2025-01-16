@@ -27,6 +27,10 @@ services:
             dockerfile: back/back.dockerfile
         environment:
             - DATABASE_URL
+            - EXPRESS_PORT
+        ports:
+            - 3000:3000
+            - 5555:5555
         depends_on:
             - db
         networks:
