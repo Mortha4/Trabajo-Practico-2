@@ -1,7 +1,5 @@
 ALTER TABLE "Rarity"
-ADD CONSTRAINT "Rarity_IsValidProbability_chk" CHECK (
-    "drop_probability" BETWEEN 0 AND 1
-);
+ADD CONSTRAINT "Rarity_IsValidProbability_chk" CHECK ("drop_probability" BETWEEN 0 AND 1);
 
 ALTER TABLE "User"
 ADD CONSTRAINT "User_KeepNullConsistencyOnSoftDelete_chk" CHECK (
