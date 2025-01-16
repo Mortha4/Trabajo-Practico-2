@@ -1,0 +1,75 @@
+---
+import GenericLayout from "../layouts/GenericLayout.astro";
+import UserPortalNavbar from "../components/UserPortalNavbar.astro";
+import ProfileDashboard from "../components/ProfileDashboard.astro";
+import CardPack from "../components/CardPack.astro";
+import Card from "../components/Card.astro";
+import CardFilter from "../components/CardFilter.astro";
+---
+
+<GenericLayout title="Dashboard">
+    <UserPortalNavbar />
+    <main>
+        <ProfileDashboard
+            container-class="is-flex is-justify-content-space-around is-align-items-stretch"
+        >
+            <div
+                class="stats-flex is-flex is-flex-grow-1 is-justify-content-center is-align-items-center"
+            >
+                <div>
+                    <h2 class="is-size-4-tablet is-size-5-mobile">Collected</h2>
+                    <h4>0/20</h4>
+                </div>
+                <div>
+                    <h2 class="is-size-4-tablet is-size-5-mobile">Seen</h2>
+                    <h4>0/20</h4>
+                </div>
+            </div>
+        </ProfileDashboard>
+
+        <div class="section  is-medium">
+            <div class="container">
+
+                <div container-class="is-flex is-justify-content-space-around is-align-items-stretch is-flex-wrap-wrap" >
+                    <div class="stats-flex is-flex is-flex-grow-1 is-justify-content-space-evenly">
+                        <CardPack
+                        pack-title="Paquete 1"
+                        />
+                        <CardPack
+                        pack-title="Paquete 2"
+                        />
+                        <CardPack
+                            pack-title="Paquete 3"
+                        />
+                    </div>
+                </div>
+
+                <div class="stats-flex is-flex is-flex-grow-1 is-justify-content-center mt-6">
+                    <button class="button is-dark">←</button>
+                    <button class="button is-dark">Buy</button>
+                    <button class="button is-dark">→</button>
+                </div>
+    
+
+            </div>
+
+
+
+        </div>
+
+
+    </main>
+</GenericLayout>
+
+<style>
+
+    .stats-flex {
+        gap:20px;
+    }
+    
+
+
+
+
+    
+</style>
