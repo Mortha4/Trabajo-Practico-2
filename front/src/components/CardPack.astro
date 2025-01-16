@@ -9,93 +9,63 @@ const {
     class: classNames,
     "wrapper-src": wrapperSrc,
     "pack-title": packTitle,
-    "last-opened": lastOpened,
-    compact,
-    openable,
 } = Astro.props;
 ---
-
-<div
-    data-last-opened={lastOpened}
-    data-tooltip={compact && packTitle}
+<div class="card is-flex is-justify-content-center is-align-content-center">
+    <div
     class:list={[
-        "card-pack is-flex is-flex-direction-column is-align-items-center",
-        compact && "is-compact has-tooltip-bottom has-tooltip-arrow",
-        openable && "is-openable",
         classNames,
     ]}
->
-    <h1>{packTitle}</h1>
+    >
+    <h1 class="title_card is-flex is-justify-content-center">{packTitle}</h1>
+    
     <img
-        class={compact && "is-overlay"}
-        src={wrapperSrc ?? "X_in_box.svg"}
-        alt=""
+        class="img_card"
+        src={wrapperSrc ?? "pack.webp"}
+        alt="imagen"
     />
-    <button class="button is-loading" disabled={!openable}>00:00:00</button>
+
+    <div class="card-button is-flex is-justify-content-center">
+        <button class="button is-black is-flex" >Open</button>
+    </div>
+
+    
 </div>
-<script>
-    // const cardPacks = document.querySelectorAll(".compact-card-pack");
 
-    // setInterval(() => {
-    //     for (const pack of cardPacks) {
-    //         const data = pack.getAttribute("data-last-opened");
-    //         if (!data)
-    //             continue;
 
-    //         const lastOpened = new Date(data);
-    //         const differenceInMilliseconds = new Date().getDate() - lastOpened.getDate();
-
-    //         if (differenceInMilliseconds <= 0) {
-    //             pack.setAttribute("openable", "");
-    //             continue;
-    //         }
-
-    //         const millisecondsInAnHour = 1000 * 60;
-    //         const temp = new Date(differenceInMilliseconds);
-    //         const hours = Math.floor(differenceInMilliseconds / millisecondsInAnHour);
-    //         const minutes = temp.getUTCMinutes();
-    //         const seconds = temp.getUTCSeconds();
-
-    //         pack.querySelector("button")!.textContent = `${hours}:${minutes}:${seconds}`;
-
-    //     }
-    // }, 1000);
-</script>
 <style>
-    .card-pack {
-        background-color: cyan;
+
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+
+    .card {
+        display: flex;
+        background: rgb(255, 255, 255);
+        width: 250px;
+        height: 350px;
+        border-radius: 10px; 
+        padding: 16px 8px;
+        margin: 5px ;
+        gap: 20px;
+        box-shadow: -1px 2px 41px -6px rgba(83,143,189,1);
     }
 
-    img {
-        aspect-ratio: 5 / 7;
-        filter: grayscale(100%);
+    .img_card {
+        height: 200px;
     }
 
-    .card-pack.is-openable img {
-        filter: none;
+
+    .title_card {
+        font-family: 'Courier New', Courier, monospace;
+        color: rgb(0, 0, 0);
     }
 
-    .card-pack.is-compact {
-        position: relative;
-        height: 100%;
-        width: auto;
-        aspect-ratio: 5 / 7;
-        justify-content: flex-end;
-        padding: 3px;
+    .card-button{
+
     }
 
-    .card-pack.is-compact img {
-        height: 100%;
-        width: auto;
-    }
+    
 
-    .card-pack.is-compact h1 {
-        display: none;
-    }
 
-    .card-pack.is-compact button {
-        border-radius: 10px;
-        padding: 0 3px 0 3px;
-        z-index: 1;
-    }
 </style>

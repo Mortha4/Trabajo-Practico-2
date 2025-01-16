@@ -1,0 +1,68 @@
+---
+const {
+    class: classNames,
+    "wrapper-src": wrapperSrc,
+    "pack-title": packTitle,
+    "last-opened": lastOpened,
+    compact,
+    openable,
+} = Astro.props;
+---
+
+<div
+    data-last-opened={lastOpened}
+    data-tooltip={compact && packTitle}
+    class:list={[
+        "card-pack is-flex is-flex-direction-column is-align-items-center",
+        compact && "is-compact has-tooltip-bottom has-tooltip-arrow",
+        openable && "is-openable",
+        classNames,
+    ]}
+>
+    <h1>{packTitle}</h1>
+    <img
+        class={compact && "is-overlay"}
+        src={wrapperSrc ?? "X_in_box.svg"}
+        alt=""
+    />
+    <button class="button is-black" disabled={!openable}>00:00:00</button>
+</div>
+
+<style>
+    .card-pack {
+        background-color: cyan;
+    }
+
+    img {
+        aspect-ratio: 5 / 7;
+        filter: grayscale(100%);
+    }
+
+    .card-pack.is-openable img {
+        filter: none;
+    }
+
+    .card-pack.is-compact {
+        position: relative;
+        height: 100%;
+        width: auto;
+        aspect-ratio: 5 / 7;
+        justify-content: flex-end;
+        padding: 3px;
+    }
+
+    .card-pack.is-compact img {
+        height: 100%;
+        width: auto;
+    }
+
+    .card-pack.is-compact h1 {
+        display: none;
+    }
+
+    .card-pack.is-compact button {
+        border-radius: 10px;
+        padding: 0 3px 0 3px;
+        z-index: 1;
+    }
+</style>
