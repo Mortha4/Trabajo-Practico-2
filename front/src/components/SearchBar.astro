@@ -2,11 +2,20 @@
 /**
  * filter-width: fit-content | match-searchbar | responsive
  */
-const { class: classList, id, action, method, name, placeholder, "filter-width": filterWidth, "filter-class": filterClass } = Astro.props;
-const hasAdvancedSearch = Astro.slots.has('default');
+const {
+    class: classList,
+    id,
+    action,
+    method,
+    name,
+    placeholder,
+    "filter-width": filterWidth,
+    "filter-class": filterClass,
+} = Astro.props;
+const hasAdvancedSearch = Astro.slots.has("default");
 ---
 
-<script define:vars={{formId: id}} defer>
+<script define:vars={{ formId: id }} defer>
     function handleSubmit(event) {
         event.preventDefault();
 
@@ -19,7 +28,7 @@ const hasAdvancedSearch = Astro.slots.has('default');
 
         console.log(urlParams.toString());
     }
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener("DOMContentLoaded", function () {
         document
             .getElementById(formId)
             ?.addEventListener("submit", handleSubmit);
@@ -27,13 +36,25 @@ const hasAdvancedSearch = Astro.slots.has('default');
 </script>
 <form class:list={[classList]} {id} {method} {action}>
     <div class="field has-addons">
-        <div class:list={["control is-expanded", hasAdvancedSearch && "has-icons-left"]}>
+        <div
+            class:list={[
+                "control is-expanded",
+                hasAdvancedSearch && "has-icons-left",
+            ]}
+        >
             <input class="input" type="search" {name} {placeholder} />
-            {hasAdvancedSearch &&
-            <label class="icon is-small is-left">
-                <i class="fa fa-filter"></i>
-                <input type="checkbox" hidden id="advanced-search-toggle" />
-            </label>}
+            {
+                hasAdvancedSearch && (
+                    <label class="icon is-small is-left">
+                        <i class="fa fa-filter" />
+                        <input
+                            type="checkbox"
+                            hidden
+                            id="advanced-search-toggle"
+                        />
+                    </label>
+                )
+            }
         </div>
         <div class="control">
             <button class="button is-info" type="submit">
@@ -43,7 +64,13 @@ const hasAdvancedSearch = Astro.slots.has('default');
             </button>
         </div>
     </div>
-    <div class:list={["advanced-search", filterWidth ?? "responsive", filterClass]}>
+    <div
+        class:list={[
+            "advanced-search",
+            filterWidth ?? "responsive",
+            filterClass,
+        ]}
+    >
         <slot />
     </div>
 </form>
@@ -81,7 +108,7 @@ const hasAdvancedSearch = Astro.slots.has('default');
         min-width: fit-content;
         width: fit-content;
     }
- 
+
     .field.has-addons {
         margin-bottom: 0;
     }

@@ -1,6 +1,7 @@
 ---
-const { "class": classList } = Astro.props;
+const { class: classList } = Astro.props;
 ---
+
 <div class:list={["sticky-topbar", classList]}>
     <slot />
 </div>
@@ -14,5 +15,5 @@ const { "class": classList } = Astro.props;
         height: var(--logo-height);
         align-items: center;
         z-index: 98;
-    } 
+    }
 </style>

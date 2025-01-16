@@ -20,7 +20,9 @@
         <label for="sidebar-toggle" class="fa-solid fa-icons navbar-item">
             <input class="is-hidden" id="sidebar-toggle" type="checkbox" />
         </label>
-        <span class="is-size-4">Project</span>
+        <a href="/">
+            <span class="is-size-4">Project</span>
+        </a>
     </div>
     <ul class="is-flex">
         <div class="is-flex">
@@ -31,13 +33,13 @@
                 </a>
             </li>
             <li id="collection-link">
-                <a href="#Collection" class="navbar-item">
+                <a href="/collection" class="navbar-item">
                     <i class="is-size-5 fa-regular fa-clone fa-fw"></i>
                     <span class="is-hidden-mobile">Collection</span>
                 </a>
             </li>
             <li id="market-link">
-                <a href="#Market" class="navbar-item">
+                <a href="/market" class="navbar-item">
                     <i class="is-size-5 fa-solid fa-store fa-fw"></i>
                     <span class="is-hidden-mobile">Market</span>
                 </a>
@@ -76,6 +78,13 @@
             var(--logo-size) + 2 * var(--logo-padding)
         );
         --navbar-extended-width: 200px;
+        --logo-height: 5rem;
+    }
+
+    .navbar-brand > a:has(> span),
+    .navbar-brand > a:has(> span):hover {
+        padding: 0;
+        border: none;
     }
 
     /* Mobile only */
@@ -132,6 +141,7 @@
         .navbar-brand > label {
             font-size: var(--logo-size);
             padding: var(--logo-padding);
+            min-height: var(--logo-height);
         }
 
         navbar:has(> .navbar-brand input:checked) {
