@@ -1,0 +1,33 @@
+<ul class:list={[Astro.props.class]}>
+    <li><span class="card-name">Card 1aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span><span class="quantity">x 4</span></li>
+    <li><span class="card-name">Card 1</span><span class="quantity">x 4</span></li>
+    <li><span class="card-name">Card 2</span><span class="quantity">x 1</span></li>
+    <li><span class="card-name">Card 3</span><span class="quantity">x 9999999999999999</span></li>
+    <li><span class="card-name">Card 4</span><span class="quantity">x 6</span></li>
+</ul>
+
+<style>
+    ul {
+        overflow-y: scroll;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        padding: 5px;
+    }
+    li {
+        display: flex;
+        flex-wrap: nowrap;
+        justify-content: space-between;
+    }
+    span {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        text-wrap: nowrap;
+    }
+
+    span.quantity {
+        width: 3rem;
+        max-width: 3rem;
+        min-width: 3rem;
+    }
+</style>
