@@ -1,0 +1,87 @@
+---
+import { Fragment } from "astro/jsx-runtime";
+// TODO: fix styling
+---
+
+<Fragment>
+    <div class="field is-horizontal">
+        <div class="field-label is-normal">
+            <label class="label">Posted by:</label>
+        </div>
+        <div class="field-body"> 
+            <div class="control is-expanded">
+                <input type="text" class="input" />
+            </div>
+        </div>
+    </div>
+    <div class="field is-horizontal">
+        <div class="field-label is-normal">
+            <label class="label">Posted</label> 
+        </div>
+        <div class="field-body">
+            <div class="field">
+                <div class="control">
+                    <span>from</span>
+                <input
+                class="input"
+                type="date"
+                name="from"
+                />
+                </div>
+            </div>
+            <div class="field">
+                <div class="control">
+                    <span>to</span>
+                    <input
+                class="input"
+                type="date"
+                name="to"
+                />
+                </div>
+            </div>
+        </div>
+        
+    </div>
+    <!-- date from to -->
+     <!-- posted by -->
+      <!-- includes rarities -->
+       <!-- includes seasons -->
+</Fragment>
+
+<style>
+    .control {
+        display: flex;
+        align-items: center;
+    }
+
+    span {
+        width: 3rem;
+    }
+
+    /* .field.date .control {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .field.date .control > div {
+        gap: 5px;
+        flex-wrap: wrap;
+    }
+
+    .field.date .control > div > span {
+        display: flex;
+        justify-content: center; 
+        width: 4rem;
+    }
+
+    .field.date label,
+    .field.date span {
+        display: flex;
+        align-items: center;
+    }
+
+    .field.date .control input {
+        max-width: 10rem;
+    } */
+</style>
