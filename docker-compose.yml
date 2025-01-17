@@ -21,7 +21,6 @@ services:
             - app-network
 
     backend:
-        image: node:23-alpine3.20
         container_name: backend
         build:
             dockerfile: back/back.dockerfile
