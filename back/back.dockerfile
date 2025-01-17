@@ -2,7 +2,7 @@ FROM node:23-alpine3.20
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY back/package.json back/package-lock.json ./
 
 RUN npm ci
 
