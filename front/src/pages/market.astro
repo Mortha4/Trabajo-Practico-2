@@ -50,7 +50,9 @@ import UserPortalLayout from "../layouts/UserPortalLayout.astro";
             >
                 <TradeFilter />
             </SearchBar>
-            <button class="button is-primary">+ New trade</button>
+            <a href="/new/trade">
+                <button class="button is-primary">+ New trade</button>
+            </a>
         </StickyTopbar>
         <div class="is-flex is-flex-direction-column is-align-items-center">
             <Trade receiver />
