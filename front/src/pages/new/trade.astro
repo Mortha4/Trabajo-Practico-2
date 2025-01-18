@@ -34,7 +34,9 @@ import UserPortalLayout from "../../layouts/UserPortalLayout.astro";
                 <div class="control is-expanded">
                     <div class="select">
                         <select autocomplete="off">
-                            <option value="" selected hidden>Select a card</option>
+                            <option value="" selected hidden
+                                >Select a card</option
+                            >
                             <option value="card_name">Card Name</option>
                             <option value="card_name">Card Name</option>
                             <option value="card_name">Card Name</option>
@@ -54,17 +56,20 @@ import UserPortalLayout from "../../layouts/UserPortalLayout.astro";
                     <button class="button is-info">Add</button>
                 </div>
             </div>
-            <div class="field is-grouped is-flex-wrap-wrap is-justify-content-space-between">
+            <div
+                class="field is-grouped is-flex-wrap-wrap is-justify-content-space-between"
+            >
                 <div class="expiration control is-flex is-flex-wrap-wrap">
                     <label class="label m-0">Expiration date:</label>
                     <input type="date" name="expiration" class="input" />
                 </div>
                 <div class="control">
-                    <button type="submit" class="button is-success">Post</button>
+                    <button type="submit" class="button is-success">Post</button
+                    >
                 </div>
             </div>
         </div>
-    </div> 
+    </div>
 </UserPortalLayout>
 <style>
     :global(.is-fullheight) {
