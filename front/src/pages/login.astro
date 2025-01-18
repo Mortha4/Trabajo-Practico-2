@@ -1,0 +1,68 @@
+---
+import GenericLayout from "../layouts/GenericLayout.astro";
+---
+
+<GenericLayout class="is-flex is-justify-content-center is-align-items-center">
+    <form class="box">
+        <div class="logo">
+            <a class="is-flex is-justify-content-center" href="/">
+                <i
+                    class="fa-solid fa-icons title m-0 is-size-1 is-size-3-mobile is-flex is-align-items-center"
+                ></i>
+                <span class="title is-size-1 is-size-3-mobile">Project</span>
+            </a>
+        </div>
+        <div class="field">
+            <label class="label">Username</label>
+            <div class="control has-icons-left has-icons-right">
+                <input
+                    class="input is-success"
+                    type="text"
+                    placeholder="Text input"
+                    value="bulma"
+                />
+                <span class="icon is-small is-left">
+                    <i class="fas fa-user"></i>
+                </span>
+                <span class="icon is-small is-right">
+                    <i class="fas fa-check"></i>
+                </span>
+            </div>
+            <p class="help is-success">This username is available</p>
+        </div>
+        <div class="field">
+            <label class="label">Password</label>
+            <p class="control has-icons-left">
+                <input class="input" type="password" placeholder="Password" />
+                <span class="icon is-small is-left">
+                    <i class="fas fa-lock"></i>
+                </span>
+            </p>
+        </div>
+        <div class="field is-grouped is-justify-content-space-between">
+            <p class="help is-info is-flex is-align-items-center">
+                <a href="/signup"> Dont have an account? Sign up! </a>
+            </p>
+            <div class="control">
+                <button type="submit" disabled class="button is-primary"
+                    >Log in</button
+                >
+            </div>
+        </div>
+    </form>
+</GenericLayout>
+<style>
+    .logo > a {
+        gap: 10px;
+    }
+
+    .logo {
+        margin: var(--bulma-size-2);
+    }
+
+    @media (max-width: 768px) {
+        .logo {
+            margin: var(--bulma-size-4);
+        }
+    }
+</style>

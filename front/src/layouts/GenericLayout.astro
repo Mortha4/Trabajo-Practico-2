@@ -2,7 +2,7 @@
 /**
  * Standard template for HTML documents, includes global css files
  */
-const title = Astro.props.title;
+const { title, class: classList } = Astro.props;
 ---
 
 <!doctype html>
@@ -22,7 +22,7 @@ const title = Astro.props.title;
         <meta name="generator" content={Astro.generator} />
         <title>{title}</title>
     </head>
-    <body>
+    <body class:list={[classList]}>
         <slot />
     </body>
 </html>
