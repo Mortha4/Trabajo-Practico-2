@@ -12,4 +12,4 @@ RUN npx prisma generate
 
 EXPOSE 3000
 
-CMD npx prisma migrate reset --force && npm start
+ENTRYPOINT ["./startup.sh"]
