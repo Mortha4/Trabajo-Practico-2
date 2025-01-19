@@ -9,6 +9,10 @@
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "nodemonConfig": {
+    "watch": ["src/", "index.js"],
+    "ext": "js,ts,json"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
