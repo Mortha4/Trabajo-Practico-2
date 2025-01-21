@@ -3,7 +3,7 @@ import GenericLayout from "../layouts/GenericLayout.astro";
 import UserPortalNavbar from "../components/UserPortalNavbar.astro";
 import ProfileDashboard from "../components/ProfileDashboard.astro";
 import CardPack from "../components/CardPack.astro";
-import Card from "../components/Card.astro";
+import Card from "../components/Card.astro";    
 import CardFilter from "../components/CardFilter.astro";
 ---
 
@@ -27,29 +27,18 @@ import CardFilter from "../components/CardFilter.astro";
             </div>
         </ProfileDashboard>
 
-        <div class="section  is-medium">
-            <div class="container">
+        <div class="section  is-medium is-flex is-justify-content-space-around is-flex-wrap-wrap">
 
-                <div container-class="is-flex is-justify-content-space-around is-align-items-stretch is-flex-wrap-wrap" >
-                    <div class="stats-flex is-flex is-flex-grow-1 is-justify-content-space-evenly">
-                        <CardPack
-                        pack-title="Paquete 1"
-                        />
-                        <CardPack
-                        pack-title="Paquete 2"
-                        />
-                        <CardPack
-                            pack-title="Paquete 3"
-                        />
-                    </div>
-                </div>
+                <CardPack
+                 pack-title="Paquete 1"
+                />
+                <CardPack
+                    pack-title="Paquete 2"
+                />
+                <CardPack
+                    pack-title="Paquete 3"
+                />
 
-                <div class="stats-flex is-flex is-flex-grow-1 is-justify-content-center mt-6">
-                    <button class="button is-dark">←</button>
-                    <button class="button is-dark">Buy</button>
-                    <button class="button is-dark">→</button>
-                </div>
-            </div>
         </div>
 
     </main>
@@ -61,6 +50,8 @@ import CardFilter from "../components/CardFilter.astro";
 <style>
 
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+
 
     body {
         font-family:'Open Sans';

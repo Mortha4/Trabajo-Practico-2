@@ -5,6 +5,7 @@
  * It can be either full-size or compact
  * It can be either openable or on cooldown
  */
+ import Card from "../components/Card.astro"; 
 const {
     class: classNames,
     "wrapper-src": wrapperSrc,
@@ -40,8 +41,14 @@ const {
                 <p class="modal-card-title has-text-centered">Cartas desbloqueadas</p>
             </header>
 
-            <section class="modal-card-body">
-                <p>Paquete Abierto</p>
+            <section class="modal-card-body is-justify-content-center">
+                <div container-class="is-flex is-justify-content-space-around is-align-items-stretch is-flex-wrap-wrap" >
+                    <div class="cards">
+                        <Card/>
+                        <Card/>
+                        <Card/>
+                    </div>
+                </div>
             </section>
 
 
@@ -53,8 +60,20 @@ const {
 
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
+    .modal-card {
+        width: 50%;
+    }
 
-
+    .cards {
+        display: grid;
+        height: 100%;
+        gap: 10px;
+        justify-content: space-around;
+        align-content: space-around;
+        grid-template-columns: repeat(auto-fill, 2.5in);
+        grid-auto-rows: auto;
+    }
+    
     .card-pack {
         display: flex;
         background: rgb(255, 255, 255);
@@ -99,6 +118,8 @@ const {
     .modal {
         z-index: 100;
     }
+
+    
 
     
 </style>
