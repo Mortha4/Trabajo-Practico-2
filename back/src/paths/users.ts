@@ -17,7 +17,7 @@ export default function () {
                 createdAt: true,
             },
         });
-        res.json(users);
+        res.status(200).json(users);
     };
 
     GET.apiDoc = {
