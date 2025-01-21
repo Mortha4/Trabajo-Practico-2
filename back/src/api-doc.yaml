@@ -1,0 +1,50 @@
+openapi: "3.0.0"
+info:
+    title: bb-tcg-api
+    version: "1.0.0"
+paths: {}
+components:
+    schemas:
+        User:
+            type: object
+            properties:
+                id:
+                    type: integer
+                username:
+                    type: string
+                    nullable: true
+                profileName:
+                    type: string
+                    nullable: true
+                profilePictureUrl:
+                    type: string
+                createdAt:
+                    type: string
+                    format: date-time
+                    nullable: true
+        Error:
+            type: object
+            properties:
+                path:
+                    type: string
+                errorCode:
+                    type: string
+                message:
+                    type: string
+                location:
+                    type: string
+    responses:
+        BadRequest:
+            description: The request was invalid.
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        required: [errors, status]
+                        properties:
+                            status:
+                                type: number
+                            errors:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/Error"

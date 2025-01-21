@@ -87,6 +87,21 @@ model UserData {
     user_              User?         @relation(name: "User_Owns_UserData") /// DO NOT USE, use UserData.user instead
 }
 
+view FlattenedUser {
+    id                 Int            @id @map("pk_user_id")
+    username           String?        @unique @map("fk_username_uq") @db.VarChar(32) /// NULL value implies deleted user
+    deletedAt          DateTime?      @map("deleted_at") @db.Timestamptz()
+    profileName        String?        @map("profile_name") @db.VarChar(100)
+    email              String?        @unique @map("email_uq") @db.VarChar(255)
+    profilePicturePath String         @map("profile_picture_path") @db.VarChar(255)
+    password           String?        @db.VarChar(20)
+    privilege          UserPrivilege?
+    createdAt          DateTime?      @map("created_at") @db.Timestamptz()
+    modifiedAt         DateTime?      @map("modified_at") @db.Timestamptz()
+
+    @@map("vw_FlattenedUser")
+}
+
 model CardPackType {
     id               Int           @id @default(autoincrement()) @map("pk_pack_id")
     name             String        @unique @map("name_uq") @db.VarChar(100)
