@@ -49,27 +49,55 @@ import CardFilter from "../components/CardFilter.astro";
                     <button class="button is-dark">Buy</button>
                     <button class="button is-dark">→</button>
                 </div>
-    
-
             </div>
-
-
-
         </div>
-
 
     </main>
 </GenericLayout>
 
+
+
+
 <style>
+
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
+
+    body {
+        font-family:'Open Sans';
+    }
 
     .stats-flex {
         gap:20px;
     }
     
-
-
-
-
-    
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // OPen modal
+        const modalTriggers = document.querySelectorAll('.js-modal-trigger');
+        modalTriggers.forEach(trigger => {
+            const modalId = trigger.getAttribute('data-target');
+            if (modalId) { // Verify that modalId is not null
+                const modal = document.getElementById(modalId);
+                if (modal) { // Verify that the modal exists
+                    trigger.addEventListener('click', () => {
+                        modal.classList.add('is-active');
+                    });
+                }
+            }
+        });
+
+        // Close modal
+        const modalCloses = document.querySelectorAll('.modal .delete, .js-modal-close, .modal-background');
+        modalCloses.forEach(close => {
+            close.addEventListener('click', () => {
+                const modal = close.closest('.modal');
+                if (modal) { //Verify that the modal exists
+                    modal.classList.remove('is-active');
+                }
+            });
+        });
+    });
+
+</script>

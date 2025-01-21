@@ -11,35 +11,51 @@ const {
     "pack-title": packTitle,
 } = Astro.props;
 ---
-<div class="card is-flex is-justify-content-center is-align-content-center">
+<div class="card-pack is-flex is-justify-content-center is-align-content-center">
     <div
     class:list={[
         classNames,
     ]}
     >
-    <h1 class="title_card is-flex is-justify-content-center">{packTitle}</h1>
+    <h1 class=" is-flex is-justify-content-center">{packTitle}</h1>
     
     <img
-        class="img_card"
+        class="img_card-pack"
         src={wrapperSrc ?? "pack.webp"}
         alt="imagen"
     />
 
-    <div class="card-button is-flex is-justify-content-center">
-        <button class="button is-black is-flex" >Open</button>
-    </div>
 
     
+    <div class="box-buttom is-flex is-justify-content-center js-modal-trigger" data-target="modal-example">
+        <a class="boton popup-btn" href="#">Buy</a>
+    </div>
+    
+    <div id="modal-example" class="modal">
+        <div class="modal-background"></div>
+
+        <div class="modal-card">
+
+            <header class="modal-card-head">
+                <p class="modal-card-title has-text-centered">Cartas desbloqueadas</p>
+            </header>
+
+            <section class="modal-card-body">
+                <p>Paquete Abierto</p>
+            </section>
+
+
+        </div>
+    </div>
+
 </div>
-
-
 <style>
 
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 
 
-    .card {
+    .card-pack {
         display: flex;
         background: rgb(255, 255, 255);
         width: 250px;
@@ -51,21 +67,40 @@ const {
         box-shadow: -1px 2px 41px -6px rgba(83,143,189,1);
     }
 
-    .img_card {
+    .img_card-pack {
         height: 200px;
     }
 
 
-    .title_card {
+    .title_card-pack{
         font-family: 'Courier New', Courier, monospace;
         color: rgb(0, 0, 0);
     }
 
-    .card-button{
+    .boton {
+        margin-top:30px;
+        padding:2.2% 5.5%;
+        display:inline-block;
+        -webkit-transition:all linear 0.15s;
+        transition:all linear 0.15s;
+        border-radius:3px;
+        background:#000000;
+        font-size:22px;
+        font-weight: bold;
+        text-decoration:none;
+        text-transform:uppercase;
+        color:#ffffff;
 
+        &:hover{
+            opacity:0.75;
+        }
+    }
+
+    .modal {
+        z-index: 100;
     }
 
     
-
-
 </style>
+
+
