@@ -3,7 +3,7 @@ import GenericLayout from "../layouts/GenericLayout.astro";
 import UserPortalNavbar from "../components/UserPortalNavbar.astro";
 import ProfileDashboard from "../components/ProfileDashboard.astro";
 import CardPack from "../components/CardPack.astro";
-import Card from "../components/Card.astro";    
+import Card from "../components/Card.astro";
 import CardFilter from "../components/CardFilter.astro";
 ---
 
@@ -27,71 +27,62 @@ import CardFilter from "../components/CardFilter.astro";
             </div>
         </ProfileDashboard>
 
-        <div class="section  is-medium is-flex is-justify-content-space-around is-flex-wrap-wrap">
-
-                <CardPack
-                 pack-title="Paquete 1"
-                />
-                <CardPack
-                    pack-title="Paquete 2"
-                />
-                <CardPack
-                    pack-title="Paquete 3"
-                />
-
+        <div
+            class="section is-medium is-flex is-justify-content-space-around is-flex-wrap-wrap"
+        >
+            <CardPack pack-title="Paquete 1" />
+            <CardPack pack-title="Paquete 2" />
+            <CardPack pack-title="Paquete 3" />
         </div>
-
     </main>
 </GenericLayout>
 
-
-
-
 <style>
+    @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
 
-    @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
-
-    :global(:root){
-        --bulma-body-background-color:#8BC6EC;
+    :global(:root) {
+        --bulma-body-background-color: #8bc6ec;
     }
 
     body {
-        font-family:'Open Sans';
-
+        font-family: "Open Sans";
     }
 
     .stats-flex {
-        gap:20px;
+        gap: 20px;
     }
-    
 </style>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener("DOMContentLoaded", () => {
         // OPen modal
-        const modalTriggers = document.querySelectorAll('.js-modal-trigger');
-        modalTriggers.forEach(trigger => {
-            const modalId = trigger.getAttribute('data-target');
-            if (modalId) { // Verify that modalId is not null
+        const modalTriggers = document.querySelectorAll(".js-modal-trigger");
+        modalTriggers.forEach((trigger) => {
+            const modalId = trigger.getAttribute("data-target");
+            if (modalId) {
+                // Verify that modalId is not null
                 const modal = document.getElementById(modalId);
-                if (modal) { // Verify that the modal exists
-                    trigger.addEventListener('click', () => {
-                        modal.classList.add('is-active');
+                if (modal) {
+                    // Verify that the modal exists
+                    trigger.addEventListener("click", () => {
+                        modal.classList.add("is-active");
                     });
                 }
             }
         });
 
         // Close modal
-        const modalCloses = document.querySelectorAll('.modal .delete, .js-modal-close, .modal-background');
-        modalCloses.forEach(close => {
-            close.addEventListener('click', () => {
-                const modal = close.closest('.modal');
-                if (modal) { //Verify that the modal exists
-                    modal.classList.remove('is-active');
+        const modalCloses = document.querySelectorAll(
+            ".modal .delete, .js-modal-close, .modal-background"
+        );
+        modalCloses.forEach((close) => {
+            close.addEventListener("click", () => {
+                const modal = close.closest(".modal");
+                if (modal) {
+                    //Verify that the modal exists
+                    modal.classList.remove("is-active");
                 }
             });
         });
     });
-
 </script>
