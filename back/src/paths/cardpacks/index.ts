@@ -8,29 +8,25 @@ import isAdministrator from "../../middleware/isAdministrator.js";
 
 export default function () {
     const GET: Operation = async (req, res) => {
-        const cards = await prisma.cardClass.findMany({
+        const cards = await prisma.cardPackType.findMany({
             select: {
                 title: true,
-                season: true,
-                description: true,
-                rarityName: true,
-                artPath: true,
             },
         });
         res.json(cards);
     };
 
     GET.apiDoc = {
-        summary: "Returns a list of cards",
+        summary: "Returns a list of cardpacks",
         responses: {
             [StatusCodes.OK.toString()]: {
-                description: "A list of cards",
+                description: "A list of cardpacks",
                 content: {
                     "application/json": {
                         schema: {
                             type: "array",
                             items: {
-                                $ref: "#/components/schemas/CardClass",
+                                $ref: "#/components/schemas/CardPackType",
                             },
                         },
                     },
@@ -40,16 +36,13 @@ export default function () {
     };
 
     const POST: Operation = async (req, res) => {
-        const { name, title, season, description, rarityName } = req.body;
+        const { name, title } = req.body;
 
         try {
-            await prisma.cardClass.create({
+            await prisma.cardPackType.create({
                 data: {
                     name,
-                    title,
-                    season,
-                    description,
-                    rarityName
+                    title
                 },
             });
             res.status(StatusCodes.NO_CONTENT).send();
@@ -66,7 +59,7 @@ export default function () {
                 const status = StatusCodes.BAD_REQUEST;
                 res.status(status).json({
                     status,
-                    errors: `${fields[0]} already exists. A new card cannot be created with the same value.`,
+                    errors: `${fields[0]} already exists. A new cardpack cannot be created with the same value.`,
                 });
                 return;
             } else {
@@ -82,45 +75,25 @@ export default function () {
 
     const postRequestSchema: OpenAPIV3.SchemaObject = {
         type: "object",
-        required: ["name", "title", "season", "description", "rarityName"],
+        required: ["name", "title"],
         additionalProperties: false,
         properties: {
             name: {
                 description:
-                    "A unique alphanumerical lowercase string that identifies the card.",
+                    "A unique alphanumerical lowercase string that identifies the cardpack.",
                 type: "string",
                 pattern: "^[a-z0-9_]+$",
             },
             title: {
                 description:
-                    "The visible name of the new card.",
+                    "The visible name of the new cardpack.",
                 type: "string",
-            },
-            season: {
-                description:
-                    "Indicate which season the card belongs to.",
-                type: "string",
-                enum: [ 
-                        CardSeason.Season1,
-                        CardSeason.Season2,
-                        CardSeason.Season3,
-                        CardSeason.Season4,
-                        CardSeason.Season5 
-                    ],
-            },
-            description: {
-                description:
-                    "The description of the content of the new card.",
-                type: "string",
-            },
-            rarityName: {
-                $ref: "#/components/schemas/Rarity",
             },
         },
     };
     
     POST.apiDoc = {
-        summary: "Creates a new Card.",
+        summary: "Creates a new cardpack.",
         requestBody: {
             required: true,
             content: {
@@ -134,7 +107,7 @@ export default function () {
         },
         responses: {
             [StatusCodes.NO_CONTENT.toString()]: {
-                description: "The card was created successfully.",
+                description: "The cardpack was created successfully.",
             },
             [StatusCodes.BAD_REQUEST.toString()]: {
                 $ref: "#/components/responses/BadRequest",

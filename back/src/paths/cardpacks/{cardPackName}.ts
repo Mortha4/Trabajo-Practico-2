@@ -8,11 +8,11 @@ import isAdministrator from "../../middleware/isAdministrator.js";
 
 export default function () {
     const DELETE: Operation = async (req, res) => {
-        const {cardName} = req.params;
+        const {packName} = req.params;
         
         try {
-            await prisma.cardClass.delete({
-                where: {name:cardName}
+            await prisma.cardPackType.delete({
+                where: {name:packName}
             });
             res.status(StatusCodes.NO_CONTENT).send();
             return;
@@ -26,23 +26,23 @@ export default function () {
     };
 
     DELETE.apiDoc = {
-        summary: "Delete a card",
+        summary: "Delete a cardpack",
         responses: {
             [StatusCodes.OK.toString()]: {
-                description: "Delete the indicated card",
+                description: "Delete the indicated cardpack",
                 content: {
                     "application/json": {
                         schema: {
                             type: "array",
                             items: {
-                                $ref: "#/components/schemas/CardClass",
+                                $ref: "#/components/schemas/CardPackType",
                             },
                         },
                     },
                 },
             },
             [StatusCodes.NOT_FOUND.toString()]: {
-                description: "Card name not found.",
+                description: "Pack name not found.",
             },
             [StatusCodes.FORBIDDEN.toString()]: {
                 description: "You don't have the permissions for that.",
@@ -56,17 +56,14 @@ export default function () {
     };
 
     const PATCH: Operation = async (req, res) => {
-        const { cardName } = req.params
-        const { title, season, description, rarityName } = req.body;
+        const { packName } = req.params
+        const { title } = req.body;
 
         try {
             await prisma.cardClass.update({
-                where: {name:cardName},
+                where: {name:packName},
                 data: {
-                    title,
-                    season,
-                    description,
-                    rarityName
+                    title
                 }
             });
             res.status(StatusCodes.NO_CONTENT).send();
@@ -82,33 +79,13 @@ export default function () {
 
     const patchRequestSchema: OpenAPIV3.SchemaObject = {
         type: "object",
-        required: [ "title", "season", "description", "rarityName"],
+        required: [ "title" ],
         additionalProperties: false,
         properties: {
             title: {
                 description:
                     "The visible name of the new card.",
                 type: "string",
-            },
-            season: {
-                description:
-                    "Indicate which season the card belongs to.",
-                type: "string",
-                enum: [ 
-                        CardSeason.Season1,
-                        CardSeason.Season2,
-                        CardSeason.Season3,
-                        CardSeason.Season4,
-                        CardSeason.Season5 
-                    ],
-            },
-            description: {
-                description:
-                    "The description of the content of the new card.",
-                type: "string",
-            },
-            rarityName: {
-                $ref: "#/components/schemas/Rarity",
             },
         },
     };
@@ -125,16 +102,16 @@ export default function () {
                 },
             },
         },
-        summary: "Update a card",
+        summary: "Update a card pack",
         responses: {
             [StatusCodes.OK.toString()]: {
-                description: "Update the information of the card",
+                description: "Update the information of the card pack",
                 content: {
                     "application/json": {
                         schema: {
                             type: "array",
                             items: {
-                                $ref: "#/components/schemas/CardClass",
+                                $ref: "#/components/schemas/CardPackType",
                             },
                         },
                     },
