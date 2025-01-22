@@ -20,6 +20,15 @@ CREATE TYPE "TradeType" AS ENUM('PublicOffer', 'PrivateOffer');
 CREATE TYPE "TradeDetailType" AS ENUM('Offered', 'Requested');
 
 -- CreateTable
+CREATE TABLE "Session" (
+    "pk_session_id" TEXT NOT NULL,
+    "sid_" TEXT NOT NULL,
+    "data" TEXT NOT NULL,
+    "expires_at" TIMESTAMP(3) NOT NULL,
+    CONSTRAINT "Session_pkey" PRIMARY KEY ("pk_session_id")
+);
+
+-- CreateTable
 CREATE TABLE "User" (
     "pk_user_id" SERIAL NOT NULL,
     "fk_username_uq" VARCHAR(32),
@@ -42,26 +51,24 @@ CREATE TABLE "UserData" (
 
 -- CreateTable
 CREATE TABLE "CardPackType" (
-    "pk_pack_id" SERIAL NOT NULL,
-    "name_uq" VARCHAR(100) NOT NULL,
+    "pk_name" VARCHAR(100) NOT NULL,
     "title" VARCHAR(60) NOT NULL,
     "wrapper_image_path" VARCHAR(255) NOT NULL DEFAULT 'public/placeholder-image.svg',
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "modified_at" TIMESTAMPTZ,
-    CONSTRAINT "CardPackType_pkey" PRIMARY KEY ("pk_pack_id")
+    CONSTRAINT "CardPackType_pkey" PRIMARY KEY ("pk_name")
 );
 
 -- CreateTable
 CREATE TABLE "Rarity" (
-    "pk_name" TEXT NOT NULL,
+    "pk_name" VARCHAR(100) NOT NULL,
     "drop_probability" DECIMAL(4, 3) NOT NULL,
     CONSTRAINT "Rarity_pkey" PRIMARY KEY ("pk_name")
 );
 
 -- CreateTable
 CREATE TABLE "CardClass" (
-    "pk_card_id" SERIAL NOT NULL,
-    "name_uq" VARCHAR(100) NOT NULL,
+    "pk_name" VARCHAR(100) NOT NULL,
     "title" VARCHAR(60) NOT NULL,
     "season" "CardSeason" NOT NULL,
     "description" VARCHAR(200) NOT NULL,
@@ -69,7 +76,7 @@ CREATE TABLE "CardClass" (
     "art_path" VARCHAR(255) NOT NULL DEFAULT 'public/placeholder-image.svg',
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "modified_at" TIMESTAMPTZ,
-    CONSTRAINT "CardClass_pkey" PRIMARY KEY ("pk_card_id")
+    CONSTRAINT "CardClass_pkey" PRIMARY KEY ("pk_name")
 );
 
 -- CreateTable
@@ -81,12 +88,12 @@ CREATE TABLE "LootTable" (
 
 -- CreateTable
 CREATE TABLE "CollectionEntry" (
-    "pk_card_id" INTEGER NOT NULL,
+    "pk_card_name" TEXT NOT NULL,
     "pk_user_id" INTEGER NOT NULL,
     "amount" INTEGER NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "modified_at" TIMESTAMPTZ,
-    CONSTRAINT "CollectionEntry_pkey" PRIMARY KEY ("pk_user_id", "pk_card_id")
+    CONSTRAINT "CollectionEntry_pkey" PRIMARY KEY ("pk_user_id", "pk_card_name")
 );
 
 -- CreateTable
@@ -136,16 +143,13 @@ CREATE TABLE "TradeDetail" (
 );
 
 -- CreateIndex
+CREATE UNIQUE INDEX "Session_sid__key" ON "Session" ("sid_");
+
+-- CreateIndex
 CREATE UNIQUE INDEX "User_fk_username_uq_key" ON "User" ("fk_username_uq");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "UserData_email_uq_key" ON "UserData" ("email_uq");
-
--- CreateIndex
-CREATE UNIQUE INDEX "CardPackType_name_uq_key" ON "CardPackType" ("name_uq");
-
--- CreateIndex
-CREATE UNIQUE INDEX "CardClass_name_uq_key" ON "CardClass" ("name_uq");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Trade_fk_offerer_id_created_at_key" ON "Trade" ("fk_offerer_id", "created_at");
@@ -164,15 +168,15 @@ ADD CONSTRAINT "CardClass_IsClassifiedBy_Rarity" FOREIGN KEY ("rarityName") REFE
 
 -- AddForeignKey
 ALTER TABLE "LootTable"
-ADD CONSTRAINT "CardPackType_Drops_CardClass" FOREIGN KEY ("pk_pack_name") REFERENCES "CardPackType" ("name_uq") ON DELETE RESTRICT ON UPDATE CASCADE;
+ADD CONSTRAINT "CardPackType_Drops_CardClass" FOREIGN KEY ("pk_pack_name") REFERENCES "CardPackType" ("pk_name") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "LootTable"
-ADD CONSTRAINT "CardClass_IsDroppedBy_CardPackType" FOREIGN KEY ("pk_card_name") REFERENCES "CardClass" ("name_uq") ON DELETE RESTRICT ON UPDATE CASCADE;
+ADD CONSTRAINT "CardClass_IsDroppedBy_CardPackType" FOREIGN KEY ("pk_card_name") REFERENCES "CardClass" ("pk_name") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "CollectionEntry"
-ADD CONSTRAINT "CollectionEntry_Tracks_CardClass" FOREIGN KEY ("pk_card_id") REFERENCES "CardClass" ("pk_card_id") ON DELETE CASCADE ON UPDATE CASCADE;
+ADD CONSTRAINT "CollectionEntry_Tracks_CardClass" FOREIGN KEY ("pk_card_name") REFERENCES "CardClass" ("pk_name") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "CollectionEntry"
@@ -184,7 +188,7 @@ ADD CONSTRAINT "PackOpening_IsPerformedBy_User" FOREIGN KEY ("pk_user_id") REFER
 
 -- AddForeignKey
 ALTER TABLE "PackOpening"
-ADD CONSTRAINT "PackOpening_Opens_CardPackType" FOREIGN KEY ("pk_pack_name") REFERENCES "CardPackType" ("name_uq") ON DELETE RESTRICT ON UPDATE CASCADE;
+ADD CONSTRAINT "PackOpening_Opens_CardPackType" FOREIGN KEY ("pk_pack_name") REFERENCES "CardPackType" ("pk_name") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "OpeningDetail"
@@ -208,4 +212,4 @@ ADD CONSTRAINT "TradeDetail_BelongsTo_Trade" FOREIGN KEY ("pk_trade_id") REFEREN
 
 -- AddForeignKey
 ALTER TABLE "TradeDetail"
-ADD CONSTRAINT "TradeDetail_Features_CardClass" FOREIGN KEY ("pk_card_name") REFERENCES "CardClass" ("name_uq") ON DELETE RESTRICT ON UPDATE CASCADE;
+ADD CONSTRAINT "TradeDetail_Features_CardClass" FOREIGN KEY ("pk_card_name") REFERENCES "CardClass" ("pk_name") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -16,10 +16,10 @@ ALTER TABLE "UserData"
 ADD CONSTRAINT "UserData_IsValidUsername_chk" CHECK ("fn_IsLowercaseAlphanumerical" ("pk_username"));
 
 ALTER TABLE "CardClass"
-ADD CONSTRAINT "CardClass_IsValidCardName_chk" CHECK ("fn_IsLowercaseAlphanumerical" ("name_uq"));
+ADD CONSTRAINT "CardClass_IsValidCardName_chk" CHECK ("fn_IsLowercaseAlphanumerical" ("pk_name"));
 
 ALTER TABLE "CardPackType"
-ADD CONSTRAINT "CardPackType_IsValidPackName_chk" CHECK ("fn_IsLowercaseAlphanumerical" ("name_uq"));
+ADD CONSTRAINT "CardPackType_IsValidPackName_chk" CHECK ("fn_IsLowercaseAlphanumerical" ("pk_name"));
 
 ALTER TABLE "Trade"
 ADD CONSTRAINT "Trade_IsClosingDateAndStatusConsistent_chk" CHECK (

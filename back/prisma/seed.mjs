@@ -67,11 +67,11 @@ const user = await prisma.user.create({
         collection: {
             create: [
                 {
-                    cardId: 1,
+                    cardName: "carta1",
                     amount: 4,
                 },
                 {
-                    cardId: 2,
+                    cardName: "carta2",
                     amount: 1,
                 },
             ],
@@ -111,7 +111,7 @@ const user2 = await prisma.user.create({
         collection: {
             create: [
                 {
-                    cardId: 3,
+                    cardName: "carta3",
                     amount: 5,
                 },
             ],
