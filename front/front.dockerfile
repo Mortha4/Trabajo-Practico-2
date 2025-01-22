@@ -1,6 +1,6 @@
 FROM node:23-alpine3.20
 
-WORKDIR /back
+WORKDIR /front
 
 COPY package.json package-lock.json ./
 
@@ -8,4 +8,4 @@ RUN npm ci
 
 COPY . .
 
-ENTRYPOINT ["./startup.sh"]
+CMD [ "npm", "run", "dev" ]
