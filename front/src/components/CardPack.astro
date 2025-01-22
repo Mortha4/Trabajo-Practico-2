@@ -12,25 +12,31 @@ const {
     "pack-title": packTitle,
 } = Astro.props;
 ---
+
 <div class="card-pack is-flex is-justify-content-center is-align-content-center">
     <div
     class:list={[
         classNames,
     ]}
     >
-    <h1 class=" is-flex is-justify-content-center">{packTitle}</h1>
+    <!-- titulo de carta -->
+    <h1 class="pack-title is-flex is-justify-content-center">{packTitle}</h1>
     
+
+    <!-- imagen de carta -->
     <img
         class="img_card-pack"
-        src={wrapperSrc ?? "pack.webp"}
+        src={wrapperSrc ?? "logo-pack.png"}
         alt="imagen"
     />
 
 
-    
+    <!-- boton de abrir -->
     <div class="box-buttom is-flex is-justify-content-center js-modal-trigger" data-target="modal-example">
-        <a class="boton popup-btn" href="#">Buy</a>
+        <a class="boton popup-btn" href="#">OPEN</a>
     </div>
+
+    <!-- ventana emergente de abrir -->
     
     <div id="modal-example" class="modal">
         <div class="modal-background"></div>
@@ -55,10 +61,18 @@ const {
         </div>
     </div>
 
+    <!-- contador -->
+
 </div>
 <style>
 
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+    .pack-title {
+        color:black;
+        font-size: 20px;
+    }
+
 
     .modal-card {
         width: 50%;
@@ -76,14 +90,14 @@ const {
     
     .card-pack {
         display: flex;
-        background: rgb(255, 255, 255);
+        background-image: radial-gradient( circle 1224px at 10.6% 8.8%,  rgba(255,255,255,1) 0%, rgba(153,202,251,1) 100.2% );
         width: 250px;
         height: 350px;
         border-radius: 10px; 
         padding: 16px 8px;
         margin: 5px ;
         gap: 20px;
-        box-shadow: -1px 2px 41px -6px rgba(83,143,189,1);
+        box-shadow: -3px 7px 7px -7px rgba(0,0,0,0.75);
     }
 
     .img_card-pack {
@@ -96,24 +110,31 @@ const {
         color: rgb(0, 0, 0);
     }
 
-    .boton {
-        margin-top:30px;
-        padding:2.2% 5.5%;
-        display:inline-block;
-        -webkit-transition:all linear 0.15s;
-        transition:all linear 0.15s;
-        border-radius:3px;
-        background:#000000;
-        font-size:22px;
-        font-weight: bold;
-        text-decoration:none;
-        text-transform:uppercase;
-        color:#ffffff;
 
-        &:hover{
-            opacity:0.75;
-        }
-    }
+    .boton {background-image: linear-gradient(to right, #232526 0%, #414345  51%, #232526  100%)}
+         .boton {
+            margin: 10px;
+            padding: 15px 45px;
+            text-align: center;
+            text-transform: uppercase;
+            transition: 0.5s;
+            background-size: 200% auto;
+            color: white;            
+            box-shadow: 0 0 20px #eee;
+            border-radius: 10px;
+            display: block;
+          }
+
+          .boton:hover {
+            background-position: right center; /* change the direction of the change here */
+            color: #fff;
+            text-decoration: none;
+          }
+         
+
+    
+
+    
 
     .modal {
         z-index: 100;
