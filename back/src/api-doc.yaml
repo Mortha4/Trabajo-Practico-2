@@ -48,6 +48,21 @@ components:
                     type: string
                 location:
                     type: string
+        CardClass:
+            type: object
+            properties:
+                id:
+                    type: integer
+                name:
+                    type: string
+                title:
+                    type: string
+                season:
+                    type: string
+                description:
+                    type: string
+                rarityName:
+                    type: string
     responses:
         BadRequest:
             description: The request was invalid.

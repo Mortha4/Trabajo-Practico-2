@@ -16,7 +16,7 @@ export default function validateAllResponses(
             try {
                 const body = JSON.parse(rawBody ?? null);
                 let validation = res.validateResponse(
-                    res.statusCode.toString(),
+                    res?.statusCode?.toString(),
                     body
                 );
                 if (validation)
