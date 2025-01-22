@@ -4,15 +4,27 @@ info:
     version: "1.0.0"
 paths: {}
 components:
+    securitySchemes:
+        CookieAuth:
+            type: apiKey
+            in: cookie
+            name: token
     schemas:
+        Password:
+            description: "The password used for authenticating the user."
+            type: "string"
+            format: "password"
+        StringIdentifier:
+            type: string
+            description: "A unique alphanumerical lowercase string that functions as a key."
+            pattern: "^[a-z0-9_]+$"
         User:
             type: object
             properties:
                 id:
                     type: integer
                 username:
-                    type: string
-                    nullable: true
+                    $ref: "#/components/schemas/StringIdentifier"
                 profileName:
                     type: string
                     nullable: true
@@ -47,3 +59,5 @@ components:
                                 type: array
                                 items:
                                     $ref: "#/components/schemas/Error"
+        InternalServerError:
+            description: "An internal server error occurred."

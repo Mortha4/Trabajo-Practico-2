@@ -1,7 +1,9 @@
 {
     "compilerOptions": {
         "moduleResolution": "node",
-        "target": "ES5",
+        "moduleDetection": "force",
+        "target": "ESNext",
+        "module": "Preserve",
         "outDir": "dist/",
         "resolveJsonModule": true,
         "allowJs": true,

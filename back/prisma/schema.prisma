@@ -60,6 +60,13 @@ enum TradeDetailType {
     Requested
 }
 
+model Session {
+    id        String   @id @map("pk_session_id")
+    sid       String   @unique @map("sid_")
+    data      String
+    expiresAt DateTime @map("expires_at")
+}
+
 /// User is separate from UserData to allow for soft-deleting personal information
 model User {
     id             Int               @id @default(autoincrement()) @map("pk_user_id")
@@ -103,8 +110,7 @@ view FlattenedUser {
 }
 
 model CardPackType {
-    id               Int           @id @default(autoincrement()) @map("pk_pack_id")
-    name             String        @unique @map("name_uq") @db.VarChar(100)
+    name             String        @id @map("pk_name") @db.VarChar(100)
     title            String        @db.VarChar(60)
     wrapperImagePath String        @default("public/placeholder-image.svg") @map("wrapper_image_path") @db.VarChar(255)
     createdAt        DateTime      @default(now()) @map("created_at") @db.Timestamptz()
@@ -114,14 +120,13 @@ model CardPackType {
 }
 
 model Rarity {
-    name            String      @id @map("pk_name")
+    name            String      @id @map("pk_name") @db.VarChar(100)
     dropProbability Decimal     @map("drop_probability") @db.Decimal(4, 3)
     card            CardClass[] @relation(name: "CardClass_IsClassifiedBy_Rarity")
 }
 
 model CardClass {
-    id                    Int               @id @default(autoincrement()) @map("pk_card_id")
-    name                  String            @unique @map("name_uq") @db.VarChar(100)
+    name                  String            @id @map("pk_name") @db.VarChar(100)
     title                 String            @db.VarChar(60)
     season                CardSeason
     description           String            @db.VarChar(200)
@@ -147,15 +152,15 @@ model LootTable {
 }
 
 model CollectionEntry {
-    cardId     Int       @map("pk_card_id")
+    cardName   String    @map("pk_card_name")
     userId     Int       @map("pk_user_id") /// cascade delete enforced through tg_UserData_BeforeDelete
     amount     Int
     createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz()
     modifiedAt DateTime? @updatedAt @map("modified_at") @db.Timestamptz()
-    card       CardClass @relation(name: "CollectionEntry_Tracks_CardClass", map: "CollectionEntry_Tracks_CardClass", fields: [cardId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    card       CardClass @relation(name: "CollectionEntry_Tracks_CardClass", map: "CollectionEntry_Tracks_CardClass", fields: [cardName], references: [name], onDelete: Cascade, onUpdate: Cascade)
     user       User      @relation(name: "CollectionEntry_BelongsTo_User", map: "CollectionEntry_BelongsTo_User", fields: [userId], references: [id])
 
-    @@id([userId, cardId])
+    @@id([userId, cardName])
 }
 
 model PackOpening {

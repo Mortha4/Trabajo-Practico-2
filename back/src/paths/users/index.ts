@@ -1,12 +1,11 @@
 import { OpenAPIV3 } from "openapi-types";
-import { PrismaClient, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { Operation } from "express-openapi";
 import StatusCodes from "http-status-codes";
-import PrismaError from "../prisma-errors";
+import { PrismaError, prisma } from "../../globals.js";
+import isAuthenticated from "../../middleware/isAuthenticated.js";
 
 export default function () {
-    const prisma = new PrismaClient();
-
     const GET: Operation = async (req, res) => {
         const users = await prisma.flattenedUser.findMany({
             select: {
@@ -37,6 +36,11 @@ export default function () {
                 },
             },
         },
+        security: [
+            {
+                CookieAuth: [],
+            },
+        ],
     };
 
     const POST: Operation = async (req, res) => {
@@ -58,27 +62,19 @@ export default function () {
             res.status(StatusCodes.NO_CONTENT).send();
             return;
         } catch (error) {
-            if (!(error instanceof Prisma.PrismaClientKnownRequestError)) {
-                console.log("Encountered unknown database error: ", error);
-                res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
-                return;
-            }
-
             if (error.code === PrismaError.UNIQUE_CONSTRAINT_VIOLATION) {
                 const fields = error.meta.target as string[];
                 const status = StatusCodes.BAD_REQUEST;
                 res.status(status).json({
-                    status,
-                    errors: `${fields[0]} already exists. A new user cannot be created with the same value.`,
+                    errors: [
+                        {
+                            message: `${fields[0]} already exists. A new user cannot be created with the same value.`,
+                        },
+                    ],
                 });
-                return;
             } else {
-                console.log(
-                    "Encountered know but unhandled database error: ",
-                    error
-                );
+                console.log("Encountered unknown database error: ", error);
                 res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
-                return;
             }
         }
     };
@@ -89,10 +85,7 @@ export default function () {
         additionalProperties: false,
         properties: {
             username: {
-                description:
-                    "A unique alphanumerical lowercase string that identifies the user.",
-                type: "string",
-                pattern: "^[a-z0-9_]+$",
+                $ref: "#/components/schemas/StringIdentifier",
             },
             email: {
                 description:
@@ -105,9 +98,7 @@ export default function () {
                 type: "string",
             },
             password: {
-                description: "The password used for authenticating.",
-                type: "string",
-                format: "password",
+                $ref: "#/components/schemas/Password",
             },
         },
     };
