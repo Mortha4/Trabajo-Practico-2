@@ -1,4 +1,7 @@
 <div class="game-card">
+    <div class="white-border"></div>
+
+    <!-- carta rostro -->
     <div class="front is-flex is-flex-direction-column is-align-items-stretch">
         <h1>Title</h1>
         <img src="X_in_box.svg" alt="" />
@@ -10,27 +13,45 @@
             </div>
             <span>Rarity</span>
         </div>
-        <p>deez nuts jijiasdjfl jasdklñf fkldjfalñk asdlñfkjalfkj</p>
+        <p>Description</p>
     </div>
+
+    <!-- carta espalda -->
     <div class="back">
-        <img src="" alt="" class="brand" />
+        <img src="back-card.jpg" alt="" class="brand" />
     </div>
 </div>
 <style>
+    .white-border {
+        border: solid white 5px;
+        z-index: 5;
+    }
     .game-card {
         min-width: 2.5in;
         min-height: 3.5in;
         border-radius: 3.5mm;
         background-color: red;
-        border: solid white 5px;
         padding: 5px;
         aspect-ratio: 5 / 7;
+        transform-style: preserve-3d;
+        transition: transform 0.5s ease-in-out;
+        position: relative;
+    }
+
+    .game-card:hover {
+        transform: rotateY(180deg);
     }
 
     .front,
+    .white-border,
     .back {
         width: 100%;
         height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        border-radius: 3.5mm;
+        overflow: hidden;
     }
 
     h1 {
@@ -42,7 +63,7 @@
     p {
         display: flex;
         font-size: 0.9rem;
-        background-color: white;
+        background-color: rgb(132, 0, 255);
         flex-basis: content;
         padding: 1px;
         justify-content: center;
@@ -51,9 +72,14 @@
         min-height: 0;
         flex-grow: 1;
         overflow: scroll;
+        border-radius: 0 0 2mm 2mm;
     }
 
-    img {
+    .brand {
+        object-fit: cover;
+    }
+
+    .front > img {
         aspect-ratio: 6 / 4;
         width: 100%;
         height: auto;
@@ -61,10 +87,17 @@
         border-radius: 1.5mm;
     }
 
-    .game-card .back {
-        display: none;
+    .front {
+        backface-visibility: hidden;
+        transform: rotateX(0deg);
+        background-color: red;
+        padding: 5px;
     }
 
-    .front {
+    .back {
+        transform: rotateY(180deg);
+        backface-visibility: hidden;
+        background-color: blue;
+        padding: 5px;
     }
 </style>
