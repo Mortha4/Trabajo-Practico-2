@@ -62,6 +62,7 @@ const user = await prisma.user.create({
                 profileName: "Perfil de prueba",
                 email: "prueba@gmail.com",
                 password: "contraseña_de_prueba",
+                privilege: "Administrator"
             },
         },
         collection: {

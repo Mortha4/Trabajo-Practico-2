@@ -8,6 +8,8 @@ import validateAllResponses from "./src/middleware/validateAllResponses.js";
 import { prisma } from "./src/globals.js";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import isAuthenticated from "./src/middleware/isAuthenticated.js";
+import { StatusCodes } from "http-status-codes";
+import { error } from "console";
 
 const PORT = process.env.EXPRESS_PORT ?? 3000;
 
@@ -41,8 +43,10 @@ initialize({
         CookieAuth: isAuthenticated,
     },
     errorMiddleware: (err, req, res, next) => {
-        if (err) res.status(err.status).json(err);
-        else next();
+        if (!err) next();
+        else if (err.status) res.status(err.status).json(err);
+        else {res.status(StatusCodes.INTERNAL_SERVER_ERROR).send()
+        console.log(err)};
     },
 });
 
