@@ -7,7 +7,7 @@ import Card from "../components/Card.astro";
 import CardFilter from "../components/CardFilter.astro";
 ---
 
-<GenericLayout title="Dashboard">
+<GenericLayout title="Dashboard" class="blue-background">
     <UserPortalNavbar />
     <main>
         <ProfileDashboard
@@ -51,10 +51,13 @@ import CardFilter from "../components/CardFilter.astro";
 
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 
-
+    :global(:root){
+        --bulma-body-background-color:#8BC6EC;
+    }
 
     body {
         font-family:'Open Sans';
+
     }
 
     .stats-flex {

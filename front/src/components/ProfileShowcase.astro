@@ -9,7 +9,7 @@
 const { "container-class": slotContainerClasses } = Astro.props;
 ---
 
-<section class="hero is-small is-link">
+<section class="background-profile hero is-small is-link">
     <div class="hero-body is-flex is-flex-direction-row is-flex-wrap-wrap">
         <div
             class="profile-flex is-flex-shrink-0 is-inline-flex is-align-items-center is-justify-content-center p-1"
@@ -36,6 +36,10 @@ const { "container-class": slotContainerClasses } = Astro.props;
     </div>
 </section>
 <style>
+
+    .background-profile {
+        box-shadow: 15px 23px 23px -35px rgba(240,231,240,1);
+    }
     section,
     section > div {
         width: 100%;
@@ -88,6 +92,7 @@ const { "container-class": slotContainerClasses } = Astro.props;
     @media (max-width: 768px) {
         .profile-banner-container {
             min-height: 3rem;
+            
         }
     }
 </style>
