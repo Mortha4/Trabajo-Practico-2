@@ -63,6 +63,16 @@ components:
                     type: string
                 rarityName:
                     type: string
+        Rarity:
+            type: string
+            enum: [Common, Rare]
+        CardPackType:
+            type: object
+            properties:
+                name:
+                    type: string
+                title:
+                    type: string
     responses:
         BadRequest:
             description: The request was invalid.
