@@ -50,7 +50,7 @@ initialize({
     },
 });
 
-const SESSION_LENGTH_MS = 1000 * 60;
+const SESSION_LENGTH_MS = 1000 * 1800;
 const DAY_MS = 24 * 60 * 60 * 1000;
 app.use(
     session({
