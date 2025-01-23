@@ -8,11 +8,11 @@ import isAdministrator from "../../middleware/isAdministrator.js";
 
 export default function () {
     const DELETE: Operation = async (req, res) => {
-        const {packName} = req.params;
+        const {cardPackName} = req.params;
         
         try {
             await prisma.cardPackType.delete({
-                where: {name:packName}
+                where: {name:cardPackName}
             });
             res.status(StatusCodes.NO_CONTENT).send();
             return;
@@ -56,12 +56,12 @@ export default function () {
     };
 
     const PATCH: Operation = async (req, res) => {
-        const { packName } = req.params
+        const { cardPackName } = req.params
         const { title } = req.body;
 
         try {
-            await prisma.cardClass.update({
-                where: {name:packName},
+            await prisma.cardPackType.update({
+                where: {name:cardPackName},
                 data: {
                     title
                 }
@@ -73,6 +73,9 @@ export default function () {
                 const status = StatusCodes.NOT_FOUND;
                 res.status(status).send()
                 return;
+            }
+            else {
+                throw error
             }
         }
     };
@@ -91,6 +94,15 @@ export default function () {
     };
 
     PATCH.apiDoc = {
+        parameters: [
+            {
+                in: "path",
+                name: "cardPackName",
+                schema: {
+                    $ref: "#/components/schemas/StringIdentifier",
+                },
+            },
+        ],
         requestBody: {
             required: true,
             content: {

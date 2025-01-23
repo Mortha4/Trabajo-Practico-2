@@ -114,6 +114,15 @@ export default function () {
     };
 
     PATCH.apiDoc = {
+        parameters: [
+            {
+                in: "path",
+                name: "cardName",
+                schema: {
+                    $ref: "#/components/schemas/StringIdentifier",
+                },
+            },
+        ],
         requestBody: {
             required: true,
             content: {
