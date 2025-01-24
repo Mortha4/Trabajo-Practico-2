@@ -11,6 +11,43 @@ components:
             type: apiKey
             in: cookie
             name: token
+    parameters:
+        CardName:
+            in: path
+            name: cardName
+            required: true
+            description: "The card's identifier"
+            schema:
+                $ref: "#/components/schemas/StringIdentifier"
+        Username:
+            in: path
+            name: username
+            description: "The user's identifier"
+            required: true
+            schema:
+                $ref: "#/components/schemas/StringIdentifier"
+        CardRarities:
+            in: query
+            name: rarities
+            allowEmptyValue: false
+            description: "A list of rarities for filtering."
+            style: form
+            explode: true
+            schema:
+                type: array
+                items:
+                    $ref: "#/components/schemas/Rarity"
+        CardSeasons:
+            in: query
+            name: seasons
+            allowEmptyValue: false
+            description: "A list of seasons for filtering."
+            style: form
+            explode: true
+            schema:
+                type: array
+                items:
+                    $ref: "#/components/schemas/Season"
     schemas:
         Password:
             description: "The password used for authenticating the user."
@@ -23,56 +60,65 @@ components:
         User:
             type: object
             properties:
-                id:
-                    type: integer
                 username:
                     $ref: "#/components/schemas/StringIdentifier"
                 profileName:
                     type: string
-                    nullable: true
                 profilePictureUrl:
                     type: string
+                email:
+                    type: string
+                    format: email
+                password:
+                    type: string
+                    format: password
                 createdAt:
                     type: string
                     format: date-time
-                    nullable: true
-        Error:
-            type: object
-            required: [message]
-            properties:
-                path:
-                    type: string
-                errorCode:
-                    type: string
-                message:
-                    type: string
-                location:
-                    type: string
-        CardClass:
+        CardClassData:
             type: object
             properties:
-                id:
-                    type: integer
-                name:
-                    type: string
                 title:
                     type: string
                 season:
-                    type: string
+                    $ref: "#/components/schemas/Season"
                 description:
                     type: string
-                rarityName:
+                rarity:
+                    $ref: "#/components/schemas/Rarity"
+        CardClass:
+            allOf:
+                - $ref: "#/components/schemas/CardClassData"
+                - properties:
+                      name:
+                          $ref: "#/components/schemas/StringIdentifier"
+                      artUrl:
+                          type: string
+                  required: [name, title, season, description, rarity, artUrl]
+        CardPackData:
+            type: object
+            properties:
+                title:
                     type: string
+                wrapperImageUrl:
+                    type: string
+                drops:
+                    type: array
+                    items:
+                        $ref: "#/components/schemas/CardClass"
+        CardPack:
+            allOf:
+                - $ref: "#/components/schemas/CardPackData"
+                - properties:
+                      name:
+                          $ref: "#/components/schemas/StringIdentifier"
+                  required: [name, title, wrapperImageUrl, drops]
         Rarity:
             type: string
             enum: [Common, Rare]
-        CardPackType:
-            type: object
-            properties:
-                name:
-                    type: string
-                title:
-                    type: string
+        Season:
+            type: string
+            enum: [Season1, Season2, Season3, Season4, Season5]
     responses:
         BadRequest:
             description: The request was invalid.
@@ -85,6 +131,23 @@ components:
                             errors:
                                 type: array
                                 items:
-                                    $ref: "#/components/schemas/Error"
+                                    type: object
+                                    required: [message]
+                                    properties:
+                                        path:
+                                            type: string
+                                        errorCode:
+                                            type: string
+                                        message:
+                                            type: string
+                                        location:
+                                            type: string
         InternalServerError:
             description: "An internal server error occurred."
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            message:
+                                type: string

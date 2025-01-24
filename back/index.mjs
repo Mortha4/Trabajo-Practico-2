@@ -9,7 +9,7 @@ import { prisma } from "./src/globals.js";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import isAuthenticated from "./src/middleware/isAuthenticated.js";
 import { StatusCodes } from "http-status-codes";
-import { error } from "console";
+import OpenAPIRequestValidator from "openapi-request-validator";
 
 const PORT = process.env.EXPRESS_PORT ?? 3000;
 
@@ -43,10 +43,18 @@ initialize({
         CookieAuth: isAuthenticated,
     },
     errorMiddleware: (err, req, res, next) => {
-        if (!err) next();
-        else if (err.status) res.status(err.status).json(err);
-        else {res.status(StatusCodes.INTERNAL_SERVER_ERROR).send()
-        console.log(err)};
+        if (err.status) {
+            //TODO: check for OpenAPIRequestValidatorError
+            res.status(err.status).json(err);
+        } else {
+            console.error(
+                `[ERROR]: An unknown error occurred in ${req.path}\n`,
+                err
+            );
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                message: "An unknown internal server error occurred.",
+            });
+        }
     },
 });
 

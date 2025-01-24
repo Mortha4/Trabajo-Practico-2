@@ -1,10 +1,7 @@
 import { OpenAPIV3 } from "openapi-types";
-import { Prisma } from "@prisma/client";
 import { Operation } from "express-openapi";
 import StatusCodes from "http-status-codes";
 import { PrismaError, prisma } from "../../globals.js";
-import isAuthenticated from "../../middleware/isAuthenticated.js";
-
 export default function () {
     const GET: Operation = async (req, res) => {
         const users = await prisma.flattenedUser.findMany({
@@ -16,20 +13,34 @@ export default function () {
                 createdAt: true,
             },
         });
-        res.status(200).json(users);
+        users.forEach((user) => {
+            user["profilePictureUrl"] = user.profilePicturePath;
+            delete user.profilePicturePath;
+        });
+        res.status(StatusCodes.OK).json(users);
     };
 
     GET.apiDoc = {
-        summary: "Returns a list of users",
         responses: {
             [StatusCodes.OK.toString()]: {
-                description: "A list of users",
+                description: "Lists registered users.",
                 content: {
                     "application/json": {
                         schema: {
                             type: "array",
                             items: {
-                                $ref: "#/components/schemas/User",
+                                allOf: [
+                                    {
+                                        $ref: "#/components/schemas/User",
+                                    },
+                                    {
+                                        required: [
+                                            "username",
+                                            "profileName",
+                                            "profilePictureUrl",
+                                        ],
+                                    },
+                                ],
                             },
                         },
                     },
@@ -80,27 +91,12 @@ export default function () {
     };
 
     const postRequestSchema: OpenAPIV3.SchemaObject = {
-        type: "object",
-        required: ["username", "email", "profileName", "password"],
-        additionalProperties: false,
-        properties: {
-            username: {
-                $ref: "#/components/schemas/StringIdentifier",
+        allOf: [
+            { $ref: "#/components/schemas/User" },
+            {
+                required: ["username", "profileName", "email", "password"],
             },
-            email: {
-                description:
-                    "The email used for account management such as password change, notifications, etc.",
-                format: "email",
-                type: "string",
-            },
-            profileName: {
-                description: "The display name used for most purposes.",
-                type: "string",
-            },
-            password: {
-                $ref: "#/components/schemas/Password",
-            },
-        },
+        ],
     };
 
     POST.apiDoc = {
@@ -119,12 +115,6 @@ export default function () {
         responses: {
             [StatusCodes.NO_CONTENT.toString()]: {
                 description: "The user was created successfully.",
-            },
-            [StatusCodes.BAD_REQUEST.toString()]: {
-                $ref: "#/components/responses/BadRequest",
-            },
-            [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
-                description: "An internal server error occurred.",
             },
         },
     };

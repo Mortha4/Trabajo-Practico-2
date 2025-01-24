@@ -1,61 +1,208 @@
-import { PrismaClient, Prisma, CardSeason,  } from "@prisma/client";
+import { PrismaClient, Prisma, CardSeason } from "@prisma/client";
 import { Operation } from "express-openapi";
 import StatusCodes from "http-status-codes";
-import { PrismaError, prisma, } from "../../../globals.js";
-
+import { PrismaError, SecurityScopes, prisma } from "../../../globals.js";
 
 export default function () {
     const GET: Operation = async (req, res) => {
-        const { rarity } = req.query
-        try {
-            const cards = await prisma.cardClass.findMany({
-                where: {rarityName: {in:rarity}}
-            });
-            res.json(cards);
-        } catch (error) {
-            if (error.code === PrismaError.REQUIRED_RECORD_NOT_FOUND) {
-                const status = StatusCodes.NOT_FOUND;
-                res.status(status).send()
-                return;
-            }
+        const { username } = req.params;
+        const cardTitle = req.query.title as string | undefined;
+        const minimumQuantity = req.query.minimumQuantity as unknown as number;
+        const maximumQuantity = req.query.maximumQuantity as unknown as number;
+
+        const errorResponse = {
+            errors: [],
+        };
+
+        const rarities = req.query.rarities as string[] | undefined;
+        if (rarities) {
+            const dbRarities = (
+                await prisma.rarity.findMany({
+                    select: {
+                        name: true,
+                    },
+                })
+            ).map((rarity) => rarity.name);
+
+            const receivedValidRarities = rarities.every((rarity) =>
+                dbRarities.includes(rarity)
+            );
+            if (!receivedValidRarities)
+                errorResponse.errors.push({
+                    message: "Received an invalid rarity.",
+                });
         }
+
+        const seasons = req.query.seasons as string[] | undefined;
+        if (seasons) {
+            const receivedValidSeasons = seasons?.every((season) =>
+                Object.values(CardSeason).includes(season as any)
+            );
+            if (!receivedValidSeasons)
+                errorResponse.errors.push({
+                    message: "Received an invalid season.",
+                });
+        }
+
+        if (errorResponse.errors.length) {
+            res.status(StatusCodes.BAD_REQUEST).json(errorResponse);
+            return;
+        }
+
+        const specifiedMinimum = minimumQuantity !== undefined;
+        const specifiedMaximum = maximumQuantity !== undefined;
+        let quantityQuery;
+
+        if (specifiedMinimum || specifiedMaximum) {
+            quantityQuery = {};
+            if (specifiedMaximum) quantityQuery["lte"] = maximumQuantity;
+
+            if (specifiedMinimum) quantityQuery["gte"] = minimumQuantity;
+        }
+
+        const cards = await prisma.collectionEntry.findMany({
+            select: {
+                createdAt: true,
+                quantity: true,
+                card: {
+                    select: {
+                        name: true,
+                        title: true,
+                        season: true,
+                        description: true,
+                        rarity: true,
+                        artPath: true,
+                    },
+                },
+            },
+            where: {
+                user: {
+                    username: {
+                        equals: username,
+                    },
+                },
+                card: {
+                    title: {
+                        contains: cardTitle,
+                    },
+                    rarity: {
+                        in: rarities,
+                    },
+                    season: {
+                        in: seasons as CardSeason[],
+                    },
+                },
+                quantity: quantityQuery,
+            },
+        });
+
+        cards.forEach((card) => {
+            card["firstDroppedAt"] = card.createdAt;
+            delete card.createdAt;
+            card["artUrl"] = card.card.artPath;
+            delete card.card.artPath;
+            Object.assign(card, card.card);
+            delete card.card;
+        });
+
+        res.json(cards);
     };
 
     GET.apiDoc = {
-        summary: "Returns a list of cards according to their rarity",
         parameters: [
             {
-                in:"query",
-                name: "rarity",
+                $ref: "#/components/parameters/Username",
+            },
+            {
+                $ref: "#/components/parameters/CardRarities",
+            },
+            {
+                $ref: "#/components/parameters/CardSeasons",
+            },
+            {
+                in: "query",
+                name: "minimumQuantity",
+                allowEmptyValue: false,
+                description:
+                    "Filters cards that don't meet the minimum quantity.",
                 schema: {
-                    type: "array",
-                    items: {
-                        $ref: "#/components/schemas/Rarity",
-                    }
+                    type: "integer",
+                    minimum: 0,
                 },
-                description: "List the cards according to their rarity"
-            }
+            },
+            {
+                in: "query",
+                name: "maximumQuantity",
+                allowEmptyValue: false,
+                description: "Filters cards that surpass the maximum quantity.",
+                schema: {
+                    type: "integer",
+                    minimum: 0,
+                },
+            },
+            {
+                in: "query",
+                name: "title",
+                allowEmptyValue: false,
+                description: "Filter cards that don't match the title",
+                schema: {
+                    type: "string",
+                },
+            },
         ],
         responses: {
+            [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
+                $ref: "#/components/responses/InternalServerError",
+            },
+            [StatusCodes.BAD_REQUEST.toString()]: {
+                $ref: "#/components/responses/BadRequest",
+            },
             [StatusCodes.OK.toString()]: {
-                description: "A list of cards according to their rarity",
+                description: "Lists the cards belonging to the user.",
                 content: {
                     "application/json": {
                         schema: {
                             type: "array",
                             items: {
-                                $ref: "#/components/schemas/CardClass",
+                                allOf: [
+                                    {
+                                        $ref: "#/components/schemas/CardClass",
+                                    },
+                                    {
+                                        properties: {
+                                            quantity: {
+                                                type: "integer",
+                                                minimum: 0,
+                                            },
+                                            firstDroppedAt: {
+                                                type: "string",
+                                                format: "date-time",
+                                            },
+                                        },
+                                        required: [
+                                            "name",
+                                            "title",
+                                            "season",
+                                            "description",
+                                            "rarity",
+                                            "artUrl",
+                                            "quantity",
+                                            "firstDroppedAt",
+                                        ],
+                                    },
+                                ],
                             },
                         },
                     },
                 },
             },
-            [StatusCodes.NOT_FOUND.toString()]: {
-                description: "Rarity not found.",
-            },
         },
+        security: [
+            {
+                CookieAuth: [SecurityScopes.Self],
+            },
+        ],
     };
 
-    return {  };
+    return { GET };
 }
-    

@@ -1,168 +1,105 @@
 import { OpenAPIV3 } from "openapi-types";
-import { PrismaClient, Prisma, CardSeason, UserPrivilege } from "@prisma/client";
+import {
+    PrismaClient,
+    Prisma,
+    CardSeason,
+    UserPrivilege,
+} from "@prisma/client";
 import { Operation } from "express-openapi";
 import StatusCodes from "http-status-codes";
-import { PrismaError, prisma } from "../../globals.js";
-import { request } from "http";
-import isAdministrator from "../../middleware/isAdministrator.js";
+import { PrismaError, SecurityScopes, prisma } from "../../globals.js";
 
 export default function () {
     const DELETE: Operation = async (req, res) => {
-        const {cardName} = req.params;
-        
+        const { cardName } = req.params;
+
         try {
             await prisma.cardClass.delete({
-                where: {name:cardName}
+                where: { name: cardName },
             });
             res.status(StatusCodes.NO_CONTENT).send();
             return;
         } catch (error) {
             if (error.code === PrismaError.REQUIRED_RECORD_NOT_FOUND) {
                 const status = StatusCodes.NOT_FOUND;
-                res.status(status).send()
+                res.status(status).send();
                 return;
             }
         }
     };
 
     DELETE.apiDoc = {
-        summary: "Delete a card",
+        parameters: [{ $ref: "#/components/parameters/CardName" }],
         responses: {
             [StatusCodes.OK.toString()]: {
-                description: "Delete the indicated card",
-                content: {
-                    "application/json": {
-                        schema: {
-                            type: "array",
-                            items: {
-                                $ref: "#/components/schemas/CardClass",
-                            },
-                        },
-                    },
-                },
+                description: "The specified Card was deleted successfully.",
             },
             [StatusCodes.NOT_FOUND.toString()]: {
-                description: "Card name not found.",
-            },
-            [StatusCodes.FORBIDDEN.toString()]: {
-                description: "You don't have the permissions for that.",
+                description: "The specified Card does not exist.",
             },
         },
         security: [
             {
-                CookieAuth: [],
+                CookieAuth: [SecurityScopes.Admin],
             },
         ],
     };
 
     const PATCH: Operation = async (req, res) => {
-        const { cardName } = req.params
-        const { title, season, description, rarityName } = req.body;
+        const { cardName } = req.params;
+        const { title, season, description, rarity } = req.body;
 
         try {
             await prisma.cardClass.update({
-                where: {name:cardName},
+                where: { name: cardName },
                 data: {
                     title,
                     season,
                     description,
-                    rarityName
-                }
+                    rarity,
+                },
             });
             res.status(StatusCodes.NO_CONTENT).send();
             return;
         } catch (error) {
             if (error.code === PrismaError.REQUIRED_RECORD_NOT_FOUND) {
                 const status = StatusCodes.NOT_FOUND;
-                res.status(status).send()
+                res.status(status).send();
                 return;
             }
         }
     };
 
-    const patchRequestSchema: OpenAPIV3.SchemaObject = {
-        type: "object",
-        required: [ "title", "season", "description", "rarityName"],
-        additionalProperties: false,
-        properties: {
-            title: {
-                description:
-                    "The visible name of the new card.",
-                type: "string",
-            },
-            season: {
-                description:
-                    "Indicate which season the card belongs to.",
-                type: "string",
-                enum: [ 
-                        CardSeason.Season1,
-                        CardSeason.Season2,
-                        CardSeason.Season3,
-                        CardSeason.Season4,
-                        CardSeason.Season5 
-                    ],
-            },
-            description: {
-                description:
-                    "The description of the content of the new card.",
-                type: "string",
-            },
-            rarityName: {
-                $ref: "#/components/schemas/Rarity",
-            },
-        },
-    };
-
     PATCH.apiDoc = {
-        parameters: [
-            {
-                in: "path",
-                name: "cardName",
-                schema: {
-                    $ref: "#/components/schemas/StringIdentifier",
-                },
-            },
-        ],
+        parameters: [{ $ref: "#/components/parameters/CardName" }],
         requestBody: {
-            required: true,
             content: {
                 "application/json": {
-                    schema: patchRequestSchema,
+                    schema: {
+                        $ref: "#/components/schemas/CardClassData",
+                    },
                 },
                 "application/x-www-form-urlencoded": {
-                    schema: patchRequestSchema,
-                },
-            },
-        },
-        summary: "Update a card",
-        responses: {
-            [StatusCodes.OK.toString()]: {
-                description: "Update the information of the card",
-                content: {
-                    "application/json": {
-                        schema: {
-                            type: "array",
-                            items: {
-                                $ref: "#/components/schemas/CardClass",
-                            },
-                        },
+                    schema: {
+                        $ref: "#/components/schemas/CardClassData",
                     },
                 },
             },
-            [StatusCodes.NOT_FOUND.toString()]: {
-                description: "Card name not found.",
+        },
+        responses: {
+            [StatusCodes.OK.toString()]: {
+                description: "The Card was updates successfully.",
             },
-            [StatusCodes.FORBIDDEN.toString()]: {
-                description: "You don't have the permissions for that.",
+            [StatusCodes.NOT_FOUND.toString()]: {
+                description: "The Card specified does not exist.",
             },
         },
         security: [
             {
-                CookieAuth: [],
+                CookieAuth: [SecurityScopes.Admin],
             },
         ],
     };
 
-
-    return { DELETE:[isAdministrator, DELETE], PATCH:[isAdministrator, PATCH] };
+    return { DELETE, PATCH };
 }
