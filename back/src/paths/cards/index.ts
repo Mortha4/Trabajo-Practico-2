@@ -2,35 +2,52 @@ import { OpenAPIV3 } from "openapi-types";
 import { PrismaClient, Prisma, CardSeason } from "@prisma/client";
 import { Operation } from "express-openapi";
 import StatusCodes from "http-status-codes";
-import { PrismaError, prisma } from "../../globals.js";
-import isAdministrator from "../../middleware/isAdministrator.js";
-
+import { PrismaError, SecurityScopes, prisma } from "../../globals.js";
 
 export default function () {
     const GET: Operation = async (req, res) => {
         const cards = await prisma.cardClass.findMany({
             select: {
+                name: true,
                 title: true,
                 season: true,
                 description: true,
-                rarityName: true,
+                rarity: true,
                 artPath: true,
             },
         });
-        res.json(cards);
+
+        cards.forEach((card) => {
+            card["artUrl"] = card.artPath;
+            delete card.artPath;
+        });
+
+        res.status(StatusCodes.OK).json(cards);
     };
 
     GET.apiDoc = {
-        summary: "Returns a list of cards",
         responses: {
             [StatusCodes.OK.toString()]: {
-                description: "A list of cards",
+                description: "Lists available Cards.",
                 content: {
                     "application/json": {
                         schema: {
                             type: "array",
                             items: {
-                                $ref: "#/components/schemas/CardClass",
+                                allOf: [
+                                    {
+                                        $ref: "#/components/schemas/CardClass",
+                                    },
+                                    {
+                                        required: [
+                                            "name",
+                                            "title",
+                                            "season",
+                                            "description",
+                                            "rarity",
+                                        ],
+                                    },
+                                ],
                             },
                         },
                     },
@@ -40,7 +57,7 @@ export default function () {
     };
 
     const POST: Operation = async (req, res) => {
-        const { name, title, season, description, rarityName } = req.body;
+        const { name, title, season, description, rarity } = req.body;
 
         try {
             await prisma.cardClass.create({
@@ -49,7 +66,7 @@ export default function () {
                     title,
                     season,
                     description,
-                    rarityName
+                    rarity,
                 },
             });
             res.status(StatusCodes.NO_CONTENT).send();
@@ -81,44 +98,14 @@ export default function () {
     };
 
     const postRequestSchema: OpenAPIV3.SchemaObject = {
-        type: "object",
-        required: ["name", "title", "season", "description", "rarityName"],
-        additionalProperties: false,
-        properties: {
-            name: {
-                description:
-                    "A unique alphanumerical lowercase string that identifies the card.",
-                type: "string",
-                pattern: "^[a-z0-9_]+$",
+        allOf: [
+            { $ref: "#/components/schemas/CardClass" },
+            {
+                required: ["name", "title", "season", "description", "rarity"],
             },
-            title: {
-                description:
-                    "The visible name of the new card.",
-                type: "string",
-            },
-            season: {
-                description:
-                    "Indicate which season the card belongs to.",
-                type: "string",
-                enum: [ 
-                        CardSeason.Season1,
-                        CardSeason.Season2,
-                        CardSeason.Season3,
-                        CardSeason.Season4,
-                        CardSeason.Season5 
-                    ],
-            },
-            description: {
-                description:
-                    "The description of the content of the new card.",
-                type: "string",
-            },
-            rarityName: {
-                $ref: "#/components/schemas/Rarity",
-            },
-        },
+        ],
     };
-    
+
     POST.apiDoc = {
         summary: "Creates a new Card.",
         requestBody: {
@@ -136,21 +123,13 @@ export default function () {
             [StatusCodes.NO_CONTENT.toString()]: {
                 description: "The card was created successfully.",
             },
-            [StatusCodes.BAD_REQUEST.toString()]: {
-                $ref: "#/components/responses/BadRequest",
-            },
-            [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
-                description: "An internal server error occurred.",
-            },
         },
         security: [
             {
-                CookieAuth: [],
+                CookieAuth: [SecurityScopes.Admin],
             },
         ],
     };
 
-        
-
-    return { GET, POST:[isAdministrator, POST] };
+    return { GET, POST };
 }

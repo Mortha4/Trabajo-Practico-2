@@ -47,10 +47,10 @@ ALTER TABLE "Trade"
 ADD CONSTRAINT "Trade_ForbidSelfTrade_chk" CHECK ("fk_offerer_id" != "fk_receiver_id");
 
 ALTER TABLE "TradeDetail"
-ADD CONSTRAINT "TradeDetail_IsAmountPositive_chk" CHECK ("amount" >= 0);
+ADD CONSTRAINT "TradeDetail_IsQuantityPositive_chk" CHECK ("quantity" >= 0);
 
 ALTER TABLE "CollectionEntry"
-ADD CONSTRAINT "CollectionEntry_IsAmountPositive_chk" CHECK ("amount" >= 0);
+ADD CONSTRAINT "CollectionEntry_IsQuantityPositive_chk" CHECK ("quantity" >= 0);
 
 ALTER TABLE "OpeningDetail"
-ADD CONSTRAINT "OpeningDetail_IsAmountStrictlyPositive_chk" CHECK ("amount" > 0);
+ADD CONSTRAINT "OpeningDetail_IsQuantityStrictlyPositive_chk" CHECK ("quantity" > 0);

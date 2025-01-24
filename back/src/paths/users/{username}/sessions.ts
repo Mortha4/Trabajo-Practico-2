@@ -44,11 +44,7 @@ export default function () {
     POST.apiDoc = {
         parameters: [
             {
-                in: "path",
-                name: "username",
-                schema: {
-                    $ref: "#/components/schemas/StringIdentifier",
-                },
+                $ref: "#/components/parameters/Username",
             },
         ],
         requestBody: {
@@ -81,6 +77,7 @@ export default function () {
                 },
             },
             [StatusCodes.NOT_FOUND.toString()]: {
+                // TODO: add middleware under /users/{username} to check if user exists
                 description: "The user specified does not exist.",
             },
             [StatusCodes.UNAUTHORIZED.toString()]: {
@@ -99,6 +96,7 @@ export default function () {
     };
 
     DELETE.apiDoc = {
+        parameters: [{ $ref: "#/components/parameters/Username" }],
         responses: {
             [StatusCodes.NO_CONTENT.toString()]: {
                 description: "The session was successfully terminated.",

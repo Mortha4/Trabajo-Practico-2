@@ -1,96 +1,69 @@
-import { OpenAPIV3 } from "openapi-types";
-import { PrismaClient, Prisma, CardSeason, UserPrivilege } from "@prisma/client";
 import { Operation } from "express-openapi";
 import StatusCodes from "http-status-codes";
-import { PrismaError, prisma } from "../../globals.js";
-import { request } from "http";
-import isAdministrator from "../../middleware/isAdministrator.js";
+import { PrismaError, SecurityScopes, prisma } from "../../globals.js";
 
 export default function () {
     const DELETE: Operation = async (req, res) => {
-        const {cardPackName} = req.params;
-        
+        const { cardPackName } = req.params;
+
         try {
             await prisma.cardPackType.delete({
-                where: {name:cardPackName}
+                where: { name: cardPackName },
             });
             res.status(StatusCodes.NO_CONTENT).send();
             return;
         } catch (error) {
             if (error.code === PrismaError.REQUIRED_RECORD_NOT_FOUND) {
                 const status = StatusCodes.NOT_FOUND;
-                res.status(status).send()
+                res.status(status).send();
                 return;
             }
         }
     };
 
     DELETE.apiDoc = {
-        summary: "Delete a cardpack",
+        summary: "Delete a CardPack",
         responses: {
-            [StatusCodes.OK.toString()]: {
-                description: "Delete the indicated cardpack",
-                content: {
-                    "application/json": {
-                        schema: {
-                            type: "array",
-                            items: {
-                                $ref: "#/components/schemas/CardPackType",
-                            },
-                        },
-                    },
-                },
+            [StatusCodes.NO_CONTENT.toString()]: {
+                description: "CardPack deleted successfully.",
             },
             [StatusCodes.NOT_FOUND.toString()]: {
-                description: "Pack name not found.",
-            },
-            [StatusCodes.FORBIDDEN.toString()]: {
-                description: "You don't have the permissions for that.",
+                description: "The CardPack specified does not exist.",
             },
         },
         security: [
             {
-                CookieAuth: [],
+                CookieAuth: [SecurityScopes.Admin],
             },
         ],
     };
 
     const PATCH: Operation = async (req, res) => {
-        const { cardPackName } = req.params
-        const { title } = req.body;
+        const { cardPackName } = req.params;
+        const { title, season, description, rarity } = req.body;
 
         try {
-            await prisma.cardPackType.update({
-                where: {name:cardPackName},
+            await prisma.cardClass.update({
+                where: { name: cardPackName },
                 data: {
-                    title
-                }
+                    title,
+                    season,
+                    description,
+                    rarity,
+                },
             });
             res.status(StatusCodes.NO_CONTENT).send();
             return;
         } catch (error) {
             if (error.code === PrismaError.REQUIRED_RECORD_NOT_FOUND) {
                 const status = StatusCodes.NOT_FOUND;
-                res.status(status).send()
+                res.status(status).send();
                 return;
             }
             else {
                 throw error
             }
         }
-    };
-
-    const patchRequestSchema: OpenAPIV3.SchemaObject = {
-        type: "object",
-        required: [ "title" ],
-        additionalProperties: false,
-        properties: {
-            title: {
-                description:
-                    "The visible name of the new card.",
-                type: "string",
-            },
-        },
     };
 
     PATCH.apiDoc = {
@@ -104,45 +77,34 @@ export default function () {
             },
         ],
         requestBody: {
-            required: true,
             content: {
                 "application/json": {
-                    schema: patchRequestSchema,
+                    schema: {
+                        $ref: "#/components/schemas/CardPackData",
+                    },
                 },
                 "application/x-www-form-urlencoded": {
-                    schema: patchRequestSchema,
-                },
-            },
-        },
-        summary: "Update a card pack",
-        responses: {
-            [StatusCodes.OK.toString()]: {
-                description: "Update the information of the card pack",
-                content: {
-                    "application/json": {
-                        schema: {
-                            type: "array",
-                            items: {
-                                $ref: "#/components/schemas/CardPackType",
-                            },
-                        },
+                    schema: {
+                        $ref: "#/components/schemas/CardPackData",
                     },
                 },
             },
-            [StatusCodes.NOT_FOUND.toString()]: {
-                description: "Card name not found.",
+        },
+        summary: "Update a CardPack.",
+        responses: {
+            [StatusCodes.NO_CONTENT.toString()]: {
+                description: "Update the information of the CardPack.",
             },
-            [StatusCodes.FORBIDDEN.toString()]: {
-                description: "You don't have the permissions for that.",
+            [StatusCodes.NOT_FOUND.toString()]: {
+                description: "The CardPack specified does not exist.",
             },
         },
         security: [
             {
-                CookieAuth: [],
+                CookieAuth: [SecurityScopes.Admin],
             },
         ],
     };
 
-
-    return { DELETE:[isAdministrator, DELETE], PATCH:[isAdministrator, PATCH] };
+    return { DELETE, PATCH };
 }

@@ -15,21 +15,21 @@ const cardTest1 = await prisma.cardClass.createMany({
             title: "Carta de prueaba 1",
             season: "Season1",
             description: "Esta es la carta de prueba 1",
-            rarityName: "Common",
+            rarity: "Common",
         },
         {
             name: "carta2",
             title: "Carta de prueaba 2",
             season: "Season1",
             description: "Esta es la carta de prueba 2",
-            rarityName: "Common",
+            rarity: "Common",
         },
         {
             name: "carta3",
             title: "Carta de prueaba 3",
             season: "Season1",
             description: "Esta es la carta de prueba 3",
-            rarityName: "Rare",
+            rarity: "Rare",
         },
     ],
 });
@@ -62,18 +62,18 @@ const user = await prisma.user.create({
                 profileName: "Perfil de prueba",
                 email: "prueba@gmail.com",
                 password: "contraseña_de_prueba",
-                privilege: "Administrator"
+                privilege: "Administrator",
             },
         },
         collection: {
             create: [
                 {
                     cardName: "carta1",
-                    amount: 4,
+                    quantity: 4,
                 },
                 {
                     cardName: "carta2",
-                    amount: 1,
+                    quantity: 1,
                 },
             ],
         },
@@ -85,11 +85,11 @@ const user = await prisma.user.create({
                         create: [
                             {
                                 cardName: "carta1",
-                                amount: 4,
+                                quantity: 4,
                             },
                             {
                                 cardName: "carta2",
-                                amount: 1,
+                                quantity: 1,
                             },
                         ],
                     },
@@ -113,7 +113,7 @@ const user2 = await prisma.user.create({
             create: [
                 {
                     cardName: "carta3",
-                    amount: 5,
+                    quantity: 5,
                 },
             ],
         },
@@ -125,7 +125,7 @@ const user2 = await prisma.user.create({
                         create: [
                             {
                                 cardName: "carta3",
-                                amount: 5,
+                                quantity: 5,
                             },
                         ],
                     },

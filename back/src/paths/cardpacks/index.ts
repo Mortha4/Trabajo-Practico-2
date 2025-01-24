@@ -2,31 +2,58 @@ import { OpenAPIV3 } from "openapi-types";
 import { PrismaClient, Prisma, CardSeason } from "@prisma/client";
 import { Operation } from "express-openapi";
 import StatusCodes from "http-status-codes";
-import { PrismaError, prisma } from "../../globals.js";
-import isAdministrator from "../../middleware/isAdministrator.js";
-
+import { PrismaError, SecurityScopes, prisma } from "../../globals.js";
 
 export default function () {
     const GET: Operation = async (req, res) => {
         const cards = await prisma.cardPackType.findMany({
             select: {
+                name: true,
                 title: true,
+                wrapperImagePath: true,
+                drops: {
+                    select: {
+                        packName: false,
+                        cardName: false,
+                        card: {
+                            select: {
+                                name: true,
+                                title: true,
+                                season: true,
+                                description: true,
+                                rarity: true,
+                                artPath: true,
+                            },
+                        },
+                    },
+                },
             },
         });
+
+        cards.forEach((pack) => {
+            pack["wrapperImageUrl"] = pack.wrapperImagePath;
+            pack.drops.forEach((cardDropped) => {
+                Object.assign(cardDropped, { ...cardDropped.card });
+                delete cardDropped.card;
+                cardDropped["artUrl"] = cardDropped["artPath"];
+                delete cardDropped["artPath"];
+            });
+            delete pack.wrapperImagePath;
+        });
+
         res.json(cards);
     };
 
     GET.apiDoc = {
-        summary: "Returns a list of cardpacks",
         responses: {
             [StatusCodes.OK.toString()]: {
-                description: "A list of cardpacks",
+                description: "Lists available CardPacks.",
                 content: {
                     "application/json": {
                         schema: {
                             type: "array",
                             items: {
-                                $ref: "#/components/schemas/CardPackType",
+                                $ref: "#/components/schemas/CardPack",
                             },
                         },
                     },
@@ -42,7 +69,7 @@ export default function () {
             await prisma.cardPackType.create({
                 data: {
                     name,
-                    title
+                    title,
                 },
             });
             res.status(StatusCodes.NO_CONTENT).send();
@@ -74,26 +101,16 @@ export default function () {
     };
 
     const postRequestSchema: OpenAPIV3.SchemaObject = {
-        type: "object",
-        required: ["name", "title"],
-        additionalProperties: false,
-        properties: {
-            name: {
-                description:
-                    "A unique alphanumerical lowercase string that identifies the cardpack.",
-                type: "string",
-                pattern: "^[a-z0-9_]+$",
+        allOf: [
+            { $ref: "#/components/schemas/CardPack" },
+            {
+                required: ["name", "title", "wrapperImageUrl", "drops"],
             },
-            title: {
-                description:
-                    "The visible name of the new cardpack.",
-                type: "string",
-            },
-        },
+        ],
     };
-    
+
     POST.apiDoc = {
-        summary: "Creates a new cardpack.",
+        summary: "Creates a new CardPack.",
         requestBody: {
             required: true,
             content: {
@@ -107,23 +124,15 @@ export default function () {
         },
         responses: {
             [StatusCodes.NO_CONTENT.toString()]: {
-                description: "The cardpack was created successfully.",
-            },
-            [StatusCodes.BAD_REQUEST.toString()]: {
-                $ref: "#/components/responses/BadRequest",
-            },
-            [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
-                description: "An internal server error occurred.",
+                description: "The CardPack was created successfully.",
             },
         },
         security: [
             {
-                CookieAuth: [],
+                CookieAuth: [SecurityScopes.Admin],
             },
         ],
     };
 
-        
-
-    return { GET, POST:[isAdministrator, POST] };
+    return { GET, POST };
 }

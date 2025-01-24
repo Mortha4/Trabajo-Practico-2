@@ -72,7 +72,7 @@ CREATE TABLE "CardClass" (
     "title" VARCHAR(60) NOT NULL,
     "season" "CardSeason" NOT NULL,
     "description" VARCHAR(200) NOT NULL,
-    "rarityName" TEXT NOT NULL,
+    "rarity" VARCHAR(100) NOT NULL,
     "art_path" VARCHAR(255) NOT NULL DEFAULT 'public/placeholder-image.svg',
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "modified_at" TIMESTAMPTZ,
@@ -90,7 +90,7 @@ CREATE TABLE "LootTable" (
 CREATE TABLE "CollectionEntry" (
     "pk_card_name" TEXT NOT NULL,
     "pk_user_id" INTEGER NOT NULL,
-    "amount" INTEGER NOT NULL,
+    "quantity" INTEGER NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "modified_at" TIMESTAMPTZ,
     CONSTRAINT "CollectionEntry_pkey" PRIMARY KEY ("pk_user_id", "pk_card_name")
@@ -110,7 +110,7 @@ CREATE TABLE "OpeningDetail" (
     "pk_pack_name" TEXT NOT NULL,
     "pk_opened_at" TIMESTAMP(3) NOT NULL,
     "pk_card_name" TEXT NOT NULL,
-    "amount" INTEGER NOT NULL,
+    "quantity" INTEGER NOT NULL,
     CONSTRAINT "OpeningDetail_pkey" PRIMARY KEY (
         "pk_user_id",
         "pk_pack_name",
@@ -137,7 +137,7 @@ CREATE TABLE "Trade" (
 CREATE TABLE "TradeDetail" (
     "pk_trade_id" INTEGER NOT NULL,
     "pk_card_name" VARCHAR(100) NOT NULL,
-    "amount" INTEGER NOT NULL,
+    "quantity" INTEGER NOT NULL,
     "detail_type" "TradeDetailType" NOT NULL,
     CONSTRAINT "TradeDetail_pkey" PRIMARY KEY ("pk_trade_id", "pk_card_name")
 );
@@ -164,7 +164,7 @@ ADD CONSTRAINT "UserData_BelongsTo_User" FOREIGN KEY ("pk_username") REFERENCES 
 
 -- AddForeignKey
 ALTER TABLE "CardClass"
-ADD CONSTRAINT "CardClass_IsClassifiedBy_Rarity" FOREIGN KEY ("rarityName") REFERENCES "Rarity" ("pk_name") ON DELETE RESTRICT ON UPDATE CASCADE;
+ADD CONSTRAINT "CardClass_IsClassifiedBy_Rarity" FOREIGN KEY ("rarity") REFERENCES "Rarity" ("pk_name") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "LootTable"
