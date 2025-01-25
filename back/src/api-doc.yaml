@@ -16,13 +16,15 @@ components:
             in: path
             name: cardName
             required: true
-            description: "The card's identifier"
+            description: "The card's identifier."
+            example: "valid_card_name345"
             schema:
                 $ref: "#/components/schemas/StringIdentifier"
         Username:
             in: path
             name: username
-            description: "The user's identifier"
+            description: "The user's identifier."
+            example: lazy_giraffe35
             required: true
             schema:
                 $ref: "#/components/schemas/StringIdentifier"
@@ -50,40 +52,48 @@ components:
                     $ref: "#/components/schemas/Season"
     schemas:
         Password:
-            description: "The password used for authenticating the user."
+            description: "A strong password for authentication purposes."
             type: "string"
             format: "password"
+            example: someStr0ngPassword__*
         StringIdentifier:
             type: string
             description: "A unique alphanumerical lowercase string that functions as a key."
+            example: valid_identifier123 
             pattern: "^[a-z0-9_]+$"
         User:
             type: object
+            additionalProperties: false
             properties:
                 username:
                     $ref: "#/components/schemas/StringIdentifier"
                 profileName:
                     type: string
+                    example: Lost Giraffe
                 profilePictureUrl:
                     type: string
+                    example: http://www.example.com/profilepicture.jpeg
+                    readOnly: true
                 email:
                     type: string
                     format: email
                 password:
-                    type: string
-                    format: password
+                    $ref: "#/components/schemas/Password"
                 createdAt:
                     type: string
                     format: date-time
+                    readOnly: true
         CardClassData:
             type: object
             properties:
                 title:
                     type: string
+                    example: Darker yet Darker 
                 season:
                     $ref: "#/components/schemas/Season"
                 description:
                     type: string
+                    example: Is that a cut on your face, or part of your eye? The gash weaves down as if you cry. The pain itself is reason why.
                 rarity:
                     $ref: "#/components/schemas/Rarity"
         CardClass:
@@ -94,24 +104,36 @@ components:
                           $ref: "#/components/schemas/StringIdentifier"
                       artUrl:
                           type: string
+                          example: http://www.example.com/cardart.jpeg
+                          readOnly: true
                   required: [name, title, season, description, rarity, artUrl]
         CardPackData:
             type: object
             properties:
+                name:
+                    $ref: "#/components/schemas/StringIdentifier"
                 title:
                     type: string
-                wrapperImageUrl:
-                    type: string
+                    example: Daily Card Pack 
                 drops:
                     type: array
+                    description: A list of cards' names dropped by the card pack.
                     items:
-                        $ref: "#/components/schemas/CardClass"
+                        allOf:
+                          - $ref: "#/components/schemas/StringIdentifier"
+                          - example: valid_card34
         CardPack:
             allOf:
                 - $ref: "#/components/schemas/CardPackData"
                 - properties:
-                      name:
-                          $ref: "#/components/schemas/StringIdentifier"
+                        wrapperImageUrl:
+                            type: string
+                            example: http://www.example.com/packwrapper.jpeg
+                            readOnly: true
+                        drops:
+                            type: array
+                            items:
+                                $ref: "#/components/schemas/CardClass"
                   required: [name, title, wrapperImageUrl, drops]
         Rarity:
             type: string
@@ -120,6 +142,21 @@ components:
             type: string
             enum: [Season1, Season2, Season3, Season4, Season5]
     responses:
+        Unauthorized:
+            description: The client failed to authenticate itself to the server.
+        Forbidden:
+            description: The client does not have the required privileges to access the resource.
+        NotFound:
+            description: The resource requested does not exist.
+            content:
+              application/json:
+                schema:
+                    type: object
+                    required: [message]
+                    example: {"message":"User specified does not exist."}
+                    properties:
+                        message:
+                            type: string
         BadRequest:
             description: The request was invalid.
             content:
@@ -127,20 +164,20 @@ components:
                     schema:
                         type: object
                         required: [errors]
+                        additionalProperties: false
                         properties:
+                            status:
+                                type: number
+                                example: 400
                             errors:
                                 type: array
                                 items:
                                     type: object
                                     required: [message]
+                                    additionalProperties: true
+                                    example: {"message":"Received a non-unique identifier."}
                                     properties:
-                                        path:
-                                            type: string
-                                        errorCode:
-                                            type: string
                                         message:
-                                            type: string
-                                        location:
                                             type: string
         InternalServerError:
             description: "An internal server error occurred."
@@ -151,3 +188,4 @@ components:
                         properties:
                             message:
                                 type: string
+                                example: Information related to the error.

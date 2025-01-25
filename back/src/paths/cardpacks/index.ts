@@ -45,9 +45,13 @@ export default function () {
     };
 
     GET.apiDoc = {
+        summary: "Lists available card packs.",
         responses: {
+            [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
+                $ref: "#/components/responses/InternalServerError"
+            },
             [StatusCodes.OK.toString()]: {
-                description: "Lists available CardPacks.",
+                description: "Successful query.",
                 content: {
                     "application/json": {
                         schema: {
@@ -110,7 +114,7 @@ export default function () {
     };
 
     POST.apiDoc = {
-        summary: "Creates a new CardPack.",
+        summary: "Creates a new card pack.",
         requestBody: {
             required: true,
             content: {
@@ -123,8 +127,20 @@ export default function () {
             },
         },
         responses: {
+            [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
+                $ref: "#/components/responses/InternalServerError"
+            },
+            [StatusCodes.UNAUTHORIZED.toString()]: {
+                $ref: "#/components/responses/Unauthorized"
+            },
+            [StatusCodes.FORBIDDEN.toString()]: {
+                $ref: "#/components/responses/Forbidden"
+            },
+            [StatusCodes.BAD_REQUEST.toString()]: {
+                $ref: "#/components/responses/BadRequest"
+            },
             [StatusCodes.NO_CONTENT.toString()]: {
-                description: "The CardPack was created successfully.",
+                description: "The card pack was created successfully.",
             },
         },
         security: [
