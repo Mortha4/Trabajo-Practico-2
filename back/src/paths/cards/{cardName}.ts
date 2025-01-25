@@ -22,9 +22,10 @@ export default function () {
         } catch (error) {
             if (error.code === PrismaError.REQUIRED_RECORD_NOT_FOUND) {
                 const status = StatusCodes.NOT_FOUND;
-                res.status(status).send();
+                res.status(status).json({message: "The specified card does not exist."});
                 return;
             }
+            throw error;
         }
     };
 
@@ -74,9 +75,10 @@ export default function () {
         } catch (error) {
             if (error.code === PrismaError.REQUIRED_RECORD_NOT_FOUND) {
                 const status = StatusCodes.NOT_FOUND;
-                res.status(status).send();
+                res.status(status).json({message: "The specified card does not exist."});
                 return;
             }
+            throw error;
         }
     };
 

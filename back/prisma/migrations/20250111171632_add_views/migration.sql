@@ -23,7 +23,17 @@ SELECT
     "UserData"."password",
     "UserData".privilege,
     "UserData".created_at,
-    "UserData".modified_at
+    "UserData".modified_at,
+    "CollectionStats".cards_seen,
+    "CollectionStats".cards_collected
 FROM
     "User"
-    LEFT JOIN "UserData" ON "User".fk_username_uq = "UserData".pk_username;
+    LEFT JOIN "UserData" ON "User".fk_username_uq = "UserData".pk_username
+    LEFT JOIN (
+        SELECT
+            "CollectionEntry".pk_user_id,
+            SUM("CollectionEntry".quantity) AS cards_collected,
+            COUNT("CollectionEntry".pk_card_name) AS cards_seen
+        FROM "CollectionEntry"
+        GROUP BY "CollectionEntry".pk_user_id
+    ) AS "CollectionStats" ON "User".pk_user_id = "CollectionStats".pk_user_id; 

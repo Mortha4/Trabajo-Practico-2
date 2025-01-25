@@ -8,4 +8,4 @@ RUN npm ci
 
 COPY . .
 
-CMD [ "npm", "run", "dev" ]
+ENTRYPOINT [ "npm", "run", "dev" ]

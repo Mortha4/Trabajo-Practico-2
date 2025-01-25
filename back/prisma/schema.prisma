@@ -105,6 +105,8 @@ view FlattenedUser {
     privilege          UserPrivilege?
     createdAt          DateTime?      @map("created_at") @db.Timestamptz()
     modifiedAt         DateTime?      @map("modified_at") @db.Timestamptz()
+    cardSeen Int @map("cards_seen")
+    cardCollected Int @map("cards_collected")
 
     @@map("vw_FlattenedUser")
 }
@@ -143,8 +145,8 @@ model CardClass {
 model LootTable {
     packName String       @map("pk_pack_name")
     cardName String       @map("pk_card_name")
-    pack     CardPackType @relation(name: "CardPackType_Drops_CardClass", map: "CardPackType_Drops_CardClass", fields: [packName], references: [name])
-    card     CardClass    @relation(name: "CardClass_IsDroppedBy_CardPackType", map: "CardClass_IsDroppedBy_CardPackType", fields: [cardName], references: [name])
+    pack     CardPackType @relation(name: "CardPackType_Drops_CardClass", map: "CardPackType_Drops_CardClass", fields: [packName], references: [name], onDelete: Cascade, onUpdate: Cascade)
+    card     CardClass    @relation(name: "CardClass_IsDroppedBy_CardPackType", map: "CardClass_IsDroppedBy_CardPackType", fields: [cardName], references: [name], onDelete: Cascade, onUpdate: Cascade)
 
     openings OpeningDetail[] @relation(name: "OpeningDetail_IsConsistentWith_LootTable")
 
@@ -168,7 +170,7 @@ model PackOpening {
     packName String          @map("pk_pack_name")
     openedAt DateTime        @default(now()) @map("pk_opened_at") @db.Timestamptz()
     user     User            @relation(name: "PackOpening_IsPerformedBy_User", map: "PackOpening_IsPerformedBy_User", fields: [userId], references: [id])
-    pack     CardPackType    @relation(name: "PackOpening_Opens_CardPackType", map: "PackOpening_Opens_CardPackType", fields: [packName], references: [name])
+    pack     CardPackType    @relation(name: "PackOpening_Opens_CardPackType", map: "PackOpening_Opens_CardPackType", fields: [packName], references: [name], onDelete: Cascade, onUpdate: Cascade)
     details  OpeningDetail[] @relation(name: "OpeningDetail_BelongsTo_PackOpening")
 
     @@id([userId, packName, openedAt])
@@ -182,7 +184,7 @@ model OpeningDetail {
     quantity Int
 
     packOpening PackOpening @relation(name: "OpeningDetail_BelongsTo_PackOpening", map: "OpeningDetail_BelongsTo_PackOpening", fields: [userId, packName, openedAt], references: [userId, packName, openedAt])
-    lootEntry   LootTable   @relation(name: "OpeningDetail_IsConsistentWith_LootTable", map: "OpeningDetail_IsConsistentWith_LootTable", fields: [packName, cardName], references: [packName, cardName])
+    lootEntry   LootTable   @relation(name: "OpeningDetail_IsConsistentWith_LootTable", map: "OpeningDetail_IsConsistentWith_LootTable", fields: [packName, cardName], references: [packName, cardName], onDelete: Cascade, onUpdate: Cascade)
 
     @@id([userId, packName, openedAt, cardName])
 }
@@ -195,9 +197,9 @@ model Trade {
     offerType      TradeType     @default(PublicOffer) @map("offer_type")
     offererId      Int           @map("fk_offerer_id") /// cascade delete enforced through tg_UserData_BeforeDelete
     receiverId     Int?          @map("fk_receiver_id") /// cascade delete enforced through tg_UserData_BeforeDelete
-    details        TradeDetail[] @relation(name: "TradeDetail_BelongsTo_Trade")
     createdAt      DateTime      @default(now()) @map("created_at") @db.Timestamptz()
     modifiedAt     DateTime?     @updatedAt @map("modified_at") @db.Timestamptz()
+    details        TradeDetail[] @relation(name: "TradeDetail_BelongsTo_Trade")
     offerer        User          @relation(name: "Trade_IsOfferedBy_User", map: "Trade_IsOfferedBy_User", fields: [offererId], references: [id])
     receiver       User?         @relation(name: "Trade_IsReceivedBy_User", map: "Trade_IsReceivedBy_User", fields: [receiverId], references: [id])
 
@@ -223,7 +225,7 @@ model TradeDetail {
     tradeId    Int             @map("pk_trade_id")
     offer      Trade           @relation(name: "TradeDetail_BelongsTo_Trade", map: "TradeDetail_BelongsTo_Trade", fields: [tradeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
     cardName   String          @map("pk_card_name") @db.VarChar(100)
-    card       CardClass       @relation(name: "TradeDetail_Features_CardClass", map: "TradeDetail_Features_CardClass", fields: [cardName], references: [name])
+    card       CardClass       @relation(name: "TradeDetail_Features_CardClass", map: "TradeDetail_Features_CardClass", fields: [cardName], references: [name], onDelete: Cascade, onUpdate: Cascade)
     quantity   Int
     detailType TradeDetailType @map("detail_type")
 
