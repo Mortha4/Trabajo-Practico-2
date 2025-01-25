@@ -6,7 +6,6 @@ export default function () {
     const GET: Operation = async (req, res) => {
         const users = await prisma.flattenedUser.findMany({
             select: {
-                id: true,
                 username: true,
                 profileName: true,
                 profilePicturePath: true,
@@ -21,9 +20,16 @@ export default function () {
     };
 
     GET.apiDoc = {
+        summary: "Lists registered users.",
         responses: {
+            [StatusCodes.UNAUTHORIZED.toString()]: {
+                $ref: "#/components/responses/Unauthorized"
+            },
+            [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
+                $ref: "#/components/responses/InternalServerError"
+            },
             [StatusCodes.OK.toString()]: {
-                description: "Lists registered users.",
+                description: "Successful query.",
                 content: {
                     "application/json": {
                         schema: {
@@ -100,7 +106,7 @@ export default function () {
     };
 
     POST.apiDoc = {
-        summary: "Creates a new User.",
+        summary: "Creates a new user.",
         requestBody: {
             required: true,
             content: {
@@ -113,6 +119,12 @@ export default function () {
             },
         },
         responses: {
+            [StatusCodes.BAD_REQUEST.toString()]: {
+                $ref: "#/components/responses/BadRequest"
+            },
+            [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
+                $ref: "#/components/responses/InternalServerError"
+            },
             [StatusCodes.NO_CONTENT.toString()]: {
                 description: "The user was created successfully.",
             },

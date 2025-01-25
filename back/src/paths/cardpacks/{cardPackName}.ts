@@ -22,13 +22,22 @@ export default function () {
     };
 
     DELETE.apiDoc = {
-        summary: "Delete a CardPack",
+        summary: "Deletes a card pack.",
         responses: {
+            [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
+                $ref: "#/components/responses/InternalServerError"
+            },
+            [StatusCodes.UNAUTHORIZED.toString()]: {
+                $ref: "#/components/responses/Unauthorized"
+            },
+            [StatusCodes.FORBIDDEN.toString()]: {
+                $ref: "#/components/responses/Forbidden"
+            },
             [StatusCodes.NO_CONTENT.toString()]: {
-                description: "CardPack deleted successfully.",
+                description: "The card pack was deleted successfully.",
             },
             [StatusCodes.NOT_FOUND.toString()]: {
-                description: "The CardPack specified does not exist.",
+                description: "The card pack specified does not exist.",
             },
         },
         security: [
@@ -67,6 +76,7 @@ export default function () {
     };
 
     PATCH.apiDoc = {
+        summary: "Updates a card pack.",
         parameters: [
             {
                 in: "path",
@@ -90,13 +100,24 @@ export default function () {
                 },
             },
         },
-        summary: "Update a CardPack.",
         responses: {
+            [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
+                $ref: "#/components/responses/InternalServerError"
+            },
+            [StatusCodes.UNAUTHORIZED.toString()]: {
+                $ref: "#/components/responses/Unauthorized"
+            },
+            [StatusCodes.FORBIDDEN.toString()]: {
+                $ref: "#/components/responses/Forbidden"
+            },
+            [StatusCodes.BAD_REQUEST.toString()]: {
+                $ref: "#/components/responses/BadRequest"
+            },
             [StatusCodes.NO_CONTENT.toString()]: {
-                description: "Update the information of the CardPack.",
+                description: "The card pack was updated successfully.",
             },
             [StatusCodes.NOT_FOUND.toString()]: {
-                description: "The CardPack specified does not exist.",
+                $ref: "#/components/responses/NotFound"
             },
         },
         security: [

@@ -29,13 +29,23 @@ export default function () {
     };
 
     DELETE.apiDoc = {
+        summary: "Deletes a card.",
         parameters: [{ $ref: "#/components/parameters/CardName" }],
         responses: {
-            [StatusCodes.OK.toString()]: {
-                description: "The specified Card was deleted successfully.",
+            [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
+                $ref: "#/components/responses/InternalServerError"
+            },
+            [StatusCodes.UNAUTHORIZED.toString()]: {
+                $ref: "#/components/responses/Unauthorized"
+            },
+            [StatusCodes.FORBIDDEN.toString()]: {
+                $ref: "#/components/responses/Forbidden"
             },
             [StatusCodes.NOT_FOUND.toString()]: {
-                description: "The specified Card does not exist.",
+                $ref: "#/components/responses/NotFound"
+            },
+            [StatusCodes.NO_CONTENT.toString()]: {
+                description: "The card was deleted successfully.",
             },
         },
         security: [
@@ -71,6 +81,7 @@ export default function () {
     };
 
     PATCH.apiDoc = {
+        summary: "Updates a card.",
         parameters: [{ $ref: "#/components/parameters/CardName" }],
         requestBody: {
             content: {
@@ -87,11 +98,23 @@ export default function () {
             },
         },
         responses: {
-            [StatusCodes.OK.toString()]: {
-                description: "The Card was updates successfully.",
+            [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
+                $ref: "#/components/responses/InternalServerError"
+            },
+            [StatusCodes.UNAUTHORIZED.toString()]: {
+                $ref: "#/components/responses/Unauthorized"
+            },
+            [StatusCodes.FORBIDDEN.toString()]: {
+                $ref: "#/components/responses/Forbidden"
+            },
+            [StatusCodes.BAD_REQUEST.toString()]: {
+                $ref: "#/components/responses/BadRequest"
+            },
+            [StatusCodes.NO_CONTENT.toString()]: {
+                description: "The card was updated successfully.",
             },
             [StatusCodes.NOT_FOUND.toString()]: {
-                description: "The Card specified does not exist.",
+                $ref: "#/components/responses/NotFound"
             },
         },
         security: [

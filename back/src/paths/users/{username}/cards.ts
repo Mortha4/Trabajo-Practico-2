@@ -109,6 +109,7 @@ export default function () {
     };
 
     GET.apiDoc = {
+        summary: "Lists the cards in the user's collection.",
         parameters: [
             {
                 $ref: "#/components/parameters/Username",
@@ -144,13 +145,23 @@ export default function () {
                 in: "query",
                 name: "title",
                 allowEmptyValue: false,
-                description: "Filter cards that don't match the title",
+                description: "Filter cards that don't match the title.",
+                example: "dark",
                 schema: {
                     type: "string",
                 },
             },
         ],
         responses: {
+            [StatusCodes.UNAUTHORIZED.toString()]: {
+                $ref: "#/components/responses/Unauthorized"
+            },
+            [StatusCodes.FORBIDDEN.toString()]: {
+                $ref: "#/components/responses/Forbidden"
+            },
+            [StatusCodes.NOT_FOUND.toString()]: {
+                $ref: "#/components/responses/NotFound"
+            },
             [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
                 $ref: "#/components/responses/InternalServerError",
             },
@@ -158,7 +169,7 @@ export default function () {
                 $ref: "#/components/responses/BadRequest",
             },
             [StatusCodes.OK.toString()]: {
-                description: "Lists the cards belonging to the user.",
+                description: "Successful query.",
                 content: {
                     "application/json": {
                         schema: {

@@ -1,6 +1,6 @@
 import { OpenAPIV3 } from "openapi-types";
 import { Operation } from "express-openapi";
-import { prisma, PrismaError } from "../../../globals.js";
+import { prisma, PrismaError, SecurityScopes } from "../../../globals.js";
 import { StatusCodes } from "http-status-codes";
 
 export default function () {
@@ -41,14 +41,16 @@ export default function () {
         },
     };
 
+    // TODO: transition to Basic authentication
     POST.apiDoc = {
+        summary: "Creates a new session.",
         parameters: [
             {
                 $ref: "#/components/parameters/Username",
             },
         ],
         requestBody: {
-            description: "The credentials needed to crate a new Session",
+            description: "The credentials needed to crate a new session.",
             required: true,
             content: {
                 "application/json": {
@@ -60,6 +62,9 @@ export default function () {
             },
         },
         responses: {
+            [StatusCodes.BAD_REQUEST.toString()]: {
+                $ref: "#/components/responses/BadRequest"
+            },
             [StatusCodes.OK.toString()]: {
                 description: "The session was created successfully.",
                 content: {
@@ -70,18 +75,27 @@ export default function () {
                             properties: {
                                 token: {
                                     type: "string",
+                                    example: "abcde12345"
                                 },
                             },
-                        },
+                        }
                     },
                 },
+                headers: {
+                    "Set-Cookie": {
+                        schema: {
+                            type: "string",
+                            example: "token=abcde12345; Path=/; HttpOnly"
+                        }
+                    }
+                }           
             },
             [StatusCodes.NOT_FOUND.toString()]: {
                 // TODO: add middleware under /users/{username} to check if user exists
-                description: "The user specified does not exist.",
+                $ref: "#/components/responses/NotFound"
             },
             [StatusCodes.UNAUTHORIZED.toString()]: {
-                description: "Wrong credentials.",
+                $ref: "#/components/responses/Unauthorized",
             },
             [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
                 $ref: "#/components/responses/InternalServerError",
@@ -96,15 +110,28 @@ export default function () {
     };
 
     DELETE.apiDoc = {
+        summary: "Terminates the current session.",
         parameters: [{ $ref: "#/components/parameters/Username" }],
         responses: {
+            [StatusCodes.UNAUTHORIZED.toString()]: {
+                $ref: "#/components/responses/Unauthorized"
+            },
+            [StatusCodes.FORBIDDEN.toString()]: {
+                $ref: "#/components/responses/Forbidden"
+            },
+            [StatusCodes.NOT_FOUND.toString()]: {
+                $ref: "#/components/responses/NotFound"
+            },
+            [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
+                $ref: "#/components/responses/InternalServerError"
+            },
             [StatusCodes.NO_CONTENT.toString()]: {
                 description: "The session was successfully terminated.",
             },
         },
         security: [
             {
-                CookieAuth: [],
+                CookieAuth: [SecurityScopes.Self],
             },
         ],
     };

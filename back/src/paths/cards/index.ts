@@ -26,9 +26,13 @@ export default function () {
     };
 
     GET.apiDoc = {
-        responses: {
+        summary: "Lists available cards.",
+        responses: { 
+            [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
+                $ref: "#/components/responses/InternalServerError"
+            },
             [StatusCodes.OK.toString()]: {
-                description: "Lists available Cards.",
+                description: "Successful query.",
                 content: {
                     "application/json": {
                         schema: {
@@ -120,6 +124,18 @@ export default function () {
             },
         },
         responses: {
+            [StatusCodes.UNAUTHORIZED.toString()]: {
+                $ref: "#/components/responses/Unauthorized"
+            },
+            [StatusCodes.FORBIDDEN.toString()]: {
+                $ref: "#/components/responses/Forbidden"
+            },
+            [StatusCodes.BAD_REQUEST.toString()]: {
+                $ref: "#/components/responses/BadRequest"
+            },
+            [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
+                $ref: "#/components/responses/InternalServerError"
+            },
             [StatusCodes.NO_CONTENT.toString()]: {
                 description: "The card was created successfully.",
             },
