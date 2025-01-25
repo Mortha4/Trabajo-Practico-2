@@ -7,6 +7,9 @@ servers:
 paths: {}
 components:
     securitySchemes:
+        BasicAuth:
+            type: http
+            scheme: basic
         CookieAuth:
             type: apiKey
             in: cookie
@@ -98,7 +101,6 @@ components:
                     $ref: "#/components/schemas/Rarity"
         CardClass:
             allOf:
-                - $ref: "#/components/schemas/CardClassData"
                 - properties:
                       name:
                           $ref: "#/components/schemas/StringIdentifier"
@@ -107,11 +109,10 @@ components:
                           example: http://www.example.com/cardart.jpeg
                           readOnly: true
                   required: [name, title, season, description, rarity, artUrl]
+                - $ref: "#/components/schemas/CardClassData"
         CardPackData:
             type: object
-            properties:
-                name:
-                    $ref: "#/components/schemas/StringIdentifier"
+            properties: 
                 title:
                     type: string
                     example: Daily Card Pack 
@@ -126,14 +127,16 @@ components:
             allOf:
                 - $ref: "#/components/schemas/CardPackData"
                 - properties:
-                        wrapperImageUrl:
-                            type: string
-                            example: http://www.example.com/packwrapper.jpeg
-                            readOnly: true
-                        drops:
-                            type: array
-                            items:
-                                $ref: "#/components/schemas/CardClass"
+                    name:
+                        $ref: "#/components/schemas/StringIdentifier"
+                    wrapperImageUrl:
+                        type: string
+                        example: http://www.example.com/packwrapper.jpeg
+                        readOnly: true
+                    drops:
+                        type: array
+                        items:
+                            $ref: "#/components/schemas/CardClass"
                   required: [name, title, wrapperImageUrl, drops]
         Rarity:
             type: string

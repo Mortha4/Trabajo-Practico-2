@@ -76,37 +76,25 @@ export default function () {
             res.status(StatusCodes.NO_CONTENT).send();
             return;
         } catch (error) {
-            if (!(error instanceof Prisma.PrismaClientKnownRequestError)) {
-                console.log("Encountered unknown database error: ", error);
-                res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
-                return;
-            }
-
             if (error.code === PrismaError.UNIQUE_CONSTRAINT_VIOLATION) {
                 const fields = error.meta.target as string[];
                 const status = StatusCodes.BAD_REQUEST;
                 res.status(status).json({
                     status,
-                    errors: `${fields[0]} already exists. A new card cannot be created with the same value.`,
+                    errors: [{message: `${fields[0]} already exists. A new card cannot be created with the same value.`}],
                 });
                 return;
-            } else {
-                console.log(
-                    "Encountered know but unhandled database error: ",
-                    error
-                );
-                res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
-                return;
-            }
+            } 
+            throw error;
         }
     };
 
     const postRequestSchema: OpenAPIV3.SchemaObject = {
         allOf: [
-            { $ref: "#/components/schemas/CardClass" },
             {
                 required: ["name", "title", "season", "description", "rarity"],
             },
+            { $ref: "#/components/schemas/CardClass" },
         ],
     };
 

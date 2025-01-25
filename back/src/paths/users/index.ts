@@ -89,10 +89,10 @@ export default function () {
                         },
                     ],
                 });
-            } else {
-                console.log("Encountered unknown database error: ", error);
-                res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
+                return;
             }
+            throw error;
+
         }
     };
 

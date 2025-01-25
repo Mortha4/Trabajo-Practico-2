@@ -2,19 +2,17 @@ import { describe, it } from "node:test";
 import assert from "node:assert";
 import { StatusCodes } from "http-status-codes";
 
-const url = "http://localhost:3000";
+const url = "http://localhost:3000/api/v1";
 
-describe("POST /users/marxel/sessions", function () {
+describe("POST /session", function () {
     it("should start a new session", async function () {
-        const authRequest = await fetch(`${url}/users/marxel/sessions`, {
+        const authRequest = await fetch(`${url}/session`, {
             method: "POST",
             headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                password: "Breaking_Bad_TCG",
-            }),
+                "Authorization": `Basic ${Buffer.from("marxel:Breaking_Bad_TCG").toString("base64")}`
+            }
         });
         assert.equal(
             authRequest.status,
@@ -24,16 +22,38 @@ describe("POST /users/marxel/sessions", function () {
     });
 });
 
-describe("GET /users", async function () {
-    const authRequest = await fetch(`${url}/users/marxel/sessions`, {
+describe("GET /session", async function () {
+    const authRequest = await fetch(`${url}/session`, {
         method: "POST",
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            password: "Breaking_Bad_TCG",
-        }),
+            "Authorization": `Basic ${Buffer.from("marxel:Breaking_Bad_TCG").toString("base64")}`
+        }
+    });
+    
+    it("should retrieve session information", async function () {
+        const res = await fetch(`${url}/session`, {
+            headers: {
+                Cookie: `${authRequest.headers.getSetCookie()}`
+            }
+        });
+        assert.equal(
+            res.status,
+            StatusCodes.OK,
+            "Couldnt authenticate"
+        );
+    });
+});
+
+describe("GET /users", async function () {
+    const authRequest = await fetch(`${url}/session`, {
+        method: "POST",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            "Authorization": `Basic ${Buffer.from("marxel:Breaking_Bad_TCG").toString("base64")}`
+        }
     });
     assert.equal(authRequest.status, StatusCodes.OK, "Couldnt authenticate");
 
@@ -85,15 +105,13 @@ describe("GET /cardpacks", function () {
 });
 
 describe("GET /users/marxel/cards", async function () {
-    const authRequest = await fetch(`${url}/users/marxel/sessions`, {
+    const authRequest = await fetch(`${url}/session`, {
         method: "POST",
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-            password: "Breaking_Bad_TCG",
-        }),
+            "Authorization": `Basic ${Buffer.from("marxel:Breaking_Bad_TCG").toString("base64")}`
+        }
     });
     it("should return a list of cards belonging to user marxel", async function () {
         const res = await fetch(`${url}/users/marxel/cards`, {

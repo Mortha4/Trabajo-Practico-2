@@ -15,7 +15,7 @@ export default function () {
         } catch (error) {
             if (error.code === PrismaError.REQUIRED_RECORD_NOT_FOUND) {
                 const status = StatusCodes.NOT_FOUND;
-                res.status(status).send();
+                res.status(status).json({message: "The specified card pack does not exist."});
                 return;
             }
         }
@@ -37,7 +37,7 @@ export default function () {
                 description: "The card pack was deleted successfully.",
             },
             [StatusCodes.NOT_FOUND.toString()]: {
-                description: "The card pack specified does not exist.",
+                $ref: "#/components/responses/NotFound"
             },
         },
         security: [
@@ -49,29 +49,38 @@ export default function () {
 
     const PATCH: Operation = async (req, res) => {
         const { cardPackName } = req.params;
-        const { title, season, description, rarity } = req.body;
+        const { title, drops } = req.body;
 
         try {
-            await prisma.cardClass.update({
-                where: { name: cardPackName },
-                data: {
-                    title,
-                    season,
-                    description,
-                    rarity,
-                },
-            });
+            await prisma.$transaction([
+                prisma.cardPackType.update({
+                    where: { name: cardPackName },
+                    data: {
+                        title,
+                    },
+                }),
+                prisma.lootTable.deleteMany({
+                    where: {
+                        packName: cardPackName
+                    }
+                }),
+                prisma.lootTable.createMany({
+                    data: drops.map(cardName => ({packName: cardPackName, cardName}))
+                }),
+            ]); 
             res.status(StatusCodes.NO_CONTENT).send();
             return;
         } catch (error) {
             if (error.code === PrismaError.REQUIRED_RECORD_NOT_FOUND) {
                 const status = StatusCodes.NOT_FOUND;
-                res.status(status).send();
+                res.status(status).json({message: "The specified cark pack does not exist."});
+                return;
+            } else if (error.code === PrismaError.FOREIGN_KEY_CONSTRAINT_VIOLATION) {
+                const status = StatusCodes.BAD_REQUEST;
+                res.status(status).json({errors: [{message: "A card specified in the drops list does not exist."}]});
                 return;
             }
-            else {
-                throw error
-            }
+            throw error;
         }
     };
 

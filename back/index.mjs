@@ -7,7 +7,7 @@ import session from "express-session";
 import validateAllResponses from "./src/middleware/validateAllResponses.js";
 import { prisma } from "./src/globals.js";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
-import isAuthenticated from "./src/middleware/isAuthenticated.js";
+import { cookieAuth, basicAuth } from "./src/middleware/Authentication.js";
 import { StatusCodes } from "http-status-codes";
 import OpenAPIRequestValidator from "openapi-request-validator";
 
@@ -40,7 +40,8 @@ initialize({
         }),
     },
     securityHandlers: {
-        CookieAuth: isAuthenticated,
+        CookieAuth: cookieAuth,
+        BasicAuth: basicAuth 
     },
     errorMiddleware: (err, req, res, next) => {
         if (err.status) {
@@ -79,7 +80,7 @@ app.use(
 app.use(
     "/docs",
     swaggerUi.serve,
-    swaggerUi.setup(null, { swaggerOptions: { url: "/docs.json" } })
+    swaggerUi.setup(null, { swaggerOptions: { url: "/api/v1/docs.json" } })
 );
 
 app.listen(PORT, () => console.log(`API listening on port ${PORT}`));

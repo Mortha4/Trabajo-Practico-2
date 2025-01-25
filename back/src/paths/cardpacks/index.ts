@@ -40,7 +40,7 @@ export default function () {
             });
             delete pack.wrapperImagePath;
         });
-
+        
         res.json(cards);
     };
 
@@ -57,8 +57,28 @@ export default function () {
                         schema: {
                             type: "array",
                             items: {
-                                $ref: "#/components/schemas/CardPack",
-                            },
+                                type: "object",
+                                properties: {
+                                    name: {
+                                        $ref: "#/components/schemas/StringIdentifier"
+                                    },
+                                    title: {
+                                        type: "string",
+                                        example: "Daily Card Pack"
+                                    },
+                                    wrapperImageUrl: {
+                                        type: "string",
+                                        example: "http://www.example.com/packwrapper.jpeg",
+                                        readOnly: true
+                                    },
+                                    drops: {
+                                        type: "array",
+                                        items: {
+                                            $ref: "#/components/schemas/CardClass"                                                            
+                                        }
+                                    }
+                                }
+                            }
                         },
                     },
                 },
@@ -67,50 +87,64 @@ export default function () {
     };
 
     const POST: Operation = async (req, res) => {
-        const { name, title } = req.body;
-
+        const { name, title, drops } = req.body;
+        const lootEntries = drops.map(cardName => (
+            {
+                create: {
+                    cardName
+                },
+                where: {
+                    packName_cardName: {
+                        packName: name,
+                        cardName
+                    }
+                }
+            }
+        ));
         try {
             await prisma.cardPackType.create({
                 data: {
                     name,
                     title,
+                    drops: {
+                        connectOrCreate: lootEntries 
+                    }
                 },
             });
             res.status(StatusCodes.NO_CONTENT).send();
             return;
         } catch (error) {
-            if (!(error instanceof Prisma.PrismaClientKnownRequestError)) {
-                console.log("Encountered unknown database error: ", error);
-                res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
-                return;
-            }
-
             if (error.code === PrismaError.UNIQUE_CONSTRAINT_VIOLATION) {
                 const fields = error.meta.target as string[];
                 const status = StatusCodes.BAD_REQUEST;
                 res.status(status).json({
                     status,
-                    errors: `${fields[0]} already exists. A new cardpack cannot be created with the same value.`,
+                    errors: [{message: `${fields[0]} already exists. A new cardpack cannot be created with the same value.`}],
                 });
                 return;
-            } else {
-                console.log(
-                    "Encountered know but unhandled database error: ",
-                    error
-                );
-                res.status(StatusCodes.INTERNAL_SERVER_ERROR).send();
+            } else if (error.code === PrismaError.FOREIGN_KEY_CONSTRAINT_VIOLATION) {
+                const status = StatusCodes.BAD_REQUEST;
+                res.status(status).json({
+                    status,
+                    errors: [{message: `A card specified in the drops list does not exist.`}],
+                });
                 return;
             }
+            throw error;
         }
     };
 
-    const postRequestSchema: OpenAPIV3.SchemaObject = {
+    const postCardPackSchema = {
         allOf: [
-            { $ref: "#/components/schemas/CardPack" },
             {
-                required: ["name", "title", "wrapperImageUrl", "drops"],
+                properties: {
+                    name: {
+                        $ref: "#/components/schemas/StringIdentifier"
+                    }
+                }
             },
-        ],
+            { $ref: "#/components/schemas/CardPackData" },
+        ]
     };
 
     POST.apiDoc = {
@@ -119,10 +153,10 @@ export default function () {
             required: true,
             content: {
                 "application/json": {
-                    schema: postRequestSchema,
+                    schema: postCardPackSchema
                 },
                 "application/x-www-form-urlencoded": {
-                    schema: postRequestSchema,
+                    schema: postCardPackSchema,
                 },
             },
         },
