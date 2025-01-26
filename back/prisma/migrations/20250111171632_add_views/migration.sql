@@ -34,6 +34,8 @@ FROM
             "CollectionEntry".pk_user_id,
             SUM("CollectionEntry".quantity) AS cards_collected,
             COUNT("CollectionEntry".pk_card_name) AS cards_seen
-        FROM "CollectionEntry"
-        GROUP BY "CollectionEntry".pk_user_id
-    ) AS "CollectionStats" ON "User".pk_user_id = "CollectionStats".pk_user_id; 
+        FROM
+            "CollectionEntry"
+        GROUP BY
+            "CollectionEntry".pk_user_id
+    ) AS "CollectionStats" ON "User".pk_user_id = "CollectionStats".pk_user_id;

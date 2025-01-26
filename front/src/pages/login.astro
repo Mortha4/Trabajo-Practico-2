@@ -1,9 +1,10 @@
 ---
 import GenericLayout from "../layouts/GenericLayout.astro";
+const API_URL = import.meta.env.API_URL;
 ---
 
 <GenericLayout class="is-flex is-justify-content-center is-align-items-center">
-    <form class="box">
+    <form class="box" id="login-form">
         <div class="logo">
             <a class="is-flex is-justify-content-center" href="/">
                 <i
@@ -16,27 +17,34 @@ import GenericLayout from "../layouts/GenericLayout.astro";
             <label class="label">Username</label>
             <div class="control has-icons-left has-icons-right">
                 <input
-                    class="input is-success"
+                    class="input"
                     type="text"
-                    placeholder="Text input"
-                    value="bulma"
+                    placeholder="Enter your username"
+                    name="username"
                 />
                 <span class="icon is-small is-left">
                     <i class="fas fa-user"></i>
                 </span>
-                <span class="icon is-small is-right">
-                    <i class="fas fa-check"></i>
-                </span>
             </div>
-            <p class="help is-success">This username is available</p>
         </div>
         <div class="field">
             <label class="label">Password</label>
             <p class="control has-icons-left">
-                <input class="input" type="password" placeholder="Password" />
+                <input
+                    class="input"
+                    type="password"
+                    placeholder="Password"
+                    name="password"
+                />
                 <span class="icon is-small is-left">
                     <i class="fas fa-lock"></i>
                 </span>
+            </p>
+            <p id="login-fail-message" class="help is-danger is-hidden">
+                Wrong username or password.
+            </p>
+            <p id="server-fail-message" class="help is-danger is-hidden">
+                Something went wrong. Try again later.
             </p>
         </div>
         <div class="field is-grouped is-justify-content-space-between">
@@ -44,12 +52,43 @@ import GenericLayout from "../layouts/GenericLayout.astro";
                 <a href="/signup"> Dont have an account? Sign up! </a>
             </p>
             <div class="control">
-                <button type="submit" disabled class="button is-primary"
-                    >Log in</button
-                >
+                <button type="submit" class="button is-primary">Log in</button>
             </div>
         </div>
     </form>
+    <script define:vars={{ API_URL }}>
+        document
+            .getElementById("login-form")
+            .addEventListener("submit", async function (event) {
+                event.preventDefault();
+                const loginFail = document.getElementById("login-fail-message");
+                const serverFail = document.getElementById(
+                    "server-fail-message"
+                );
+                loginFail.classList.add("is-hidden");
+                serverFail.classList.add("is-hidden");
+                const form = event.target;
+                const formData = new FormData(form);
+                const username = formData.get("username");
+                const password = formData.get("password");
+                const response = await fetch(`${API_URL}/api/v1/session`, {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                        Authorization: `Basic ${btoa(`${username}:${password}`)}`,
+                    },
+                    credentials: "include",
+                });
+                if (response.status === 200) {
+                    window.location.replace(`/dashboard`);
+                } else if (response.status === 401) {
+                    loginFail.classList.remove("is-hidden");
+                } else {
+                    serverFail.classList.remove("is-hidden");
+                }
+            });
+    </script>
 </GenericLayout>
 <style>
     .logo > a {

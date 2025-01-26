@@ -15,7 +15,9 @@ export default function () {
         } catch (error) {
             if (error.code === PrismaError.REQUIRED_RECORD_NOT_FOUND) {
                 const status = StatusCodes.NOT_FOUND;
-                res.status(status).json({message: "The specified card pack does not exist."});
+                res.status(status).json({
+                    message: "The specified card pack does not exist.",
+                });
                 return;
             }
         }
@@ -25,19 +27,19 @@ export default function () {
         summary: "Deletes a card pack.",
         responses: {
             [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
-                $ref: "#/components/responses/InternalServerError"
+                $ref: "#/components/responses/InternalServerError",
             },
             [StatusCodes.UNAUTHORIZED.toString()]: {
-                $ref: "#/components/responses/Unauthorized"
+                $ref: "#/components/responses/Unauthorized",
             },
             [StatusCodes.FORBIDDEN.toString()]: {
-                $ref: "#/components/responses/Forbidden"
+                $ref: "#/components/responses/Forbidden",
             },
             [StatusCodes.NO_CONTENT.toString()]: {
                 description: "The card pack was deleted successfully.",
             },
             [StatusCodes.NOT_FOUND.toString()]: {
-                $ref: "#/components/responses/NotFound"
+                $ref: "#/components/responses/NotFound",
             },
         },
         security: [
@@ -61,23 +63,37 @@ export default function () {
                 }),
                 prisma.lootTable.deleteMany({
                     where: {
-                        packName: cardPackName
-                    }
+                        packName: cardPackName,
+                    },
                 }),
                 prisma.lootTable.createMany({
-                    data: drops.map(cardName => ({packName: cardPackName, cardName}))
+                    data: drops.map((cardName) => ({
+                        packName: cardPackName,
+                        cardName,
+                    })),
                 }),
-            ]); 
+            ]);
             res.status(StatusCodes.NO_CONTENT).send();
             return;
         } catch (error) {
             if (error.code === PrismaError.REQUIRED_RECORD_NOT_FOUND) {
                 const status = StatusCodes.NOT_FOUND;
-                res.status(status).json({message: "The specified cark pack does not exist."});
+                res.status(status).json({
+                    message: "The specified cark pack does not exist.",
+                });
                 return;
-            } else if (error.code === PrismaError.FOREIGN_KEY_CONSTRAINT_VIOLATION) {
+            } else if (
+                error.code === PrismaError.FOREIGN_KEY_CONSTRAINT_VIOLATION
+            ) {
                 const status = StatusCodes.BAD_REQUEST;
-                res.status(status).json({errors: [{message: "A card specified in the drops list does not exist."}]});
+                res.status(status).json({
+                    errors: [
+                        {
+                            message:
+                                "A card specified in the drops list does not exist.",
+                        },
+                    ],
+                });
                 return;
             }
             throw error;
@@ -111,22 +127,22 @@ export default function () {
         },
         responses: {
             [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
-                $ref: "#/components/responses/InternalServerError"
+                $ref: "#/components/responses/InternalServerError",
             },
             [StatusCodes.UNAUTHORIZED.toString()]: {
-                $ref: "#/components/responses/Unauthorized"
+                $ref: "#/components/responses/Unauthorized",
             },
             [StatusCodes.FORBIDDEN.toString()]: {
-                $ref: "#/components/responses/Forbidden"
+                $ref: "#/components/responses/Forbidden",
             },
             [StatusCodes.BAD_REQUEST.toString()]: {
-                $ref: "#/components/responses/BadRequest"
+                $ref: "#/components/responses/BadRequest",
             },
             [StatusCodes.NO_CONTENT.toString()]: {
                 description: "The card pack was updated successfully.",
             },
             [StatusCodes.NOT_FOUND.toString()]: {
-                $ref: "#/components/responses/NotFound"
+                $ref: "#/components/responses/NotFound",
             },
         },
         security: [

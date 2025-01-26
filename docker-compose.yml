@@ -42,23 +42,25 @@ services:
             - /back/node_modules
         networks:
             - app-network
-    
+
     frontend:
         container_name: frontend
         stdin_open: true
-        image: node:23-alpine3.20
         build:
             context: front/
             dockerfile: front.dockerfile
         environment:
             - API_URL
+            - API_DOMAIN
+            - FRONT_DOMAIN
+            - FRONT_URL
         ports:
-          - 80:4321
+            - 80:4321
         volumes:
-          - ./front:/front
-          - /front/node_modules
+            - ./front:/front
+            - /front/node_modules
         networks:
-            - app-network 
+            - app-network
 volumes:
     psql_data:
 networks:
