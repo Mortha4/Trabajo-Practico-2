@@ -23,10 +23,10 @@ export default function () {
         summary: "Lists registered users.",
         responses: {
             [StatusCodes.UNAUTHORIZED.toString()]: {
-                $ref: "#/components/responses/Unauthorized"
+                $ref: "#/components/responses/Unauthorized",
             },
             [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
-                $ref: "#/components/responses/InternalServerError"
+                $ref: "#/components/responses/InternalServerError",
             },
             [StatusCodes.OK.toString()]: {
                 description: "Successful query.",
@@ -92,7 +92,6 @@ export default function () {
                 return;
             }
             throw error;
-
         }
     };
 
@@ -120,10 +119,10 @@ export default function () {
         },
         responses: {
             [StatusCodes.BAD_REQUEST.toString()]: {
-                $ref: "#/components/responses/BadRequest"
+                $ref: "#/components/responses/BadRequest",
             },
             [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
-                $ref: "#/components/responses/InternalServerError"
+                $ref: "#/components/responses/InternalServerError",
             },
             [StatusCodes.NO_CONTENT.toString()]: {
                 description: "The user was created successfully.",

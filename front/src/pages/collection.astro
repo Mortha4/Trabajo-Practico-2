@@ -11,9 +11,52 @@ import RadioTabs from "../components/RadioTabs.astro";
 import ProfileDashboard from "../components/ProfileDashboard.astro";
 import SearchBar from "../components/SearchBar.astro";
 import StickyTopbar from "../components/StickyTopbar.astro";
+const API_URL = import.meta.env.API_URL;
+const FRONT_URL = import.meta.env.FRONT_URL;
 ---
 
 <GenericLayout title="Collection">
+    <script define:vars={{ API_URL }} type="module">
+        const response = await fetch(`${API_URL}/api/v1/session`, {
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+            },
+            credentials: "include",
+        });
+
+        if (response.status !== 200) window.location.replace(`/login`);
+
+        const user = await response.json();
+
+        const cardsResponse = await fetch(
+            `${API_URL}/api/v1/users/${user.username}/cards`,
+            {
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                method: "GET",
+                credentials: "include",
+            }
+        );
+
+        if (cardsResponse.status === 200) {
+            const cards = await cardsResponse.json();
+            console.log(cards);
+
+            const collection = document.querySelector(".cards");
+            console.log(collection);
+
+            for (const card of cards) {
+                card["art-url"] = card.artUrl;
+                delete card.artUrl;
+                const gameCard = document.createElement("game-card");
+                $(gameCard).attr(card);
+                collection?.appendChild(gameCard);
+            }
+        }
+    </script>
     <UserPortalNavbar />
     <main>
         <ProfileDashboard>
@@ -86,59 +129,8 @@ import StickyTopbar from "../components/StickyTopbar.astro";
             </StickyTopbar>
             <div class="cards">
                 <h1 class="subtitle is-size-3">Season 1<hr /></h1>
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
                 <h1 class="subtitle is-size-3 m-0 mt-6">Season 2<hr /></h1>
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
                 <h1 class="subtitle is-size-3 m-0 mt-6">Season 3<hr /></h1>
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
-                <Card />
             </div>
         </section>
     </main>

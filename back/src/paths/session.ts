@@ -9,8 +9,8 @@ export default function () {
     const GET: Operation = async (req: Request, res) => {
         res.status(StatusCodes.OK).json({
             username: req.user.username,
-            privilege: req.user.privilege
-        })
+            privilege: req.user.privilege,
+        });
     };
 
     GET.apiDoc = {
@@ -24,38 +24,38 @@ export default function () {
                             type: "object",
                             properties: {
                                 username: {
-                                    $ref: "#/components/schemas/StringIdentifier"
+                                    $ref: "#/components/schemas/StringIdentifier",
                                 },
                                 privilege: {
-                                    type: "string"
-                                }
+                                    type: "string",
+                                },
                             },
-                            required: ["username", "privilege"]
-                        }
-                    }
-                }
+                            required: ["username", "privilege"],
+                        },
+                    },
+                },
             },
             [StatusCodes.UNAUTHORIZED.toString()]: {
-                $ref: "#/components/responses/Unauthorized"
+                $ref: "#/components/responses/Unauthorized",
             },
             [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
-                $ref: "#/components/responses/InternalServerError"
+                $ref: "#/components/responses/InternalServerError",
             },
         },
         security: [
             {
-                CookieAuth: []
-            }
-        ]
-    }; 
+                CookieAuth: [],
+            },
+        ],
+    };
 
-    const POST: Operation = async (req: Request, res) => { 
+    const POST: Operation = async (req: Request, res) => {
         req.session.userId = req.user.id;
         res.status(StatusCodes.OK).json({ token: req.session.id });
     };
 
     POST.apiDoc = {
-        summary: "Creates a new session.", 
+        summary: "Creates a new session.",
         responses: {
             [StatusCodes.OK.toString()]: {
                 description: "The session was created successfully.",
@@ -67,20 +67,20 @@ export default function () {
                             properties: {
                                 token: {
                                     type: "string",
-                                    example: "abcde12345"
+                                    example: "abcde12345",
                                 },
                             },
-                        }
+                        },
                     },
                 },
                 headers: {
                     "Set-Cookie": {
                         schema: {
                             type: "string",
-                            example: "token=abcde12345; Path=/; HttpOnly"
-                        }
-                    }
-                }           
+                            example: "token=abcde12345; Path=/; HttpOnly",
+                        },
+                    },
+                },
             },
             [StatusCodes.UNAUTHORIZED.toString()]: {
                 $ref: "#/components/responses/Unauthorized",
@@ -91,9 +91,9 @@ export default function () {
         },
         security: [
             {
-                BasicAuth: []
-            }
-        ]
+                BasicAuth: [],
+            },
+        ],
     };
 
     const DELETE: Operation = async (req, res) => {
@@ -106,10 +106,10 @@ export default function () {
         summary: "Terminates the current session.",
         responses: {
             [StatusCodes.UNAUTHORIZED.toString()]: {
-                $ref: "#/components/responses/Unauthorized"
+                $ref: "#/components/responses/Unauthorized",
             },
             [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
-                $ref: "#/components/responses/InternalServerError"
+                $ref: "#/components/responses/InternalServerError",
             },
             [StatusCodes.NO_CONTENT.toString()]: {
                 description: "The session was successfully terminated.",

@@ -27,9 +27,9 @@ export default function () {
 
     GET.apiDoc = {
         summary: "Lists available cards.",
-        responses: { 
+        responses: {
             [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
-                $ref: "#/components/responses/InternalServerError"
+                $ref: "#/components/responses/InternalServerError",
             },
             [StatusCodes.OK.toString()]: {
                 description: "Successful query.",
@@ -81,10 +81,14 @@ export default function () {
                 const status = StatusCodes.BAD_REQUEST;
                 res.status(status).json({
                     status,
-                    errors: [{message: `${fields[0]} already exists. A new card cannot be created with the same value.`}],
+                    errors: [
+                        {
+                            message: `${fields[0]} already exists. A new card cannot be created with the same value.`,
+                        },
+                    ],
                 });
                 return;
-            } 
+            }
             throw error;
         }
     };
@@ -113,16 +117,16 @@ export default function () {
         },
         responses: {
             [StatusCodes.UNAUTHORIZED.toString()]: {
-                $ref: "#/components/responses/Unauthorized"
+                $ref: "#/components/responses/Unauthorized",
             },
             [StatusCodes.FORBIDDEN.toString()]: {
-                $ref: "#/components/responses/Forbidden"
+                $ref: "#/components/responses/Forbidden",
             },
             [StatusCodes.BAD_REQUEST.toString()]: {
-                $ref: "#/components/responses/BadRequest"
+                $ref: "#/components/responses/BadRequest",
             },
             [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
-                $ref: "#/components/responses/InternalServerError"
+                $ref: "#/components/responses/InternalServerError",
             },
             [StatusCodes.NO_CONTENT.toString()]: {
                 description: "The card was created successfully.",

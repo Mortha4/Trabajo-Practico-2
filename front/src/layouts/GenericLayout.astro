@@ -2,6 +2,7 @@
 /**
  * Standard template for HTML documents, includes global css files
  */
+import GameCard from "../custom-elements/GameCard.astro";
 const { title, class: classList } = Astro.props;
 ---
 
@@ -25,9 +26,11 @@ const { title, class: classList } = Astro.props;
             src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
             crossorigin="anonymous"></script>
+        <slot name="head" />
     </head>
     <body class:list={[classList]}>
         <slot />
+        <GameCard />
     </body>
 </html>
 

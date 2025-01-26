@@ -3,7 +3,7 @@ info:
     title: bb-tcg-api
     version: "1.0.0"
 servers:
-  - url: /api/v1
+    - url: /api/v1
 paths: {}
 components:
     securitySchemes:
@@ -62,7 +62,7 @@ components:
         StringIdentifier:
             type: string
             description: "A unique alphanumerical lowercase string that functions as a key."
-            example: valid_identifier123 
+            example: valid_identifier123
             pattern: "^[a-z0-9_]+$"
         User:
             type: object
@@ -91,7 +91,7 @@ components:
             properties:
                 title:
                     type: string
-                    example: Darker yet Darker 
+                    example: Darker yet Darker
                 season:
                     $ref: "#/components/schemas/Season"
                 description:
@@ -112,31 +112,31 @@ components:
                 - $ref: "#/components/schemas/CardClassData"
         CardPackData:
             type: object
-            properties: 
+            properties:
                 title:
                     type: string
-                    example: Daily Card Pack 
+                    example: Daily Card Pack
                 drops:
                     type: array
                     description: A list of cards' names dropped by the card pack.
                     items:
                         allOf:
-                          - $ref: "#/components/schemas/StringIdentifier"
-                          - example: valid_card34
+                            - $ref: "#/components/schemas/StringIdentifier"
+                            - example: valid_card34
         CardPack:
             allOf:
                 - $ref: "#/components/schemas/CardPackData"
                 - properties:
-                    name:
-                        $ref: "#/components/schemas/StringIdentifier"
-                    wrapperImageUrl:
-                        type: string
-                        example: http://www.example.com/packwrapper.jpeg
-                        readOnly: true
-                    drops:
-                        type: array
-                        items:
-                            $ref: "#/components/schemas/CardClass"
+                      name:
+                          $ref: "#/components/schemas/StringIdentifier"
+                      wrapperImageUrl:
+                          type: string
+                          example: http://www.example.com/packwrapper.jpeg
+                          readOnly: true
+                      drops:
+                          type: array
+                          items:
+                              $ref: "#/components/schemas/CardClass"
                   required: [name, title, wrapperImageUrl, drops]
         Rarity:
             type: string
@@ -152,14 +152,14 @@ components:
         NotFound:
             description: The resource requested does not exist.
             content:
-              application/json:
-                schema:
-                    type: object
-                    required: [message]
-                    example: {"message":"User specified does not exist."}
-                    properties:
-                        message:
-                            type: string
+                application/json:
+                    schema:
+                        type: object
+                        required: [message]
+                        example: { "message": "User specified does not exist." }
+                        properties:
+                            message:
+                                type: string
         BadRequest:
             description: The request was invalid.
             content:
@@ -178,7 +178,10 @@ components:
                                     type: object
                                     required: [message]
                                     additionalProperties: true
-                                    example: {"message":"Received a non-unique identifier."}
+                                    example:
+                                        {
+                                            "message": "Received a non-unique identifier.",
+                                        }
                                     properties:
                                         message:
                                             type: string

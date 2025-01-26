@@ -11,8 +11,8 @@ describe("POST /session", function () {
             headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json",
-                "Authorization": `Basic ${Buffer.from("marxel:Breaking_Bad_TCG").toString("base64")}`
-            }
+                Authorization: `Basic ${Buffer.from("marxel:Breaking_Bad_TCG").toString("base64")}`,
+            },
         });
         assert.equal(
             authRequest.status,
@@ -28,21 +28,17 @@ describe("GET /session", async function () {
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            "Authorization": `Basic ${Buffer.from("marxel:Breaking_Bad_TCG").toString("base64")}`
-        }
+            Authorization: `Basic ${Buffer.from("marxel:Breaking_Bad_TCG").toString("base64")}`,
+        },
     });
-    
+
     it("should retrieve session information", async function () {
         const res = await fetch(`${url}/session`, {
             headers: {
-                Cookie: `${authRequest.headers.getSetCookie()}`
-            }
+                Cookie: `${authRequest.headers.getSetCookie()}`,
+            },
         });
-        assert.equal(
-            res.status,
-            StatusCodes.OK,
-            "Couldnt authenticate"
-        );
+        assert.equal(res.status, StatusCodes.OK, "Couldnt authenticate");
     });
 });
 
@@ -52,8 +48,8 @@ describe("GET /users", async function () {
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            "Authorization": `Basic ${Buffer.from("marxel:Breaking_Bad_TCG").toString("base64")}`
-        }
+            Authorization: `Basic ${Buffer.from("marxel:Breaking_Bad_TCG").toString("base64")}`,
+        },
     });
     assert.equal(authRequest.status, StatusCodes.OK, "Couldnt authenticate");
 
@@ -110,8 +106,8 @@ describe("GET /users/marxel/cards", async function () {
         headers: {
             Accept: "application/json",
             "Content-Type": "application/json",
-            "Authorization": `Basic ${Buffer.from("marxel:Breaking_Bad_TCG").toString("base64")}`
-        }
+            Authorization: `Basic ${Buffer.from("marxel:Breaking_Bad_TCG").toString("base64")}`,
+        },
     });
     it("should return a list of cards belonging to user marxel", async function () {
         const res = await fetch(`${url}/users/marxel/cards`, {

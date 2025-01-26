@@ -105,8 +105,8 @@ view FlattenedUser {
     privilege          UserPrivilege?
     createdAt          DateTime?      @map("created_at") @db.Timestamptz()
     modifiedAt         DateTime?      @map("modified_at") @db.Timestamptz()
-    cardSeen Int @map("cards_seen")
-    cardCollected Int @map("cards_collected")
+    cardSeen           Int            @map("cards_seen")
+    cardCollected      Int            @map("cards_collected")
 
     @@map("vw_FlattenedUser")
 }

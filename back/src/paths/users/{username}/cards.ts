@@ -154,13 +154,13 @@ export default function () {
         ],
         responses: {
             [StatusCodes.UNAUTHORIZED.toString()]: {
-                $ref: "#/components/responses/Unauthorized"
+                $ref: "#/components/responses/Unauthorized",
             },
             [StatusCodes.FORBIDDEN.toString()]: {
-                $ref: "#/components/responses/Forbidden"
+                $ref: "#/components/responses/Forbidden",
             },
             [StatusCodes.NOT_FOUND.toString()]: {
-                $ref: "#/components/responses/NotFound"
+                $ref: "#/components/responses/NotFound",
             },
             [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
                 $ref: "#/components/responses/InternalServerError",

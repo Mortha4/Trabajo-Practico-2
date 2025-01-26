@@ -40,7 +40,7 @@ export default function () {
             });
             delete pack.wrapperImagePath;
         });
-        
+
         res.json(cards);
     };
 
@@ -48,7 +48,7 @@ export default function () {
         summary: "Lists available card packs.",
         responses: {
             [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
-                $ref: "#/components/responses/InternalServerError"
+                $ref: "#/components/responses/InternalServerError",
             },
             [StatusCodes.OK.toString()]: {
                 description: "Successful query.",
@@ -60,25 +60,26 @@ export default function () {
                                 type: "object",
                                 properties: {
                                     name: {
-                                        $ref: "#/components/schemas/StringIdentifier"
+                                        $ref: "#/components/schemas/StringIdentifier",
                                     },
                                     title: {
                                         type: "string",
-                                        example: "Daily Card Pack"
+                                        example: "Daily Card Pack",
                                     },
                                     wrapperImageUrl: {
                                         type: "string",
-                                        example: "http://www.example.com/packwrapper.jpeg",
-                                        readOnly: true
+                                        example:
+                                            "http://www.example.com/packwrapper.jpeg",
+                                        readOnly: true,
                                     },
                                     drops: {
                                         type: "array",
                                         items: {
-                                            $ref: "#/components/schemas/CardClass"                                                            
-                                        }
-                                    }
-                                }
-                            }
+                                            $ref: "#/components/schemas/CardClass",
+                                        },
+                                    },
+                                },
+                            },
                         },
                     },
                 },
@@ -88,27 +89,25 @@ export default function () {
 
     const POST: Operation = async (req, res) => {
         const { name, title, drops } = req.body;
-        const lootEntries = drops.map(cardName => (
-            {
-                create: {
-                    cardName
+        const lootEntries = drops.map((cardName) => ({
+            create: {
+                cardName,
+            },
+            where: {
+                packName_cardName: {
+                    packName: name,
+                    cardName,
                 },
-                where: {
-                    packName_cardName: {
-                        packName: name,
-                        cardName
-                    }
-                }
-            }
-        ));
+            },
+        }));
         try {
             await prisma.cardPackType.create({
                 data: {
                     name,
                     title,
                     drops: {
-                        connectOrCreate: lootEntries 
-                    }
+                        connectOrCreate: lootEntries,
+                    },
                 },
             });
             res.status(StatusCodes.NO_CONTENT).send();
@@ -119,14 +118,24 @@ export default function () {
                 const status = StatusCodes.BAD_REQUEST;
                 res.status(status).json({
                     status,
-                    errors: [{message: `${fields[0]} already exists. A new cardpack cannot be created with the same value.`}],
+                    errors: [
+                        {
+                            message: `${fields[0]} already exists. A new cardpack cannot be created with the same value.`,
+                        },
+                    ],
                 });
                 return;
-            } else if (error.code === PrismaError.FOREIGN_KEY_CONSTRAINT_VIOLATION) {
+            } else if (
+                error.code === PrismaError.FOREIGN_KEY_CONSTRAINT_VIOLATION
+            ) {
                 const status = StatusCodes.BAD_REQUEST;
                 res.status(status).json({
                     status,
-                    errors: [{message: `A card specified in the drops list does not exist.`}],
+                    errors: [
+                        {
+                            message: `A card specified in the drops list does not exist.`,
+                        },
+                    ],
                 });
                 return;
             }
@@ -139,12 +148,12 @@ export default function () {
             {
                 properties: {
                     name: {
-                        $ref: "#/components/schemas/StringIdentifier"
-                    }
-                }
+                        $ref: "#/components/schemas/StringIdentifier",
+                    },
+                },
             },
             { $ref: "#/components/schemas/CardPackData" },
-        ]
+        ],
     };
 
     POST.apiDoc = {
@@ -153,7 +162,7 @@ export default function () {
             required: true,
             content: {
                 "application/json": {
-                    schema: postCardPackSchema
+                    schema: postCardPackSchema,
                 },
                 "application/x-www-form-urlencoded": {
                     schema: postCardPackSchema,
@@ -162,16 +171,16 @@ export default function () {
         },
         responses: {
             [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
-                $ref: "#/components/responses/InternalServerError"
+                $ref: "#/components/responses/InternalServerError",
             },
             [StatusCodes.UNAUTHORIZED.toString()]: {
-                $ref: "#/components/responses/Unauthorized"
+                $ref: "#/components/responses/Unauthorized",
             },
             [StatusCodes.FORBIDDEN.toString()]: {
-                $ref: "#/components/responses/Forbidden"
+                $ref: "#/components/responses/Forbidden",
             },
             [StatusCodes.BAD_REQUEST.toString()]: {
-                $ref: "#/components/responses/BadRequest"
+                $ref: "#/components/responses/BadRequest",
             },
             [StatusCodes.NO_CONTENT.toString()]: {
                 description: "The card pack was created successfully.",

@@ -9,14 +9,23 @@ import { prisma } from "./src/globals.js";
 import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import { cookieAuth, basicAuth } from "./src/middleware/Authentication.js";
 import { StatusCodes } from "http-status-codes";
-import OpenAPIRequestValidator from "openapi-request-validator";
-
+import cors from "cors";
 const PORT = process.env.EXPRESS_PORT ?? 3000;
 
 const app = express();
 
 const docsPath = import.meta.dirname + "/src/api-doc.yaml";
 const apiDoc = YAML.parse(fs.readFileSync(docsPath).toString());
+
+app.use(
+    cors({
+        origin: ["http://localhost", "http://localhost:3000"],
+        credentials: true,
+        methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+        preflightContinue: false,
+        optionsSuccessStatus: 204,
+    })
+);
 
 initialize({
     app,
@@ -41,7 +50,7 @@ initialize({
     },
     securityHandlers: {
         CookieAuth: cookieAuth,
-        BasicAuth: basicAuth 
+        BasicAuth: basicAuth,
     },
     errorMiddleware: (err, req, res, next) => {
         if (err.status) {
@@ -69,6 +78,8 @@ app.use(
         name: "token",
         cookie: {
             maxAge: SESSION_LENGTH_MS,
+            sameSite: "lax",
+            domain: "localhost",
         },
         store: new PrismaSessionStore(prisma, {
             dbRecordIdIsSessionId: true,
