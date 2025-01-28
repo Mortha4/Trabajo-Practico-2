@@ -1,4 +1,4 @@
-import { Request } from "express";
+import { query, Request } from "express";
 import { prisma, SecurityScopes } from "../globals.js";
 import { StatusCodes } from "http-status-codes";
 import { SecurityHandler } from "openapi-security-handler";
@@ -61,6 +61,9 @@ export const basicAuth: SecurityHandler = async (
             password
         },
     });
+    if (!user){
+        throw authFailure
+    }
     user["id"] = user?.user?.id;
     delete user.user;
 
