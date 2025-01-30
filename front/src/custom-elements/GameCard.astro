@@ -56,11 +56,14 @@
                         .querySelector(".front img")
                         ?.setAttribute(
                             "src",
-                            newValue ?? "public/placeholder-image.svg"
+                            newValue ?? "placeholder-image.svg"
                         );
                     break;
 
                 case "rarity":
+                    this.#shadowRoot.querySelector(
+                        ".rarity > span"
+                    )!.textContent = newValue;
                     this.updateHazard(newValue);
                     break;
             }
@@ -81,7 +84,6 @@
             min-height: 3.5in;
             border-radius: 3.5mm;
             background-color: red;
-            padding: 5px;
             aspect-ratio: 5 / 7;
             transform-style: preserve-3d;
             transition: transform 0.5s ease-in-out;
@@ -102,18 +104,24 @@
             left: 0;
             border-radius: 3.5mm;
             overflow: hidden;
+            border: solid white 5px;
+        }
+
+        .rarity {
+            color: white;
         }
 
         h1 {
             text-align: center;
             font-weight: 900;
             font-size: large;
+            color: white;
         }
 
         p {
             display: flex;
             font-size: 0.9rem;
-            background-color: rgb(132, 0, 255);
+            /* background-color: rgb(132, 0, 255); */
             flex-basis: content;
             padding: 1px;
             justify-content: center;
@@ -123,6 +131,7 @@
             flex-grow: 1;
             overflow: scroll;
             border-radius: 0 0 2mm 2mm;
+            color: white;
         }
 
         .brand {
@@ -140,15 +149,18 @@
         .front {
             backface-visibility: hidden;
             transform: rotateX(0deg);
-            background-color: red;
-            padding: 5px;
+            padding: 0 5px 5px 5px;
+            background-image: url("game-card-front-bg.jpg");
+            background-position: center;
+            background-size: cover;
+            background-color: rgba(0, 0, 0, 0.6);
+            background-blend-mode: darken;
         }
 
         .back {
             transform: rotateY(180deg);
             backface-visibility: hidden;
             background-color: blue;
-            padding: 5px;
         }
     </style>
     <div class="game-card">
@@ -161,12 +173,12 @@
             <h1>Title</h1>
             <img src="X_in_box.svg" alt="" />
             <div class="rarity is-flex is-justify-content-space-between">
+                <span>Rarity</span>
                 <div class="hazard">
                     <i class=""></i>
                     <i class="fa-solid fa-biohazard"></i>
                     <i class=""></i>
                 </div>
-                <span>Rarity</span>
             </div>
             <p>Description</p>
         </div>

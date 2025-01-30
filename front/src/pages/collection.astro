@@ -13,10 +13,82 @@ import SearchBar from "../components/SearchBar.astro";
 import StickyTopbar from "../components/StickyTopbar.astro";
 const API_URL = import.meta.env.API_URL;
 const FRONT_URL = import.meta.env.FRONT_URL;
+const formId = "card-filter-form";
+const emptyResultMessageId = "empty-result-message";
 ---
 
 <GenericLayout title="Collection">
-    <script define:vars={{ API_URL }} type="module">
+    <script
+        define:vars={{ API_URL, formId, emptyResultMessageId }}
+        type="module"
+    >
+        async function fetchCards(query = "") {
+            const cardsResponse = await fetch(
+                `${API_URL}/api/v1/users/${user.username}/cards${query}`,
+                {
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                    },
+                    method: "GET",
+                    credentials: "include",
+                }
+            );
+
+            if (cardsResponse.status === 200) return await cardsResponse.json();
+            else console.error(cardsResponse);
+        }
+
+        function populateCollection(cards) {
+            const message = document.getElementById(emptyResultMessageId);
+            if (cards.length === 0) message.classList.remove("is-hidden");
+            else message.classList.add("is-hidden");
+
+            const grouping = document.querySelector(
+                "input[name=grouping]:checked"
+            ).value;
+            let groupingFunction;
+            if (grouping === "season") {
+                groupingFunction = (card) =>
+                    card.season.slice(0, "Season".length) +
+                    " " +
+                    card.season.slice("Season".length);
+            } else if (grouping === "rarity") {
+                groupingFunction = (card) => card.rarity;
+            } else return console.error("unknown grouping");
+
+            const groups = Object.groupBy(cards, groupingFunction);
+
+            const collection = document.querySelector(".cards");
+            collection.innerHTML = "";
+            for (const group in groups) {
+                const cards = groups[group];
+
+                const separator = document.createElement("h1");
+                separator.textContent = group;
+                // separator.appendChild(document.createElement("hr"));
+                collection.appendChild(separator);
+
+                for (const card of cards) {
+                    card["art-url"] = card.artUrl;
+                    delete card.artUrl;
+                    const gameCard = document.createElement("game-card");
+                    $(gameCard).attr(card);
+                    collection?.appendChild(gameCard);
+                }
+            }
+        }
+
+        async function handleSearch(event) {
+            event.preventDefault();
+            const formData = new FormData(event.target);
+            const urlParams = new URLSearchParams();
+            for (const [key, value] of formData.entries())
+                if (value.toString().trim() !== "")
+                    urlParams.append(key, value.toString());
+            cards = await fetchCards(`?${urlParams.toString()}`);
+            populateCollection(cards);
+        }
         const response = await fetch(`${API_URL}/api/v1/session`, {
             headers: {
                 Accept: "application/json",
@@ -28,34 +100,20 @@ const FRONT_URL = import.meta.env.FRONT_URL;
         if (response.status !== 200) window.location.replace(`/login`);
 
         const user = await response.json();
+        let cards = await fetchCards();
+        populateCollection(cards);
 
-        const cardsResponse = await fetch(
-            `${API_URL}/api/v1/users/${user.username}/cards`,
-            {
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                },
-                method: "GET",
-                credentials: "include",
-            }
-        );
+        document
+            .querySelectorAll("input[name=grouping]")
+            .forEach((input) =>
+                input.addEventListener("change", () =>
+                    populateCollection(cards)
+                )
+            );
 
-        if (cardsResponse.status === 200) {
-            const cards = await cardsResponse.json();
-            console.log(cards);
-
-            const collection = document.querySelector(".cards");
-            console.log(collection);
-
-            for (const card of cards) {
-                card["art-url"] = card.artUrl;
-                delete card.artUrl;
-                const gameCard = document.createElement("game-card");
-                $(gameCard).attr(card);
-                collection?.appendChild(gameCard);
-            }
-        }
+        document
+            .getElementById(formId)
+            .addEventListener("submit", handleSearch);
     </script>
     <UserPortalNavbar />
     <main>
@@ -94,7 +152,7 @@ const FRONT_URL = import.meta.env.FRONT_URL;
         <section class="collection p-5">
             <StickyTopbar>
                 <SearchBar
-                    id="card-filter-form"
+                    id={formId}
                     class="is-flex-grow-1"
                     name="title"
                     placeholder="Card name"
@@ -127,15 +185,17 @@ const FRONT_URL = import.meta.env.FRONT_URL;
                     </li>
                 </RadioTabs>
             </StickyTopbar>
-            <div class="cards">
-                <h1 class="subtitle is-size-3">Season 1<hr /></h1>
-                <h1 class="subtitle is-size-3 m-0 mt-6">Season 2<hr /></h1>
-                <h1 class="subtitle is-size-3 m-0 mt-6">Season 3<hr /></h1>
-            </div>
+            <h1
+                id={emptyResultMessageId}
+                class="is-hidden subtitle has-text-centered"
+            >
+                No cards to display.
+            </h1>
+            <div class="cards"></div>
         </section>
     </main>
 </GenericLayout>
-<style>
+<style is:global>
     .collection > .cards {
         display: grid;
         height: 100%;
@@ -148,27 +208,13 @@ const FRONT_URL = import.meta.env.FRONT_URL;
 
     .collection > .cards > h1 {
         grid-column: 1 / -1;
-    }
-
-    .cards > hr {
-        border: 1px solid var(--bulma-subtitle-color);
-    }
-
-    .cards > h1:first-child {
-        margin-top: 0;
-    }
-
-    .cards > h1 {
+        border-bottom: 1px solid var(--bulma-body-color);
+        font-size: var(--bulma-size-3);
         margin: 0;
         margin-top: var(--bulma-size-6);
     }
 
-    .filter {
-        position: sticky;
-        top: 0;
-        display: flex;
-        background-color: var(--bulma-body-background-color);
-        gap: 20px;
-        height: var(--logo-height);
+    .cards > h1:first-child {
+        margin-top: 0;
     }
 </style>

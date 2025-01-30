@@ -15,23 +15,10 @@ const {
 const hasAdvancedSearch = Astro.slots.has("default");
 ---
 
-<script define:vars={{ formId: id }} defer>
-    function handleSubmit(event) {
-        event.preventDefault();
-
-        const formData = new FormData(event.target);
-        const urlParams = new URLSearchParams();
-
-        for (const [key, value] of formData.entries())
-            if (value.toString().trim() !== "")
-                urlParams.append(key, value.toString());
-
-        console.log(urlParams.toString());
-    }
-    document.addEventListener("DOMContentLoaded", function () {
-        document
-            .getElementById(formId)
-            ?.addEventListener("submit", handleSubmit);
+<script define:vars={{ id }} type="module">
+    document.getElementById(id).addEventListener("submit", (event) => {
+        const form = event.target;
+        form.querySelector("#advanced-search-toggle").checked = false;
     });
 </script>
 <form class:list={[classList]} {id} {method} {action}>
