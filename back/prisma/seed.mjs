@@ -75,6 +75,10 @@ const user = await prisma.user.create({
                     cardName: "carta2",
                     quantity: 1,
                 },
+                {
+                    cardName: "carta3",
+                    quantity: 2,
+                },
             ],
         },
         packOpening: {

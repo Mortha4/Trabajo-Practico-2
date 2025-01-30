@@ -1,17 +1,31 @@
 ---
 // TODO: Consider using grid for layout purposes instead of margin
 // TODO: active link should be determined at compile time, not runtime
+const API_URL = import.meta.env.API_URL;
 ---
 
-<script>
+<script define:vars={{ API_URL }} type="module">
     const route = new URL(window.location.toString()).pathname;
-    const routeToIdMap: Record<string, string> = {
+    const routeToIdMap = {
         "/home": "home-link",
         "/collection": "collection-link",
         "/market": "market-link",
         "/trade": "trades-link",
     };
     document.getElementById(routeToIdMap[route])?.classList.add("is-active");
+
+    document
+        .getElementById("logout")
+        ?.addEventListener("click", async (event) => {
+            event.preventDefault();
+            const logout = await fetch(`${API_URL}/api/v1/session`, {
+                credentials: "include",
+                method: "DELETE",
+            });
+            console.log(logout);
+
+            window.location.replace("/login");
+        });
 </script>
 <navbar id="site-navigation" class="tabs has-background-grey m-0">
     <div
@@ -59,7 +73,7 @@
                 </a>
             </li>
             <li class="">
-                <a href="" class="navbar-item">
+                <a href="" class="navbar-item" id="logout">
                     <i
                         class="is-size-5 fa-solid fa-arrow-right-from-bracket fa-fw"
                     ></i>
