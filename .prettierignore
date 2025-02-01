@@ -6,3 +6,4 @@
 **/.astro
 **/.vscode
 **/psql_data
+front/dist/**
