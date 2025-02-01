@@ -4,7 +4,7 @@ const prisma = new PrismaClient();
 const rarity = await prisma.rarity.createMany({
     data: [
         { name: "Common", dropProbability: 1 },
-        { name: "Rare", dropProbability: 0.5 },
+        { name: "Rare", dropProbability: 0.333 },
     ],
 });
 
