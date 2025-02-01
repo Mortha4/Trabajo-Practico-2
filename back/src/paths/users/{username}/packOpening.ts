@@ -11,92 +11,89 @@ import { log } from "console";
 export default function () {
     const POST: Operation = async (req, res) => {
         const { packName } = req.body;
-        
-        const rarities:any[] = await prisma.$queryRaw`SELECT "Rarity".pk_name, "Rarity".drop_probability FROM "LootTable" INNER JOIN "CardClass"
+
+        const rarities: any[] =
+            await prisma.$queryRaw`SELECT "Rarity".pk_name, "Rarity".drop_probability FROM "LootTable" INNER JOIN "CardClass"
                         ON "LootTable".pk_card_name = "CardClass".pk_name
                         INNER JOIN "Rarity" ON
                         "CardClass".rarity = "Rarity".pk_name
                         WHERE "LootTable".pk_pack_name = ${req.body.packName}
-                        GROUP BY "Rarity".pk_name ORDER BY "Rarity".drop_probability ASC`
+                        GROUP BY "Rarity".pk_name ORDER BY "Rarity".drop_probability ASC`;
 
         const loot = await prisma.lootTable.findMany({
             where: { packName },
-            select: { 
-                card: true
-            }
+            select: {
+                card: true,
+            },
         });
 
-        const cards = loot.map( card => {
-            const cartas = card.card
-            return cartas
-        })
-        
-        const group = Object.groupBy(cards, ({rarity}) => rarity);
-        
-        const cardsDrop = []
+        const cards = loot.map((card) => {
+            const cartas = card.card;
+            return cartas;
+        });
 
-        for (var i=0; i<3; i++){
-                          
-            let random = Math.random()
-            let result
+        const group = Object.groupBy(cards, ({ rarity }) => rarity);
+
+        const cardsDrop = [];
+
+        for (var i = 0; i < 3; i++) {
+            let random = Math.random();
+            let result;
 
             for (const rarity of rarities) {
-                if (random < rarity.drop_probability){
+                if (random < rarity.drop_probability) {
                     result = rarity.pk_name;
-                    break
+                    break;
                 }
             }
 
-            if (!result){
-                result = rarities[rarities.length-1].pk_name
+            if (!result) {
+                result = rarities[rarities.length - 1].pk_name;
             }
 
-            const access = group[result]            
+            const access = group[result];
 
-            let item = access[Math.floor(Math.random()*(access.length))];
-            
-            cardsDrop.push({...item})
+            let item = access[Math.floor(Math.random() * access.length)];
 
-            const cardName = item.name
-            
+            cardsDrop.push({ ...item });
+
+            const cardName = item.name;
+
             const userId = req.session.userId;
-                        
+
             const keep = await prisma.collectionEntry.upsert({
-                where: { userId_cardName:{cardName, userId} },
+                where: { userId_cardName: { cardName, userId } },
                 update: {
                     cardName,
                     userId,
-                    quantity: {increment: 1}
+                    quantity: { increment: 1 },
                 },
                 create: {
                     cardName,
                     userId,
-                    quantity: 1
-                }
-            })
-        };
+                    quantity: 1,
+                },
+            });
+        }
         //console.log(cardsDrop);
         cardsDrop.forEach((card) => {
             console.log(card);
             card["artUrl"] = card.artPath;
             delete card.artPath;
-            
-        })
+        });
         //console.log(cardsDrop);
-        
+
         res.status(StatusCodes.OK).json(cardsDrop);
     };
-    
+
     const postRequestSchema: OpenAPIV3.SchemaObject = {
         type: "object",
         properties: {
             packName: {
-                type: "string"
-            }
+                type: "string",
+            },
         },
-        required: [
-            "packName"
-        ]
+        required: ["packName"],
     };
 
     POST.apiDoc = {
@@ -114,16 +111,16 @@ export default function () {
         },
         responses: {
             [StatusCodes.UNAUTHORIZED.toString()]: {
-                $ref: "#/components/responses/Unauthorized"
+                $ref: "#/components/responses/Unauthorized",
             },
             [StatusCodes.FORBIDDEN.toString()]: {
-                $ref: "#/components/responses/Forbidden"
+                $ref: "#/components/responses/Forbidden",
             },
             [StatusCodes.BAD_REQUEST.toString()]: {
-                $ref: "#/components/responses/BadRequest"
+                $ref: "#/components/responses/BadRequest",
             },
             [StatusCodes.INTERNAL_SERVER_ERROR.toString()]: {
-                $ref: "#/components/responses/InternalServerError"
+                $ref: "#/components/responses/InternalServerError",
             },
             [StatusCodes.NO_CONTENT.toString()]: {
                 description: "The card was created successfully.",
@@ -135,8 +132,8 @@ export default function () {
                         schema: {
                             type: "array",
                             items: {
-                                $ref: "#/components/schemas/CardClass"
-                            }
+                                $ref: "#/components/schemas/CardClass",
+                            },
                         },
                     },
                 },
