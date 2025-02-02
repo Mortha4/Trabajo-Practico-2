@@ -1,88 +1,14 @@
 ---
+import UserPortalNavbar from "../components/UserPortalNavbar.astro";
 import GenericLayout from "../layouts/GenericLayout.astro";
-const API_URL = import.meta.env.API_URL;
+import ProfileDashboard from "../components/ProfileDashboard.astro";
+import UserPortalLayout from "../layouts/UserPortalLayout.astro";
 ---
 
-<GenericLayout class="is-flex is-justify-content-center is-align-items-center">
-    <script define:vars={{ API_URL }} type="module">
-        const inputs = document.querySelectorAll("input");
-        const helpers = document.querySelectorAll(".help");
-        inputs.forEach((input) =>
-            input.addEventListener("change", (event) => {
-                inputs.forEach((input) =>
-                    input.classList.remove("is-danger", "is-warning")
-                );
-                helpers.forEach((help) => help.classList.add("is-hidden"));
-            })
-        );
-        document
-            .querySelector("input[name=username]")
-            ?.addEventListener("invalid", (event) => {
-                const usernameInput = event.target;
-                if (usernameInput.value.length === 0) return;
-                usernameInput.classList.add("is-danger");
-                document
-                    .getElementById("username-bad-format-help")
-                    ?.classList.remove("is-hidden");
-            });
-        const passwordInputs = document.querySelectorAll(
-            "input[type=password]"
-        );
-
-        passwordInputs.forEach((input) =>
-            input.addEventListener("change", (event) => {
-                const eitherEmpty =
-                    passwordInputs[0].value.length === 0 ||
-                    passwordInputs[1].value.length === 0;
-                const passwordsMatch =
-                    passwordInputs[0].value === passwordInputs[1].value;
-                if (eitherEmpty || passwordsMatch) return;
-                passwordInputs.forEach((input) =>
-                    input.classList.add("is-warning")
-                );
-                document
-                    .getElementById("mismatched-passwords-help")
-                    ?.classList.remove("is-hidden");
-            })
-        );
-
-        document
-            .querySelector("form")
-            ?.addEventListener("submit", async (event) => {
-                event.preventDefault();
-                if (passwordInputs[0].value !== passwordInputs[1].value) return;
-
-                console.log(JSON.stringify(new FormData(event.target)));
-
-                const response = await fetch(`${API_URL}/api/v1/users`, {
-                    method: "POST",
-                    headers: {
-                        Accept: "application/json",
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify(
-                        Object.fromEntries(new FormData(event.target))
-                    ),
-                });
-
-                if (response.status === 204) {
-                    window.location.replace("/login");
-                } else {
-                    // TODO: give user feedback
-                    console.log(response);
-                    console.log(await response.json());
-                }
-            });
-    </script>
-    <form class="box">
-        <div class="logo">
-            <a class="is-flex is-justify-content-center" href="/">
-                <i
-                    class="fa-solid fa-icons title m-0 is-size-1 is-size-3-mobile is-flex is-align-items-center"
-                ></i>
-                <span class="title is-size-1 is-size-3-mobile">Project</span>
-            </a>
-        </div>
+<UserPortalLayout class="hero is-link min-height">
+    <div class="settings-container is-flex is-align-items-center is-justify-content-space-around p-5">
+            <img src="default-profile-picture.svg" alt="">
+    <form action="" class="box has-background-dark">
         <div class="field is-horizontal">
             <div class="field-label is-normal">
                 <label class="label">Profile Name</label>
@@ -96,7 +22,7 @@ const API_URL = import.meta.env.API_URL;
                             required
                             class="input"
                             type="text"
-                            placeholder="Enter your profile name."
+                            placeholder="Loading..."
                         />
                         <span class="icon is-small is-left">
                             <i class="fa-solid fa-address-card"></i>
@@ -119,7 +45,7 @@ const API_URL = import.meta.env.API_URL;
                             pattern="^[a-z0-9_]+$"
                             class="input"
                             type="text"
-                            placeholder="Enter your username."
+                            placeholder="Loading..."
                         />
                         <span class="icon is-small is-left">
                             <i class="fas fa-user"></i>
@@ -152,7 +78,7 @@ const API_URL = import.meta.env.API_URL;
                             required
                             class="input"
                             type="email"
-                            placeholder="Enter your email."
+                            placeholder="Loading..."
                         />
                         <span class="icon is-small is-left">
                             <i class="fas fa-envelope"></i>
@@ -178,7 +104,7 @@ const API_URL = import.meta.env.API_URL;
                             required
                             class="input"
                             type="password"
-                            placeholder="Enter your password."
+                            placeholder="Current password."
                         />
                         <span class="icon is-small is-left">
                             <i class="fas fa-lock"></i>
@@ -193,7 +119,7 @@ const API_URL = import.meta.env.API_URL;
                             required
                             class="input"
                             type="password"
-                            placeholder="Repeat your password."
+                            placeholder="New password."
                         />
                     </p>
                     <p
@@ -205,30 +131,41 @@ const API_URL = import.meta.env.API_URL;
                 </div>
             </div>
         </div>
-
-        <div class="field is-horizontal is-justify-content-space-between">
-            <div class="field-label"></div>
-            <div class="field-body is-justify-content-space-between">
-                <p class="help mt-2 mb-2 is-info is-flex is-align-items-center">
-                    <a href="/login"> Already have an account? Log in! </a>
-                </p>
-                <button type="submit" class="button is-primary">Sign up</button>
+         <div class="field is-horizontal is-justify-content-space-between">
+            <div class="field-label"><label class="label"></label></div>
+            <div class="buttons field-body is-justify-content-space-between">
+                <button type="submit" class="button is-primary">Update</button>
+                <button type="button" class="button is-danger">Delete user</button>
             </div>
-        </div>
+        </div>       
     </form>
-</GenericLayout>
-<style>
-    .logo > a {
-        gap: 10px;
+</div>
+</UserPortalLayout>
+<style is:global>
+    .min-height {
+        min-height: 100%;
     }
 
-    .logo {
-        margin: var(--bulma-size-2);
+    .settings-container {
+        gap: 15px;
+        flex-grow: 1;
     }
-
-    @media (max-width: 768px) {
-        .logo {
-            margin: var(--bulma-size-4);
+    label {
+        min-width: 5rem;
+    }
+    form {
+        flex-basis: 360px;
+        flex-grow: 1;
+        flex-shrink: 0;
+        /* min-width: 360px; */
+    }
+    @media (max-width: 850px) {
+        .settings-container {
+            flex-direction: column;
+        }
+        form {
+            flex-basis: auto;
+            flex-grow: unset;
         }
     }
 </style>
