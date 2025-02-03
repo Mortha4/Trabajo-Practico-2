@@ -6,7 +6,7 @@ const rarity = await prisma.rarity.createMany({
         { name: "Common", dropProbability: 1 },
         { name: "Rare", dropProbability: 0.6 },
         { name: "Epic", dropProbability: 0.3 },
-        { name: "Legendary", dropProbability: 0.1 }
+        { name: "MEME", dropProbability: 0.1 }
     ],
 });
 
@@ -116,7 +116,70 @@ const cards = await prisma.cardClass.createMany({
             season: CardSeason.Season1,
             description: "Jesse we need to cook",
             rarity: "Epic"
-        }
+        },
+        {
+            name: "heisenberg",
+            title: "Heisenberg",
+            season: "Season1",
+            description: "Heisenberg es todo un ícono tanto dentro del mundo criminal cómo en las oficinas de la DEA, puesto que es un capo casi irreconocible, y es el único capaz de cocinar la famosa metanfetamina azúl. ",
+            rarity: "Epic"
+        },
+        {
+            name: "meth",
+            title: "Metanfetamina",
+            season: "Season1",
+            description: "Fabricada por Walter y Jesse en un principio, esta era simple metanfetamina hecha por el modo de la pseudoefedrina. Su color común es el blanco.",
+            rarity: "Common"
+        },
+        {
+            name: "chili_meth",
+            title: "Metanfetamina con chili",
+            season: "Season1",
+            description: "Fabricada por Jesse y Emilio Koyama, antes de la asociación de este primero con Walter. Simple metanfetamina con la diferencia de que el ingrediente secreto de esta era el chili.",
+            rarity: "Rare"
+        },
+        {
+            name: "blue_meth",
+            title: "Metanfetamina Azul",
+            season: "Season1",
+            description: "Walter y Jesse tuvieron que cocinar la metanfetamina con una alternativa siendo esta la metilamina, que le otorgaba un color característico al cristal siendo este el azul.",
+            rarity: "Epic"
+        },
+        {
+            name: "meme_1",
+            title: "Kid Named Finger",
+            season: "Season1",
+            description: "I'm not having sex with you right now, Waltuh.",
+            rarity: "MEME"
+        },
+        {
+            name: "meme_2",
+            title: "Senior Guait",
+            season: "Season1",
+            description: "¿Ke quieres Yesi?",
+            rarity: "MEME"
+        },
+        {
+            name: "meme_3",
+            title: "SCIENCE BITCH",
+            season: "Season1",
+            description: "YEAH, SCIENCE BITCH",
+            rarity: "MEME"
+        },
+        {
+            name: "meme_4",
+            title: "Walter desnudo",
+            season: "Season1",
+            description: "El inicio de todo",
+            rarity: "MEME"
+        },
+        {
+            name: "meme_5",
+            title: "Say my name",
+            season: "Season1",
+            description: "You're goddamn right!",
+            rarity: "MEME"
+        },
     ],
 });
 
@@ -140,7 +203,16 @@ const season1Pack = await prisma.cardPackType.create({
                 { cardName: "skinny_pete" },
                 { cardName: "badger" },
                 { cardName: "combo" },
-                { cardName: "laboratory" }
+                { cardName: "laboratory" },
+                { cardName: "meth" },
+                { cardName: "chili_meth" },
+                { cardName: "blue_meth" },
+                { cardName: "meme_1" },
+                { cardName: "meme_2" },
+                { cardName: "meme_3" },
+                { cardName: "meme_4" },
+                { cardName: "meme_5" },
+                { cardName: "heisenberg" },
             ],
         },
     },
@@ -184,6 +256,10 @@ const user = await prisma.user.create({
                 { cardName: "badger", quantity: 1 },
                 { cardName: "combo", quantity: 1 },
                 { cardName: "laboratory", quantity: 1 },
+                { cardName: "meth", quantity: 1 },
+                { cardName: "chili_meth", quantity: 1 },
+                { cardName: "blue_meth", quantity: 1 },
+                { cardName: "heisenberg", quantity: 1 },
             ],
         },
         packOpening: {
@@ -198,6 +274,10 @@ const user = await prisma.user.create({
                             },
                             {
                                 cardName: "badger",
+                                quantity: 1,
+                            },
+                            {
+                                cardName: "heisenberg",
                                 quantity: 1,
                             },
                         ],
@@ -222,7 +302,7 @@ const user2 = await prisma.user.create({
             create: [
                 {
                     cardName: "combo",
-                    quantity: 1,
+                    quantity: 3,
                 },
             ],
         },
@@ -232,6 +312,14 @@ const user2 = await prisma.user.create({
                     packName: "season_1_pack",
                     details: {
                         create: [
+                            {
+                                cardName: "combo",
+                                quantity: 1,
+                            },
+                            {
+                                cardName: "combo",
+                                quantity: 1,
+                            },
                             {
                                 cardName: "combo",
                                 quantity: 1,
