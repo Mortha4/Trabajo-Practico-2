@@ -1,14 +1,16 @@
 ALTER TABLE "Rarity"
 ADD CONSTRAINT "Rarity_IsValidProbability_chk" CHECK ("drop_probability" BETWEEN 0 AND 1);
 
-ALTER TABLE "User"
-ADD CONSTRAINT "User_KeepNullConsistencyOnSoftDelete_chk" CHECK (
-    CASE
-        WHEN "fk_username_uq" IS NOT NULL THEN "deleted_at" IS NULL
-        WHEN "fk_username_uq" IS NULL THEN "deleted_at" IS NOT NULL
-    END
-);
-
+-- Deferrable check constraints are not supported in postgres, this constraint is implemented as a CONSTRAINT TRIGGER "tg_User_AfterUpsert" on "User"
+-- ALTER TABLE "User"
+-- ADD CONSTRAINT "User_KeepNullConsistencyOnSoftDelete_chk" CHECK (
+--     CASE
+--         WHEN "fk_username_uq" IS NOT NULL THEN "deleted_at" IS NULL
+--         WHEN "fk_username_uq" IS NULL THEN "deleted_at" IS NOT NULL
+--     END
+-- );
+-- ALTER TABLE "User"
+-- ALTER CONSTRAINT "User_KeepNullConsistencyOnSoftDelete_chk" DEFERRABLE INITIALLY DEFERRED;
 ALTER TABLE "User"
 ADD CONSTRAINT "User_IsValidUsername_chk" CHECK ("fn_IsLowercaseAlphanumerical" ("fk_username_uq"));
 

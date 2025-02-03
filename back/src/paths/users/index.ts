@@ -99,6 +99,11 @@ export default function () {
         allOf: [
             { $ref: "#/components/schemas/User" },
             {
+                properties: {
+                    password: { $ref: "#/components/schemas/Password" },
+                },
+            },
+            {
                 required: ["username", "profileName", "email", "password"],
             },
         ],

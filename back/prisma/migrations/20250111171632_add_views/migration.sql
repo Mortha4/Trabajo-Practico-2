@@ -24,8 +24,8 @@ SELECT
     "UserData".privilege,
     "UserData".created_at,
     "UserData".modified_at,
-    "CollectionStats".cards_seen,
-    "CollectionStats".cards_collected
+    COALESCE("CollectionStats".cards_seen, 0) AS cards_seen,
+    COALESCE("CollectionStats".cards_collected, 0) cards_collected
 FROM
     "User"
     LEFT JOIN "UserData" ON "User".fk_username_uq = "UserData".pk_username

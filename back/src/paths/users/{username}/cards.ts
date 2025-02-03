@@ -1,7 +1,13 @@
 import { PrismaClient, Prisma, CardSeason } from "@prisma/client";
 import { Operation } from "express-openapi";
 import StatusCodes from "http-status-codes";
-import { PrismaError, SecurityScopes, prisma } from "../../../globals.js";
+import {
+    PrismaError,
+    SecurityScopes,
+    formatSeason,
+    prisma,
+    recoverSeason,
+} from "../../../globals.js";
 
 export default function () {
     const GET: Operation = async (req, res) => {
@@ -36,7 +42,9 @@ export default function () {
         const seasons = req.query.seasons as string[] | undefined;
         if (seasons) {
             const receivedValidSeasons = seasons?.every((season) =>
-                Object.values(CardSeason).includes(season as any)
+                Object.values(CardSeason)
+                    .map(formatSeason)
+                    .includes(season as any)
             );
             if (!receivedValidSeasons)
                 errorResponse.errors.push({
@@ -89,7 +97,7 @@ export default function () {
                         in: rarities,
                     },
                     season: {
-                        in: seasons as CardSeason[],
+                        in: seasons?.map(recoverSeason) as CardSeason[],
                     },
                 },
                 quantity: quantityQuery,
@@ -102,6 +110,7 @@ export default function () {
             card["artUrl"] = card.card.artPath;
             delete card.card.artPath;
             Object.assign(card, card.card);
+            card["season"] = formatSeason(card["season"]);
             delete card.card;
         });
 
