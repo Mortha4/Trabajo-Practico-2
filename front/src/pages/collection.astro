@@ -2,26 +2,20 @@
 // TODO: Collection stats should be queried at runtime
 // TODO: Change RadioTabs to a dropdown on small viewport (width < 550)
 // TODO: Center cards when theres only one column
-import GenericLayout from "../layouts/GenericLayout.astro";
-import UserPortalNavbar from "../components/UserPortalNavbar.astro";
 import CardPack from "../components//CompactCardPack.astro";
-import Card from "../components/Card.astro";
 import CardFilter from "../components/CardFilter.astro";
 import RadioTabs from "../components/RadioTabs.astro";
 import ProfileDashboard from "../components/ProfileDashboard.astro";
 import SearchBar from "../components/SearchBar.astro";
 import StickyTopbar from "../components/StickyTopbar.astro";
-const API_URL = import.meta.env.API_URL;
-const FRONT_URL = import.meta.env.FRONT_URL;
-const formId = "card-filter-form";
-const emptyResultMessageId = "empty-result-message";
+import UserPortalLayout from "../layouts/UserPortalLayout.astro";
 ---
 
-<GenericLayout title="Collection">
-    <script
-        define:vars={{ API_URL, formId, emptyResultMessageId }}
-        type="module"
-    >
+<UserPortalLayout title="Collection">
+    <script>
+        import { API_URL } from "astro:env/client";
+        import { user } from "../scripts/fetchUser";
+
         async function fetchCards(query = "") {
             const cardsResponse = await fetch(
                 `${API_URL}/api/v1/users/${user.username}/cards${query}`,
@@ -39,30 +33,25 @@ const emptyResultMessageId = "empty-result-message";
             else console.error(cardsResponse);
         }
 
-        function populateCollection(cards) {
-            const message = document.getElementById(emptyResultMessageId);
-            if (cards.length === 0) message.classList.remove("is-hidden");
-            else message.classList.add("is-hidden");
+        function populateCollection(cards: any[]) {
+            const message = document.getElementById("empty-result-message");
+            if (cards.length === 0) message!.classList.remove("is-hidden");
+            else message!.classList.add("is-hidden");
 
-            const grouping = document.querySelector(
-                "input[name=grouping]:checked"
+            const grouping = (
+                document.querySelector(
+                    "input[name=grouping]:checked"
+                ) as HTMLInputElement
             ).value;
-            let groupingFunction;
-            if (grouping === "season") {
-                groupingFunction = (card) =>
-                    card.season.slice(0, "Season".length) +
-                    " " +
-                    card.season.slice("Season".length);
-            } else if (grouping === "rarity") {
-                groupingFunction = (card) => card.rarity;
-            } else return console.error("unknown grouping");
 
-            const groups = Object.groupBy(cards, groupingFunction);
+            const groups = Object.groupBy(cards, (card) => card[grouping]);
 
-            const collection = document.querySelector(".cards");
+            const collection = document.querySelector(
+                ".cards"
+            ) as HTMLDivElement;
             collection.innerHTML = "";
             for (const group in groups) {
-                const cards = groups[group];
+                const cards = groups[group]!;
 
                 const separator = document.createElement("h1");
                 separator.textContent = group;
@@ -79,9 +68,9 @@ const emptyResultMessageId = "empty-result-message";
             }
         }
 
-        async function handleSearch(event) {
+        async function handleSearch(event: SubmitEvent) {
             event.preventDefault();
-            const formData = new FormData(event.target);
+            const formData = new FormData(event.target as HTMLFormElement);
             const urlParams = new URLSearchParams();
             for (const [key, value] of formData.entries())
                 if (value.toString().trim() !== "")
@@ -89,17 +78,16 @@ const emptyResultMessageId = "empty-result-message";
             cards = await fetchCards(`?${urlParams.toString()}`);
             populateCollection(cards);
         }
-        const response = await fetch(`${API_URL}/api/v1/session`, {
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "application/json",
-            },
-            credentials: "include",
-        });
 
-        if (response.status !== 200) window.location.replace(`/login`);
+        const cardsCollectedDisplay = document.getElementById(
+            "cards-collected-stat"
+        )!;
+        const cardsSeenDisplay = document.getElementById("cards-seen-stat")!;
+        cardsCollectedDisplay.textContent = user.cardsCollected;
+        cardsCollectedDisplay.classList.remove("has-skeleton");
+        cardsSeenDisplay.textContent = user.cardsSeen;
+        cardsSeenDisplay.classList.remove("has-skeleton");
 
-        const user = await response.json();
         let cards = await fetchCards();
         populateCollection(cards);
 
@@ -112,95 +100,109 @@ const emptyResultMessageId = "empty-result-message";
             );
 
         document
-            .getElementById(formId)
+            .getElementById("card-filter-form")!
             .addEventListener("submit", handleSearch);
     </script>
-    <UserPortalNavbar />
-    <main>
-        <ProfileDashboard>
-            <div slot="stats">
-                <h2 slot="stat-1" class="is-size-4-tablet is-size-5-mobile">
-                    Collected
-                </h2>
-                <h4 slot="stat-1">0/20</h4>
-            </div>
-            <div slot="stats">
-                <h2 slot="stat-2" class="is-size-4-tablet is-size-5-mobile">
-                    Seen
-                </h2>
-                <h4 slot="stat-2">0/20</h4>
-            </div>
-            <CardPack
-                slot="card-packs"
-                compact
-                pack-title="Goofy ahh pack"
-                last-opened={new Date(
-                    new Date().getDate() - 1000 * 60 * 60 * 10
-                ).toISOString()}
-            />
-            <CardPack
-                slot="card-packs"
-                compact
-                class="is-hidden-touch is-hidden-desktop-only"
-                compact
-                pack-title="Rumbumptious pack"
-                last-opened={new Date(
-                    new Date().getDate() - 1000 * 10
-                ).toISOString()}
-            />
-        </ProfileDashboard>
-        <section class="collection p-5">
-            <StickyTopbar>
-                <SearchBar
-                    id={formId}
-                    class="is-flex-grow-1"
-                    name="title"
-                    placeholder="Card name"
-                >
-                    <CardFilter />
-                </SearchBar>
-                <RadioTabs>
-                    <li>
-                        <label>
-                            Season
-                            <input
-                                checked
-                                name="grouping"
-                                value="season"
-                                type="radio"
-                                autocomplete="off"
-                            />
-                        </label>
-                    </li>
-                    <li>
-                        <label>
-                            Rarity
-                            <input
-                                name="grouping"
-                                value="rarity"
-                                type="radio"
-                                autocomplete="off"
-                            />
-                        </label>
-                    </li>
-                </RadioTabs>
-            </StickyTopbar>
-            <h1
-                id={emptyResultMessageId}
-                class="is-hidden subtitle has-text-centered"
+    <ProfileDashboard>
+        <div slot="stats">
+            <h2 slot="stat-1" class="is-size-4-tablet is-size-5-mobile">
+                Collected
+            </h2>
+            <h4
+                slot="stat-1"
+                id="cards-collected-stat"
+                class="subtitle has-skeleton"
             >
-                No cards to display.
-            </h1>
-            <div class="cards"></div>
-        </section>
-    </main>
-</GenericLayout>
+                0/20
+            </h4>
+        </div>
+        <div slot="stats">
+            <h2 slot="stat-2" class="is-size-4-tablet is-size-5-mobile">
+                Seen
+            </h2>
+            <h4
+                slot="stat-2"
+                id="cards-seen-stat"
+                class="subtitle has-skeleton"
+            >
+                0/20
+            </h4>
+        </div>
+        <CardPack
+            slot="card-packs"
+            compact
+            pack-title="Goofy ahh pack"
+            last-opened={new Date(
+                new Date().getDate() - 1000 * 60 * 60 * 10
+            ).toISOString()}
+        />
+        <CardPack
+            slot="card-packs"
+            compact
+            class="is-hidden-touch is-hidden-desktop-only"
+            compact
+            pack-title="Rumbumptious pack"
+            last-opened={new Date(
+                new Date().getDate() - 1000 * 10
+            ).toISOString()}
+        />
+    </ProfileDashboard>
+    <section class="collection p-5">
+        <StickyTopbar>
+            <SearchBar
+                id="card-filter-form"
+                class="is-flex-grow-1"
+                name="title"
+                placeholder="Card name"
+            >
+                <CardFilter />
+            </SearchBar>
+            <RadioTabs>
+                <li>
+                    <label>
+                        Season
+                        <input
+                            checked
+                            name="grouping"
+                            value="season"
+                            type="radio"
+                            autocomplete="off"
+                        />
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        Rarity
+                        <input
+                            name="grouping"
+                            value="rarity"
+                            type="radio"
+                            autocomplete="off"
+                        />
+                    </label>
+                </li>
+            </RadioTabs>
+        </StickyTopbar>
+        <h1
+            id="empty-result-message"
+            class="is-hidden subtitle has-text-centered"
+        >
+            No cards to display.
+        </h1>
+        <div class="cards">
+            <game-card class="is-skeleton"></game-card>
+            <game-card class="is-skeleton"></game-card>
+            <game-card class="is-skeleton"></game-card>
+            <game-card class="is-skeleton"></game-card>
+        </div>
+    </section>
+</UserPortalLayout>
 <style is:global>
     .collection > .cards {
         display: grid;
         height: 100%;
         gap: 10px;
-        justify-content: space-between;
+        justify-content: space-around;
         align-content: space-around;
         grid-template-columns: repeat(auto-fill, 2.5in);
         grid-auto-rows: auto;

@@ -120,63 +120,63 @@ const cards = await prisma.cardClass.createMany({
         {
             name: "heisenberg",
             title: "Heisenberg",
-            season: "Season1",
+            season: CardSeason.Season1,
             description: "Heisenberg es todo un ícono tanto dentro del mundo criminal cómo en las oficinas de la DEA, puesto que es un capo casi irreconocible, y es el único capaz de cocinar la famosa metanfetamina azúl. ",
             rarity: "Epic"
         },
         {
             name: "meth",
             title: "Metanfetamina",
-            season: "Season1",
+            season: CardSeason.Season1,
             description: "Fabricada por Walter y Jesse en un principio, esta era simple metanfetamina hecha por el modo de la pseudoefedrina. Su color común es el blanco.",
             rarity: "Common"
         },
         {
             name: "chili_meth",
             title: "Metanfetamina con chili",
-            season: "Season1",
+            season: CardSeason.Season1,
             description: "Fabricada por Jesse y Emilio Koyama, antes de la asociación de este primero con Walter. Simple metanfetamina con la diferencia de que el ingrediente secreto de esta era el chili.",
             rarity: "Rare"
         },
         {
             name: "blue_meth",
             title: "Metanfetamina Azul",
-            season: "Season1",
+            season: CardSeason.Season1,
             description: "Walter y Jesse tuvieron que cocinar la metanfetamina con una alternativa siendo esta la metilamina, que le otorgaba un color característico al cristal siendo este el azul.",
             rarity: "Epic"
         },
         {
             name: "meme_1",
             title: "Kid Named Finger",
-            season: "Season1",
+            season: CardSeason.Season1,
             description: "I'm not having sex with you right now, Waltuh.",
             rarity: "MEME"
         },
         {
             name: "meme_2",
             title: "Senior Guait",
-            season: "Season1",
+            season: CardSeason.Season1,
             description: "¿Ke quieres Yesi?",
             rarity: "MEME"
         },
         {
             name: "meme_3",
             title: "SCIENCE BITCH",
-            season: "Season1",
+            season: CardSeason.Season1,
             description: "YEAH, SCIENCE BITCH",
             rarity: "MEME"
         },
         {
             name: "meme_4",
             title: "Walter desnudo",
-            season: "Season1",
+            season: CardSeason.Season1,
             description: "El inicio de todo",
             rarity: "MEME"
         },
         {
             name: "meme_5",
             title: "Say my name",
-            season: "Season1",
+            season: CardSeason.Season1,
             description: "You're goddamn right!",
             rarity: "MEME"
         },

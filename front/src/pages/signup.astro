@@ -97,6 +97,8 @@ const API_URL = import.meta.env.API_URL;
                             class="input"
                             type="text"
                             placeholder="Enter your profile name."
+                            minlength="1"
+                            maxlength="45"
                         />
                         <span class="icon is-small is-left">
                             <i class="fa-solid fa-address-card"></i>
@@ -120,6 +122,8 @@ const API_URL = import.meta.env.API_URL;
                             class="input"
                             type="text"
                             placeholder="Enter your username."
+                            minlength="1"
+                            maxlength="32"
                         />
                         <span class="icon is-small is-left">
                             <i class="fas fa-user"></i>
@@ -153,6 +157,7 @@ const API_URL = import.meta.env.API_URL;
                             class="input"
                             type="email"
                             placeholder="Enter your email."
+                            maxlength="255"
                         />
                         <span class="icon is-small is-left">
                             <i class="fas fa-envelope"></i>
@@ -179,6 +184,8 @@ const API_URL = import.meta.env.API_URL;
                             class="input"
                             type="password"
                             placeholder="Enter your password."
+                            minlength="8"
+                            maxlength="20"
                         />
                         <span class="icon is-small is-left">
                             <i class="fas fa-lock"></i>
@@ -194,6 +201,8 @@ const API_URL = import.meta.env.API_URL;
                             class="input"
                             type="password"
                             placeholder="Repeat your password."
+                            minlength="8"
+                            maxlength="20"
                         />
                     </p>
                     <p

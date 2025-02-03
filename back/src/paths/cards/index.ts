@@ -2,7 +2,12 @@ import { OpenAPIV3 } from "openapi-types";
 import { PrismaClient, Prisma, CardSeason } from "@prisma/client";
 import { Operation } from "express-openapi";
 import StatusCodes from "http-status-codes";
-import { PrismaError, SecurityScopes, prisma } from "../../globals.js";
+import {
+    PrismaError,
+    SecurityScopes,
+    formatSeason,
+    prisma,
+} from "../../globals.js";
 
 export default function () {
     const GET: Operation = async (req, res) => {
@@ -20,6 +25,7 @@ export default function () {
         cards.forEach((card) => {
             card["artUrl"] = card.artPath;
             delete card.artPath;
+            card.season = formatSeason(card.season) as any;
         });
 
         res.status(StatusCodes.OK).json(cards);

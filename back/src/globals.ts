@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { CardSeason, PrismaClient } from "@prisma/client";
 
 export enum PrismaError {
     UNIQUE_CONSTRAINT_VIOLATION = "P2002",
@@ -13,3 +13,11 @@ export enum SecurityScopes {
 }
 
 export const prisma = new PrismaClient();
+
+export function formatSeason(season: CardSeason) {
+    return `${season.slice(0, "Season".length)} ${season.slice("Season".length)}`;
+}
+
+export function recoverSeason(formattedSeason: string) {
+    return formattedSeason.replace(" ", "");
+}

@@ -59,20 +59,29 @@ components:
             type: "string"
             format: "password"
             example: someStr0ngPassword__*
+            minLength: 8
+            maxLength: 20
         StringIdentifier:
             type: string
             description: "A unique alphanumerical lowercase string that functions as a key."
             example: valid_identifier123
             pattern: "^[a-z0-9_]+$"
+            minLength: 1
+            maxLength: 32
         User:
             type: object
-            additionalProperties: false
             properties:
                 username:
                     $ref: "#/components/schemas/StringIdentifier"
                 profileName:
                     type: string
                     example: Lost Giraffe
+                    minLength: 1
+                    maxLength: 45
+                privilege:
+                    type: string
+                    example: Standard
+                    readOnly: true
                 profilePictureUrl:
                     type: string
                     example: http://www.example.com/profilepicture.jpeg
@@ -80,8 +89,7 @@ components:
                 email:
                     type: string
                     format: email
-                password:
-                    $ref: "#/components/schemas/Password"
+                    maxLength: 255
                 createdAt:
                     type: string
                     format: date-time
@@ -92,6 +100,8 @@ components:
                 title:
                     type: string
                     example: Darker yet Darker
+                    minLength: 1
+                    maxLength: 60
                 season:
                     $ref: "#/components/schemas/Season"
                 description:
@@ -116,6 +126,8 @@ components:
                 title:
                     type: string
                     example: Daily Card Pack
+                    minLength: 1
+                    maxLength: 60
                 drops:
                     type: array
                     description: A list of cards' names dropped by the card pack.
@@ -141,9 +153,11 @@ components:
         Rarity:
             type: string
             enum: [Common, Rare]
+            minLength: 1
+            maxLength: 32
         Season:
             type: string
-            enum: [Season1, Season2, Season3, Season4, Season5]
+            enum: ["Season 1", "Season 2", "Season 3", "Season 4", "Season 5"]
     responses:
         Unauthorized:
             description: The client failed to authenticate itself to the server.

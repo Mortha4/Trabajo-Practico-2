@@ -3,11 +3,11 @@ CREATE TYPE "UserPrivilege" AS ENUM('Administrator', 'Standard');
 
 -- CreateEnum
 CREATE TYPE "CardSeason" AS ENUM(
-    'Season1',
-    'Season2',
-    'Season3',
-    'Season4',
-    'Season5'
+    'Season 1',
+    'Season 2',
+    'Season 3',
+    'Season 4',
+    'Season 5'
 );
 
 -- CreateEnum
@@ -39,7 +39,7 @@ CREATE TABLE "User" (
 -- CreateTable
 CREATE TABLE "UserData" (
     "pk_username" VARCHAR(32) NOT NULL,
-    "profile_name" VARCHAR(100) NOT NULL,
+    "profile_name" VARCHAR(45) NOT NULL,
     "email_uq" VARCHAR(255) NOT NULL,
     "profile_picture_path" VARCHAR(255) NOT NULL DEFAULT 'public/default-profile-picture.svg',
     "password" VARCHAR(20) NOT NULL,
@@ -51,7 +51,7 @@ CREATE TABLE "UserData" (
 
 -- CreateTable
 CREATE TABLE "CardPackType" (
-    "pk_name" VARCHAR(100) NOT NULL,
+    "pk_name" VARCHAR(32) NOT NULL,
     "title" VARCHAR(60) NOT NULL,
     "wrapper_image_path" VARCHAR(255) NOT NULL DEFAULT 'public/placeholder-image.svg',
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -61,14 +61,14 @@ CREATE TABLE "CardPackType" (
 
 -- CreateTable
 CREATE TABLE "Rarity" (
-    "pk_name" VARCHAR(100) NOT NULL,
+    "pk_name" VARCHAR(32) NOT NULL,
     "drop_probability" DECIMAL(4, 3) NOT NULL,
     CONSTRAINT "Rarity_pkey" PRIMARY KEY ("pk_name")
 );
 
 -- CreateTable
 CREATE TABLE "CardClass" (
-    "pk_name" VARCHAR(100) NOT NULL,
+    "pk_name" VARCHAR(32) NOT NULL,
     "title" VARCHAR(60) NOT NULL,
     "season" "CardSeason" NOT NULL,
     "description" VARCHAR(200) NOT NULL,
@@ -81,14 +81,14 @@ CREATE TABLE "CardClass" (
 
 -- CreateTable
 CREATE TABLE "LootTable" (
-    "pk_pack_name" TEXT NOT NULL,
-    "pk_card_name" TEXT NOT NULL,
+    "pk_pack_name" VARCHAR(32) NOT NULL,
+    "pk_card_name" VARCHAR(32) NOT NULL,
     CONSTRAINT "LootTable_pkey" PRIMARY KEY ("pk_pack_name", "pk_card_name")
 );
 
 -- CreateTable
 CREATE TABLE "CollectionEntry" (
-    "pk_card_name" TEXT NOT NULL,
+    "pk_card_name" VARCHAR(32) NOT NULL,
     "pk_user_id" INTEGER NOT NULL,
     "quantity" INTEGER NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -99,7 +99,7 @@ CREATE TABLE "CollectionEntry" (
 -- CreateTable
 CREATE TABLE "PackOpening" (
     "pk_user_id" INTEGER NOT NULL,
-    "pk_pack_name" TEXT NOT NULL,
+    "pk_pack_name" VARCHAR(32) NOT NULL,
     "pk_opened_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "PackOpening_pkey" PRIMARY KEY ("pk_user_id", "pk_pack_name", "pk_opened_at")
 );
@@ -107,9 +107,9 @@ CREATE TABLE "PackOpening" (
 -- CreateTable
 CREATE TABLE "OpeningDetail" (
     "pk_user_id" INTEGER NOT NULL,
-    "pk_pack_name" TEXT NOT NULL,
+    "pk_pack_name" VARCHAR(32) NOT NULL,
     "pk_opened_at" TIMESTAMP(3) NOT NULL,
-    "pk_card_name" TEXT NOT NULL,
+    "pk_card_name" VARCHAR(32) NOT NULL,
     "quantity" INTEGER NOT NULL,
     CONSTRAINT "OpeningDetail_pkey" PRIMARY KEY (
         "pk_user_id",
@@ -136,7 +136,7 @@ CREATE TABLE "Trade" (
 -- CreateTable
 CREATE TABLE "TradeDetail" (
     "pk_trade_id" INTEGER NOT NULL,
-    "pk_card_name" VARCHAR(100) NOT NULL,
+    "pk_card_name" VARCHAR(32) NOT NULL,
     "quantity" INTEGER NOT NULL,
     "detail_type" "TradeDetailType" NOT NULL,
     CONSTRAINT "TradeDetail_pkey" PRIMARY KEY ("pk_trade_id", "pk_card_name")
@@ -192,7 +192,7 @@ ADD CONSTRAINT "PackOpening_Opens_CardPackType" FOREIGN KEY ("pk_pack_name") REF
 
 -- AddForeignKey
 ALTER TABLE "OpeningDetail"
-ADD CONSTRAINT "OpeningDetail_BelongsTo_PackOpening" FOREIGN KEY ("pk_user_id", "pk_pack_name", "pk_opened_at") REFERENCES "PackOpening" ("pk_user_id", "pk_pack_name", "pk_opened_at") ON DELETE RESTRICT ON UPDATE CASCADE;
+ADD CONSTRAINT "OpeningDetail_BelongsTo_PackOpening" FOREIGN KEY ("pk_user_id", "pk_pack_name", "pk_opened_at") REFERENCES "PackOpening" ("pk_user_id", "pk_pack_name", "pk_opened_at") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "OpeningDetail"

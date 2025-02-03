@@ -21,6 +21,8 @@ const API_URL = import.meta.env.API_URL;
                     type="text"
                     placeholder="Enter your username"
                     name="username"
+                    minlength="1"
+                    maxlength="32"
                 />
                 <span class="icon is-small is-left">
                     <i class="fas fa-user"></i>
@@ -35,6 +37,8 @@ const API_URL = import.meta.env.API_URL;
                     type="password"
                     placeholder="Password"
                     name="password"
+                    minlength="8"
+                    maxlength="20"
                 />
                 <span class="icon is-small is-left">
                     <i class="fas fa-lock"></i>

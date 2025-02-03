@@ -2,7 +2,9 @@
 /**
  * Standard template for HTML documents, includes global css files
  */
-import GameCard from "../custom-elements/GameCard.astro";
+const customElements = Object.values(
+    import.meta.glob("../custom-elements/*.astro", { eager: true })
+);
 const { title, class: classList } = Astro.props;
 ---
 
@@ -30,7 +32,7 @@ const { title, class: classList } = Astro.props;
     </head>
     <body class:list={[classList]}>
         <slot />
-        <GameCard />
+        {customElements.map((CustomElement: any) => <CustomElement.default />)}
     </body>
 </html>
 

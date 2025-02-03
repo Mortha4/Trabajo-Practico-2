@@ -36,11 +36,11 @@ enum UserPrivilege {
 }
 
 enum CardSeason {
-    Season1
-    Season2
-    Season3
-    Season4
-    Season5
+    Season1 @map("Season 1")
+    Season2 @map("Season 2")
+    Season3 @map("Season 3")
+    Season4 @map("Season 4")
+    Season5 @map("Season 5")
 }
 
 enum TradeStatus {
@@ -83,7 +83,7 @@ model User {
 /// Cascade deletes implemented through tg_UserData_BeforeDelete
 model UserData {
     username           String        @id @map("pk_username") @db.VarChar(32)
-    profileName        String        @map("profile_name") @db.VarChar(100)
+    profileName        String        @map("profile_name") @db.VarChar(45)
     email              String        @unique @map("email_uq") @db.VarChar(255)
     profilePicturePath String        @default("public/default-profile-picture.svg") @map("profile_picture_path") @db.VarChar(255)
     password           String        @db.VarChar(20) // TODO: implement hashing
@@ -98,21 +98,21 @@ view FlattenedUser {
     id                 Int            @id @map("pk_user_id")
     username           String?        @unique @map("fk_username_uq") @db.VarChar(32) /// NULL value implies deleted user
     deletedAt          DateTime?      @map("deleted_at") @db.Timestamptz()
-    profileName        String?        @map("profile_name") @db.VarChar(100)
+    profileName        String?        @map("profile_name") @db.VarChar(45)
     email              String?        @unique @map("email_uq") @db.VarChar(255)
     profilePicturePath String         @map("profile_picture_path") @db.VarChar(255)
     password           String?        @db.VarChar(20)
     privilege          UserPrivilege?
     createdAt          DateTime?      @map("created_at") @db.Timestamptz()
     modifiedAt         DateTime?      @map("modified_at") @db.Timestamptz()
-    cardSeen           Int            @map("cards_seen")
-    cardCollected      Int            @map("cards_collected")
+    cardsSeen          Int            @map("cards_seen")
+    cardsCollected     Int            @map("cards_collected")
 
     @@map("vw_FlattenedUser")
 }
 
 model CardPackType {
-    name             String        @id @map("pk_name") @db.VarChar(100)
+    name             String        @id @map("pk_name") @db.VarChar(32)
     title            String        @db.VarChar(60)
     wrapperImagePath String        @default("public/placeholder-image.svg") @map("wrapper_image_path") @db.VarChar(255)
     createdAt        DateTime      @default(now()) @map("created_at") @db.Timestamptz()
@@ -122,13 +122,13 @@ model CardPackType {
 }
 
 model Rarity {
-    name            String      @id @map("pk_name") @db.VarChar(100)
+    name            String      @id @map("pk_name") @db.VarChar(32)
     dropProbability Decimal     @map("drop_probability") @db.Decimal(4, 3)
     card            CardClass[] @relation(name: "CardClass_IsClassifiedBy_Rarity")
 }
 
 model CardClass {
-    name                  String            @id @map("pk_name") @db.VarChar(100)
+    name                  String            @id @map("pk_name") @db.VarChar(32)
     title                 String            @db.VarChar(60)
     season                CardSeason
     description           String            @db.VarChar(200)
@@ -143,8 +143,8 @@ model CardClass {
 }
 
 model LootTable {
-    packName String       @map("pk_pack_name")
-    cardName String       @map("pk_card_name")
+    packName String       @map("pk_pack_name") @db.VarChar(32)
+    cardName String       @map("pk_card_name") @db.VarChar(32)
     pack     CardPackType @relation(name: "CardPackType_Drops_CardClass", map: "CardPackType_Drops_CardClass", fields: [packName], references: [name], onDelete: Cascade, onUpdate: Cascade)
     card     CardClass    @relation(name: "CardClass_IsDroppedBy_CardPackType", map: "CardClass_IsDroppedBy_CardPackType", fields: [cardName], references: [name], onDelete: Cascade, onUpdate: Cascade)
 
@@ -154,7 +154,7 @@ model LootTable {
 }
 
 model CollectionEntry {
-    cardName   String    @map("pk_card_name")
+    cardName   String    @map("pk_card_name") @db.VarChar(32)
     userId     Int       @map("pk_user_id") /// cascade delete enforced through tg_UserData_BeforeDelete
     quantity   Int
     createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz()
@@ -167,7 +167,7 @@ model CollectionEntry {
 
 model PackOpening {
     userId   Int             @map("pk_user_id") /// cascade delete enforced through tg_UserData_BeforeDelete
-    packName String          @map("pk_pack_name")
+    packName String          @map("pk_pack_name") @db.VarChar(32)
     openedAt DateTime        @default(now()) @map("pk_opened_at") @db.Timestamptz()
     user     User            @relation(name: "PackOpening_IsPerformedBy_User", map: "PackOpening_IsPerformedBy_User", fields: [userId], references: [id])
     pack     CardPackType    @relation(name: "PackOpening_Opens_CardPackType", map: "PackOpening_Opens_CardPackType", fields: [packName], references: [name], onDelete: Cascade, onUpdate: Cascade)
@@ -178,12 +178,12 @@ model PackOpening {
 
 model OpeningDetail {
     userId   Int      @map("pk_user_id")
-    packName String   @map("pk_pack_name")
+    packName String   @map("pk_pack_name") @db.VarChar(32)
     openedAt DateTime @map("pk_opened_at")
-    cardName String   @map("pk_card_name")
+    cardName String   @map("pk_card_name") @db.VarChar(32)
     quantity Int
 
-    packOpening PackOpening @relation(name: "OpeningDetail_BelongsTo_PackOpening", map: "OpeningDetail_BelongsTo_PackOpening", fields: [userId, packName, openedAt], references: [userId, packName, openedAt])
+    packOpening PackOpening @relation(name: "OpeningDetail_BelongsTo_PackOpening", map: "OpeningDetail_BelongsTo_PackOpening", fields: [userId, packName, openedAt], references: [userId, packName, openedAt], onDelete: Cascade, onUpdate: Cascade)
     lootEntry   LootTable   @relation(name: "OpeningDetail_IsConsistentWith_LootTable", map: "OpeningDetail_IsConsistentWith_LootTable", fields: [packName, cardName], references: [packName, cardName], onDelete: Cascade, onUpdate: Cascade)
 
     @@id([userId, packName, openedAt, cardName])
@@ -224,7 +224,7 @@ view TradeInfo {
 model TradeDetail {
     tradeId    Int             @map("pk_trade_id")
     offer      Trade           @relation(name: "TradeDetail_BelongsTo_Trade", map: "TradeDetail_BelongsTo_Trade", fields: [tradeId], references: [id], onDelete: Cascade, onUpdate: Cascade)
-    cardName   String          @map("pk_card_name") @db.VarChar(100)
+    cardName   String          @map("pk_card_name") @db.VarChar(32)
     card       CardClass       @relation(name: "TradeDetail_Features_CardClass", map: "TradeDetail_Features_CardClass", fields: [cardName], references: [name], onDelete: Cascade, onUpdate: Cascade)
     quantity   Int
     detailType TradeDetailType @map("detail_type")

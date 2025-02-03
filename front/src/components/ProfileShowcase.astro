@@ -9,24 +9,51 @@
 const { "container-class": slotContainerClasses } = Astro.props;
 ---
 
+<script>
+    import { user } from "../scripts/fetchUser";
+    const usernameDisplay = document.getElementById(
+        "profile-showcase-username"
+    )!;
+    usernameDisplay.classList.remove("has-skeleton");
+    usernameDisplay.textContent = `@${user.username}`;
+    const profileNameDisplay = document.getElementById(
+        "profile-showcase-profile-name"
+    )!;
+    profileNameDisplay.classList.remove("has-skeleton");
+    profileNameDisplay.textContent = user.profileName;
+    const profilePictureImg = document.getElementById(
+        "profile-showcase-image"
+    )!;
+    profilePictureImg.setAttribute("src", `${user.profilePictureUrl}`);
+    profilePictureImg.parentElement?.classList.remove("is-skeleton");
+</script>
 <section class="background-profile hero is-small is-link">
     <div class="hero-body is-flex is-flex-direction-row is-flex-wrap-wrap">
         <div
             class="profile-flex is-flex-shrink-0 is-inline-flex is-align-items-center is-justify-content-center p-1"
         >
-            <img src="default-profile-picture.svg" alt="profile picture" />
+            <figure class="image is-128x128 is-skeleton">
+                <img
+                    id="profile-showcase-image"
+                    class="image"
+                    src="default-profile-picture.svg"
+                    alt="profile picture"
+                />
+            </figure>
             <div
                 class="names-flex is-flex is-flex-direction-column is-align-self-stretch is-justify-content-center"
             >
                 <h2
-                    class="is-size-4-tablet is-size-5-mobile has-text-weight-bold"
+                    id="profile-showcase-profile-name"
+                    class="has-skeleton is-size-4-tablet is-size-5-mobile has-text-weight-bold"
                 >
-                    User_name
+                    Profile Name
                 </h2>
                 <h4
-                    class="is-size-5-tablet is-size-6-mobile has-text-weight-light has-text-grey-light"
+                    id="profile-showcase-username"
+                    class="has-skeleton is-size-5-tablet is-size-6-mobile has-text-weight-light"
                 >
-                    Description
+                    username
                 </h4>
             </div>
         </div>
@@ -44,6 +71,10 @@ const { "container-class": slotContainerClasses } = Astro.props;
         width: 100%;
     }
 
+    div.names-flex > h4 {
+        color: #abb1bf;
+    }
+
     div.names-flex > h2,
     div.names-flex > h4 {
         word-break: break-word;
@@ -56,14 +87,19 @@ const { "container-class": slotContainerClasses } = Astro.props;
         flex-grow: 1;
     }
 
-    div.profile-flex > img {
-        width: 10rem;
+    div.profile-flex > figure {
+        border-radius: 50%;
+        min-width: 128px;
     }
 
     div.profile-banner-container {
         flex-basis: 300px;
         flex-grow: 9999999;
         container: profile-banner-container / size;
+    }
+
+    div.names-flex {
+        gap: 5px;
     }
 
     @media (max-width: 768px) {

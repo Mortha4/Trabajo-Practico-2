@@ -79,7 +79,7 @@ const cookieAuth: SecurityHandler = async (
     const isAnonymousSession = req.session.userId == null;
 
     if (isAnonymousSession) throw authFailure;
-
+    // TODO: invalidate session on password change
     const user = await prisma.user.findUnique({
         select: {
             id: true,
