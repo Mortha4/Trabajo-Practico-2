@@ -2,14 +2,22 @@ import { OpenAPIV3 } from "openapi-types";
 import { PrismaClient, Prisma, CardSeason } from "@prisma/client";
 import { Operation } from "express-openapi";
 import StatusCodes from "http-status-codes";
-import { PrismaError, SecurityScopes, prisma } from "../../globals.js";
+import {
+    PrismaError,
+    SecurityScopes,
+    prisma,
+    deformatSeason,
+    formatSeason,
+} from "../../globals.js";
 
 export default function () {
     const GET: Operation = async (req, res) => {
-        const cards = await prisma.cardPackType.findMany({
+        const packs = await prisma.cardPackType.findMany({
             select: {
                 name: true,
                 title: true,
+                dropQuantity: true,
+                cooldown: true,
                 wrapperImagePath: true,
                 drops: {
                     select: {
@@ -30,18 +38,19 @@ export default function () {
             },
         });
 
-        cards.forEach((pack) => {
+        packs.forEach((pack) => {
             pack["wrapperImageUrl"] = pack.wrapperImagePath;
             pack.drops.forEach((cardDropped) => {
                 Object.assign(cardDropped, { ...cardDropped.card });
                 delete cardDropped.card;
                 cardDropped["artUrl"] = cardDropped["artPath"];
                 delete cardDropped["artPath"];
+                cardDropped["season"] = formatSeason(cardDropped["season"]);
             });
             delete pack.wrapperImagePath;
         });
 
-        res.json(cards);
+        res.json(packs);
     };
 
     GET.apiDoc = {
@@ -57,28 +66,7 @@ export default function () {
                         schema: {
                             type: "array",
                             items: {
-                                type: "object",
-                                properties: {
-                                    name: {
-                                        $ref: "#/components/schemas/StringIdentifier",
-                                    },
-                                    title: {
-                                        type: "string",
-                                        example: "Daily Card Pack",
-                                    },
-                                    wrapperImageUrl: {
-                                        type: "string",
-                                        example:
-                                            "http://www.example.com/packwrapper.jpeg",
-                                        readOnly: true,
-                                    },
-                                    drops: {
-                                        type: "array",
-                                        items: {
-                                            $ref: "#/components/schemas/CardClass",
-                                        },
-                                    },
-                                },
+                                $ref: "#/components/schemas/CardPack",
                             },
                         },
                     },
@@ -88,7 +76,7 @@ export default function () {
     };
 
     const POST: Operation = async (req, res) => {
-        const { name, title, drops } = req.body;
+        const { name, title, drops, dropQuantity, cooldown } = req.body;
         const lootEntries = drops.map((cardName) => ({
             create: {
                 cardName,
@@ -105,6 +93,8 @@ export default function () {
                 data: {
                     name,
                     title,
+                    dropQuantity,
+                    cooldown,
                     drops: {
                         connectOrCreate: lootEntries,
                     },
@@ -143,7 +133,7 @@ export default function () {
         }
     };
 
-    const postCardPackSchema = {
+    const postCardPackSchema: OpenAPIV3.SchemaObject = {
         allOf: [
             {
                 properties: {
@@ -153,6 +143,34 @@ export default function () {
                 },
             },
             { $ref: "#/components/schemas/CardPackData" },
+            {
+                properties: {
+                    drops: {
+                        type: "array",
+                        description:
+                            "A list of cards' names dropped by the card pack.",
+                        items: {
+                            allOf: [
+                                {
+                                    $ref: "#/components/schemas/StringIdentifier",
+                                },
+                                {
+                                    example: "valid_card34",
+                                },
+                            ],
+                        },
+                    },
+                },
+            },
+            {
+                required: [
+                    "name",
+                    "title",
+                    "drops",
+                    "dropQuantity",
+                    "cooldown",
+                ],
+            },
         ],
     };
 

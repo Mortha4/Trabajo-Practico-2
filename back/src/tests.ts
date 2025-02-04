@@ -121,3 +121,73 @@ describe("GET /users/marxel/cards", async function () {
         assert.equal(res.status, StatusCodes.OK, "Got unexpected status code");
     });
 });
+
+describe("GET /users/marxel", async () => {
+    const authRequest = await fetch(`${url}/session`, {
+        method: "POST",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Basic ${Buffer.from("marxel:Breaking_Bad_TCG").toString("base64")}`,
+        },
+    });
+    it("should return information about the user marxel", async function () {
+        const res = await fetch(`${url}/users/marxel`, {
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Cookie: `${authRequest.headers.getSetCookie()}`,
+            },
+        });
+
+        assert.equal(res.status, StatusCodes.OK, "Got unexpected status code");
+    });
+});
+
+describe("GET /users/marxel/cardpacks", async function () {
+    const authRequest = await fetch(`${url}/session`, {
+        method: "POST",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Basic ${Buffer.from("marxel:Breaking_Bad_TCG").toString("base64")}`,
+        },
+    });
+    it("should list cardpacks belonging to marxel", async function () {
+        const res = await fetch(`${url}/users/marxel/cardpacks`, {
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json",
+                Cookie: `${authRequest.headers.getSetCookie()}`,
+            },
+        });
+
+        assert.equal(res.status, StatusCodes.OK, "Got unexpected status code");
+    });
+});
+
+describe("POST /users/marxel/cardpacks/paquete_prueba/openings", async function () {
+    const authRequest = await fetch(`${url}/session`, {
+        method: "POST",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+            Authorization: `Basic ${Buffer.from("marxel:Breaking_Bad_TCG").toString("base64")}`,
+        },
+    });
+    it("should open the paquete_prueba pack", async function () {
+        const res = await fetch(
+            `${url}/users/marxel/cardpacks/paquete_prueba/openings`,
+            {
+                method: "POST",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                    Cookie: `${authRequest.headers.getSetCookie()}`,
+                },
+            }
+        );
+
+        assert.equal(res.status, StatusCodes.OK, "Got unexpected status code");
+    });
+});

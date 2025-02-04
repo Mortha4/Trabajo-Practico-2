@@ -1,6 +1,7 @@
 import { Operation } from "express-openapi";
 import StatusCodes from "http-status-codes";
 import { PrismaError, SecurityScopes, prisma } from "../../globals.js";
+import { OpenAPIV3 } from "openapi-types";
 
 export default function () {
     const DELETE: Operation = async (req, res) => {
@@ -51,7 +52,7 @@ export default function () {
 
     const PATCH: Operation = async (req, res) => {
         const { cardPackName } = req.params;
-        const { title, drops } = req.body;
+        const { title, drops, dropQuantity, cooldown } = req.body;
 
         try {
             await prisma.$transaction([
@@ -59,6 +60,8 @@ export default function () {
                     where: { name: cardPackName },
                     data: {
                         title,
+                        dropQuantity,
+                        cooldown,
                     },
                 }),
                 prisma.lootTable.deleteMany({
@@ -100,6 +103,33 @@ export default function () {
         }
     };
 
+    const patchRequestSchema: OpenAPIV3.SchemaObject = {
+        allOf: [
+            {
+                $ref: "#/components/schemas/CardPackData",
+            },
+            {
+                properties: {
+                    drops: {
+                        type: "array",
+                        description:
+                            "A list of cards' names dropped by the card pack.",
+                        items: {
+                            allOf: [
+                                {
+                                    $ref: "#/components/schemas/StringIdentifier",
+                                },
+                                {
+                                    example: "valid_card34",
+                                },
+                            ],
+                        },
+                    },
+                },
+            },
+        ],
+    };
+
     PATCH.apiDoc = {
         summary: "Updates a card pack.",
         parameters: [
@@ -114,14 +144,10 @@ export default function () {
         requestBody: {
             content: {
                 "application/json": {
-                    schema: {
-                        $ref: "#/components/schemas/CardPackData",
-                    },
+                    schema: patchRequestSchema,
                 },
                 "application/x-www-form-urlencoded": {
-                    schema: {
-                        $ref: "#/components/schemas/CardPackData",
-                    },
+                    schema: patchRequestSchema,
                 },
             },
         },

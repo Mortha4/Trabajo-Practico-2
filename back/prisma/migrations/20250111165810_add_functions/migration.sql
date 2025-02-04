@@ -1,4 +1,17 @@
-CREATE FUNCTION "fn_IsLowercaseAlphanumerical" (string VARCHAR) RETURNS BOOLEAN LANGUAGE SQL IMMUTABLE RETURNS NULL ON NULL INPUT RETURN string NOT SIMILAR TO '%[^a-z0-9_]%';
+CREATE FUNCTION "fn_IsLowercaseAlphanumerical" (some_string VARCHAR) RETURNS BOOLEAN LANGUAGE SQL IMMUTABLE RETURNS NULL ON NULL INPUT RETURN some_string NOT SIMILAR TO '%[^a-z0-9_]%';
+
+CREATE FUNCTION "fn_IsISO8601Duration" (some_string VARCHAR) RETURNS BOOLEAN IMMUTABLE RETURNS NULL ON NULL INPUT
+SET
+    intervalstyle = 'iso_8601' AS $$
+DECLARE
+    result BOOLEAN;
+BEGIN
+    SELECT some_string = (some_string::INTERVAL)::VARCHAR INTO result;
+    RETURN result;
+EXCEPTION
+    WHEN invalid_datetime_format THEN RETURN FALSE;
+END;
+$$ LANGUAGE plpgsql;
 
 CREATE FUNCTION "fn_ManuallyCascadeDeleteUserData" () RETURNS TRIGGER AS $tg_UserData_BeforeDelete$
 DECLARE

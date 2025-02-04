@@ -54,6 +54,8 @@ CREATE TABLE "CardPackType" (
     "pk_name" VARCHAR(32) NOT NULL,
     "title" VARCHAR(60) NOT NULL,
     "wrapper_image_path" VARCHAR(255) NOT NULL DEFAULT 'public/placeholder-image.svg',
+    "cooldown" TEXT NOT NULL,
+    "drop_quantity" INTEGER NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "modified_at" TIMESTAMPTZ,
     CONSTRAINT "CardPackType_pkey" PRIMARY KEY ("pk_name")

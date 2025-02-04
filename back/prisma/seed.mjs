@@ -1,4 +1,5 @@
 import { CardSeason, PrismaClient } from "@prisma/client";
+import moment from "moment";
 const prisma = new PrismaClient();
 
 const rarity = await prisma.rarity.createMany({
@@ -215,6 +216,8 @@ const season1Pack = await prisma.cardPackType.create({
                 { cardName: "heisenberg" },
             ],
         },
+        dropQuantity: 3,
+        cooldown: moment.duration({ minutes: 1 }),
     },
 });
 
@@ -225,6 +228,8 @@ const testPackEpic = await prisma.cardPackType.create({
         drops: {
             create: [{ cardName: "combo" }],
         },
+        dropQuantity: 10,
+        cooldown: moment.duration({ minutes: 5 }),
     },
 });
 
