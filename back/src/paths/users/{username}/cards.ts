@@ -6,7 +6,7 @@ import {
     SecurityScopes,
     formatSeason,
     prisma,
-    recoverSeason,
+    deformatSeason,
 } from "../../../globals.js";
 
 export default function () {
@@ -97,7 +97,7 @@ export default function () {
                         in: rarities,
                     },
                     season: {
-                        in: seasons?.map(recoverSeason) as CardSeason[],
+                        in: seasons?.map(deformatSeason) as CardSeason[],
                     },
                 },
                 quantity: quantityQuery,

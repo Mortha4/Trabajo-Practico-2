@@ -18,6 +18,6 @@ export function formatSeason(season: CardSeason) {
     return `${season.slice(0, "Season".length)} ${season.slice("Season".length)}`;
 }
 
-export function recoverSeason(formattedSeason: string) {
+export function deformatSeason(formattedSeason: string) {
     return formattedSeason.replace(" ", "");
 }

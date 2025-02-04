@@ -4,6 +4,7 @@ printWidth: 80
 plugins:
     [
         "prettier-plugin-sql",
+        "prettier-plugin-embed",
         "prettier-plugin-prisma",
         "prettier-plugin-astro",
         "prettier-plugin-sh",
@@ -11,3 +12,7 @@ plugins:
 
 # prettier-plugin-sql config
 language: postgresql
+keywordCase: upper
+
+# prettier-plugin-embed config
+embeddedSqlTags: ["sql", "prisma.$queryRaw", "prisma.$queryRawUnsafe"]

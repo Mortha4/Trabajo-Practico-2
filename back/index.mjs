@@ -15,6 +15,9 @@ const PORT = process.env.EXPRESS_PORT ?? 3000;
 const app = express();
 
 const docsPath = import.meta.dirname + "/src/api-doc.yaml";
+// TODO: change all POST endpoints responding with status 204 (No Content) to status 201 (Created) + Location header + body
+// TODO: make unique constraint violations respond with 409 instead of 400
+// TODO: respond 304 (Not Modified) for empty PATCHes
 const apiDoc = YAML.parse(fs.readFileSync(docsPath).toString());
 
 app.use(

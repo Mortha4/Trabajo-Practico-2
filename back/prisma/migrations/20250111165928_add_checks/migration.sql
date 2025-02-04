@@ -56,3 +56,9 @@ ADD CONSTRAINT "CollectionEntry_IsQuantityPositive_chk" CHECK ("quantity" >= 0);
 
 ALTER TABLE "OpeningDetail"
 ADD CONSTRAINT "OpeningDetail_IsQuantityStrictlyPositive_chk" CHECK ("quantity" > 0);
+
+ALTER TABLE "CardPackType"
+ADD CONSTRAINT "CardPackType_IsDropQuantityPositive_chk" CHECK ("drop_quantity" >= 0);
+
+ALTER TABLE "CardPackType"
+ADD CONSTRAINT "CardPackType_IsCooldownFormattedAsISO8601Duration_chk" CHECK ("fn_IsISO8601Duration" ("cooldown"));
