@@ -7,7 +7,7 @@ const rarity = await prisma.rarity.createMany({
         { name: "Common", dropProbability: 1 },
         { name: "Rare", dropProbability: 0.6 },
         { name: "Epic", dropProbability: 0.3 },
-        { name: "MEME", dropProbability: 0.1 }
+        { name: "MEME", dropProbability: 0.1 },
     ],
 });
 

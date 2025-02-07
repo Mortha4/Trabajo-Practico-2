@@ -1,24 +1,12 @@
 # Final Assignment WEB Development
 
+<p align="justify">
 Final assignment for the "Introducción al Desarrollo de Software" subject of the
-Computer Engineering degree of the University of Buenos Aires.
-
-## Technologies
-
-- Frontend:
-    - HTML
-    - CSS
-    - JS
-- Backend:
-    - express
-    - PrismaORM
-    - PostgreSQL
-
-## Conventions
-
+Computer Engineering program of the University of Buenos Aires.
 Code and documentation will be in English whereas issues, reviews, and other
 discussions will be in Spanish. Tasks will be tracked on [Trello][1], and
-patches will be merged once all team members have reviewed them.
+patches will be merged once all team members have reviewed them. See the [docs](docs/README.md) for project documentation.
+</p>
 
 ## Collaborators
 
@@ -35,13 +23,21 @@ patches will be merged once all team members have reviewed them.
 - Use of git and github with a clean commit history
 - Persistent state in a relational database
 
-<<<<<<< HEAD
+## Dependencies
+
+- nodejs v22.12.0 with npm v9.2.0
+- PostgreSQL v17.2
+
+## Frameworks
+
+- PrismaORM
+- express-openapi
+- Astro
 
 ## Tooling
 
-- Docker
-- # Prettier
-
-## Build and Deployment
+- Docker (v27.5.1) compose (v2.29.7) for easier development.
+- Prettier for consistent formatting.
+- Mocha for some basic testing.
 
 [1]: https://trello.com/b/FrVAu7L0/tp2-intro "Trello"
