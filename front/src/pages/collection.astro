@@ -29,7 +29,14 @@ import UserPortalLayout from "../layouts/UserPortalLayout.astro";
                 }
             );
 
-            if (cardsResponse.status === 200) return await cardsResponse.json();
+            if (cardsResponse.status === 200) {
+                const cards = await cardsResponse.json()
+                cards.forEach ((card)=>{
+                    card["art-url"] = card.artUrl;
+                    delete card.artUrl;
+                })
+                return cards
+            }
             else console.error(cardsResponse);
         }
 
@@ -59,8 +66,6 @@ import UserPortalLayout from "../layouts/UserPortalLayout.astro";
                 collection.appendChild(separator);
 
                 for (const card of cards) {
-                    card["art-url"] = card.artUrl;
-                    delete card.artUrl;
                     const gameCard = document.createElement("game-card");
                     $(gameCard).attr(card);
                     collection?.appendChild(gameCard);
