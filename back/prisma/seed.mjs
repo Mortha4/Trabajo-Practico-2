@@ -17,14 +17,14 @@ const cards = await prisma.cardClass.createMany({
             name: "walter_white",
             title: "Walter White",
             season: CardSeason.Season1,
-            description: "Walter Hartwell White,  es un profesor de química de Albuquerque, que, tras ser diagnosticado con cáncer de pulmón inoperable, decide empezar a fabricar metanfetamina para poder mantener a su familia.",
+            description: "Walter Hartwell White es un profesor de química que, tras ser diagnosticado con cáncer de pulmón inoperable, decide fabricar metanfetamina para poder mantener a su familia.",
             rarity: "Rare",
         },
         {
             name: "jesse_pinkman",
             title: "Jessee Pinkman",
             season: CardSeason.Season1,
-            description: "En el instituto, Jesse era un consumidor, fabricante y traficante de poca monta de metanfetamina. Era un estudiante que prestaba poca atención a las clases de química de su profesor, el propio Walter.",
+            description: "Jesse era un consumidor, fabricante y traficante de poca monta de metanfetamina. El prestaba poca atención a las clases de química de su profesor, el propio Walter.",
             rarity: "Rare",
         },
         {
@@ -38,7 +38,7 @@ const cards = await prisma.cardClass.createMany({
             name: "walter_jr",
             title: "Walter Jr.",
             season: CardSeason.Season1,
-            description: "Walter Hartwell White Jr., también conocido por el apodo 'Flynn' es el hijo de Walter y Skyler White y el hermano de Holly White. Estudia en el mismo instituto en el que su padre imparte clases. ",
+            description: "Walter Hartwell White Jr. o 'Flynn' es el hijo de Walter y Skyler White y el hermano de Holly White. Estudia en el mismo instituto en el que su padre imparte clases. ",
             rarity: "Rare"
         },
         {
@@ -59,7 +59,7 @@ const cards = await prisma.cardClass.createMany({
             name: "steve_gomez",
             title: "Steve Gomez",
             season: CardSeason.Season1,
-            description: "fue el compañero de Hank en las oficinas de la DEA de Albuquerque y un buen amigo suyo. Apodado 'Gomie' por Hank, a menudo colabora en la investigación de Heisenberg y el cristal azul. ",
+            description: "fue compañero y buen amigo de Hank en las oficinas de la DEA de Albuquerque . Apodado 'Gomie' por Hank, a menudo colabora en la investigación de Heisenberg y el cristal azul. ",
             rarity: "Common"
         },
         {
@@ -87,14 +87,14 @@ const cards = await prisma.cardClass.createMany({
             name: "gretchen_schwartz",
             title: "Gretchen Schwartz",
             season: CardSeason.Season1,
-            description: "Gretchen Schwartz es la antigua compañera de química de Walter y co-fundadora de Gray Matter Technologies. Tuvo una relación amorosa con Walter y actualmente está casada con Elliott Schwartz. ",
+            description: "Gretchen Schwartz es la antigua compañera de química de Walter y co-fundadora de Gray Matter Technologies. ",
             rarity: "Common"
         },
         {
             name: "skinny_pete",
             title: "Flaco Pete",
             season: CardSeason.Season1,
-            description: "Peter 'Flaco Pete' es uno de los mejores amigos de Jesse Pinkman. Pasó algún tiempo en la cárcel, donde conoció a Tuco Salamanca, a quien luego presenta a Jesse para que hagan negocios. ",
+            description: "Peter 'Flaco Pete' es uno de los mejores amigos de Jesse. Cuando estuvo en la cárcel, donde conoció a Tuco Salamanca, a quien luego presenta a Jesse para que hagan negocios. ",
             rarity: "Common"
         },
         {
@@ -122,7 +122,7 @@ const cards = await prisma.cardClass.createMany({
             name: "heisenberg",
             title: "Heisenberg",
             season: CardSeason.Season1,
-            description: "Heisenberg es todo un ícono tanto dentro del mundo criminal cómo en las oficinas de la DEA, puesto que es un capo casi irreconocible, y es el único capaz de cocinar la famosa metanfetamina azúl. ",
+            description: "Heisenberg es todo un ícono tanto en el mundo criminal cómo en las oficinas de la DEA, puesto que es irreconocible, y el único capaz de cocinar la famosa metanfetamina azúl. ",
             rarity: "Epic"
         },
         {
@@ -136,7 +136,7 @@ const cards = await prisma.cardClass.createMany({
             name: "chili_meth",
             title: "Metanfetamina con chili",
             season: CardSeason.Season1,
-            description: "Fabricada por Jesse y Emilio Koyama, antes de la asociación de este primero con Walter. Simple metanfetamina con la diferencia de que el ingrediente secreto de esta era el chili.",
+            description: "Fabricada por Jesse y Emilio Koyama, antes de la asociación de este primero con Walter. Es metanfetamina con la diferencia de que el ingrediente secreto de esta era el chili.",
             rarity: "Rare"
         },
         {
@@ -265,6 +265,11 @@ const user = await prisma.user.create({
                 { cardName: "chili_meth", quantity: 1 },
                 { cardName: "blue_meth", quantity: 1 },
                 { cardName: "heisenberg", quantity: 1 },
+                { cardName: "meme_1", quantity: 1 },
+                { cardName: "meme_2", quantity: 1 },
+                { cardName: "meme_3", quantity: 1 },
+                { cardName: "meme_4", quantity: 1 },
+                { cardName: "meme_5", quantity: 1 },
             ],
         },
         packOpening: {
@@ -319,15 +324,7 @@ const user2 = await prisma.user.create({
                         create: [
                             {
                                 cardName: "combo",
-                                quantity: 1,
-                            },
-                            {
-                                cardName: "combo",
-                                quantity: 1,
-                            },
-                            {
-                                cardName: "combo",
-                                quantity: 1,
+                                quantity: 3,
                             },
                         ],
                     },

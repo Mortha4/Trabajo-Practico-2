@@ -169,7 +169,7 @@ components:
                       ]
         Rarity:
             type: string
-            enum: [Common, Rare]
+            enum: [Common, Rare, Epic, MEME]
             minLength: 1
             maxLength: 32
         Season:
