@@ -73,7 +73,7 @@ CREATE TABLE "CardClass" (
     "pk_name" VARCHAR(32) NOT NULL,
     "title" VARCHAR(60) NOT NULL,
     "season" "CardSeason" NOT NULL,
-    "description" VARCHAR(200) NOT NULL,
+    "description" VARCHAR(180) NOT NULL,
     "rarity" VARCHAR(100) NOT NULL,
     "art_path" VARCHAR(255) NOT NULL DEFAULT 'public/placeholder-image.svg',
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,

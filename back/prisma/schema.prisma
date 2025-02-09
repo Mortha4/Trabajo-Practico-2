@@ -133,7 +133,7 @@ model CardClass {
     name                  String            @id @map("pk_name") @db.VarChar(32)
     title                 String            @db.VarChar(60)
     season                CardSeason
-    description           String            @db.VarChar(200)
+    description           String            @db.VarChar(180)
     rarity                String            @db.VarChar(100)
     artPath               String            @default("public/placeholder-image.svg") @map("art_path") @db.VarChar(255)
     createdAt             DateTime          @default(now()) @map("created_at") @db.Timestamptz()
