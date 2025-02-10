@@ -4,7 +4,7 @@
             "title",
             "description",
             "rarity",
-            "art-url",
+            "art-url", 
             "class",
         ];
         #shadowRoot;
@@ -19,7 +19,7 @@
 
         updateHazard(newRarity: string) {
             const hazardContainer =
-                this.#shadowRoot.querySelector(".front .hazard");
+                this.#shadowRoot.querySelector(".front .hazard"); 
             hazardContainer!.innerHTML = "";
 
             const raritiesMap: Record<string, number> = {
@@ -199,5 +199,5 @@
         <div class="back">
             <img src="back-card.jpg" alt="" class="brand" />
         </div>
-    </div>
+
 </template>

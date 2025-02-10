@@ -17,6 +17,7 @@ import UserPortalLayout from "../layouts/UserPortalLayout.astro";
         import fetchUser from "../scripts/fetchUser";
         const user = await fetchUser();
 
+        //funcion para consumir cartas
         async function fetchCards(query = "") {
             const cardsResponse = await fetch(
                 `${API_URL}/api/v1/users/${user.username}/cards${query}`,
@@ -40,23 +41,28 @@ import UserPortalLayout from "../layouts/UserPortalLayout.astro";
             } else console.error(cardsResponse);
         }
 
+        //rellena coleccion solo recibe arrays parametro cards
         function populateCollection(cards: any[]) {
-            const message = document.getElementById("empty-result-message");
-            if (cards.length === 0) message!.classList.remove("is-hidden");
+            const message = document.getElementById("empty-result-message"); //tomar el elemento de html por el id
+            if (cards.length === 0) message!.classList.remove("is-hidden"); //listar clases del html y remover del mensaje del css
             else message!.classList.add("is-hidden");
-
+ 
+            //agarra name grouping checked/agrupar
             const grouping = (
                 document.querySelector(
                     "input[name=grouping]:checked"
                 ) as HTMLInputElement
             ).value;
 
-            const groups = Object.groupBy(cards, (card) => card[grouping]);
+            const groups = Object.groupBy(cards, (card) => card[grouping]); //gruping= rarity o season tomado de queryselector entonces muestra vector[rarity] o vector[season],mostrando los objetos raritys o los objetos season
 
+            //agarrar div de cartas,
             const collection = document.querySelector(
                 ".cards"
             ) as HTMLDivElement;
-            collection.innerHTML = "";
+            collection.innerHTML = ""; //pisar dentro del dib con string vacio
+
+            //recorre todos los grupos
             for (const group in groups) {
                 const cards = groups[group]!;
 
@@ -73,6 +79,7 @@ import UserPortalLayout from "../layouts/UserPortalLayout.astro";
             }
         }
 
+        //funcion para busqueda
         async function handleSearch(event: SubmitEvent) {
             event.preventDefault();
             const formData = new FormData(event.target as HTMLFormElement);
@@ -84,15 +91,20 @@ import UserPortalLayout from "../layouts/UserPortalLayout.astro";
             populateCollection(cards);
         }
 
+        //no entiendo esta funcion
         const cardsCollectedDisplay = document.getElementById(
             "cards-collected-stat"
         )!;
+        
+        //que ocurre aca??
+
         const cardsSeenDisplay = document.getElementById("cards-seen-stat")!;
         cardsCollectedDisplay.textContent = user.cardsCollected;
         cardsCollectedDisplay.classList.remove("has-skeleton");
         cardsSeenDisplay.textContent = user.cardsSeen;
         cardsSeenDisplay.classList.remove("has-skeleton");
 
+        //objeto de cartas
         let cards = await fetchCards();
         populateCollection(cards);
 
@@ -108,6 +120,7 @@ import UserPortalLayout from "../layouts/UserPortalLayout.astro";
             .getElementById("card-filter-form")!
             .addEventListener("submit", handleSearch);
     </script>
+
     <ProfileDashboard>
         <div slot="stats">
             <h2 slot="stat-1" class="is-size-4-tablet is-size-5-mobile">
@@ -152,6 +165,7 @@ import UserPortalLayout from "../layouts/UserPortalLayout.astro";
             ).toISOString()}
         />
     </ProfileDashboard>
+    
     <section class="collection p-5">
         <StickyTopbar>
             <SearchBar

@@ -27,7 +27,12 @@ const { title, class: classList } = Astro.props;
         <script
             src="https://code.jquery.com/jquery-3.7.1.min.js"
             integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
-            crossorigin="anonymous"></script>
+            crossorigin="anonymous">
+        </script>
+            <script
+                src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.30.1/moment.min.js"
+                crossorigin="anonymous">
+            </script>
         <slot name="head" />
     </head>
     <body class:list={[classList]}>
