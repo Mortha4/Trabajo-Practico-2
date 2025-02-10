@@ -8,6 +8,7 @@ import UserPortalLayout from "../layouts/UserPortalLayout.astro";
 <UserPortalLayout class="hero is-link min-height">
     <script>
         import { API_URL } from "astro:env/client";
+        import fetchUser from "../scripts/fetchUser";
 
         const holdInputPlaceholders: { [key: string]: string } = {};
 
@@ -20,7 +21,7 @@ import UserPortalLayout from "../layouts/UserPortalLayout.astro";
             input.placeholder = "Loading...";
         }
 
-        const { user } = await import("../scripts/fetchUser");
+        const user = await fetchUser();
 
         namedInputs.forEach(
             (input) => (input.placeholder = holdInputPlaceholders[input.name])

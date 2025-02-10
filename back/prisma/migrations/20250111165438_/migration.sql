@@ -41,7 +41,7 @@ CREATE TABLE "UserData" (
     "pk_username" VARCHAR(32) NOT NULL,
     "profile_name" VARCHAR(45) NOT NULL,
     "email_uq" VARCHAR(255) NOT NULL,
-    "profile_picture_path" VARCHAR(255) NOT NULL DEFAULT 'public/default-profile-picture.svg',
+    "profile_picture_path" VARCHAR(255) NOT NULL DEFAULT '/public/default-profile-picture.svg',
     "password" VARCHAR(20) NOT NULL,
     "privilege" "UserPrivilege" NOT NULL DEFAULT 'Standard',
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -53,7 +53,7 @@ CREATE TABLE "UserData" (
 CREATE TABLE "CardPackType" (
     "pk_name" VARCHAR(32) NOT NULL,
     "title" VARCHAR(60) NOT NULL,
-    "wrapper_image_path" VARCHAR(255) NOT NULL DEFAULT 'public/placeholder-image.svg',
+    "wrapper_image_path" VARCHAR(255) NOT NULL DEFAULT '/public/placeholder-image.svg',
     "cooldown" TEXT NOT NULL,
     "drop_quantity" INTEGER NOT NULL,
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -75,7 +75,7 @@ CREATE TABLE "CardClass" (
     "season" "CardSeason" NOT NULL,
     "description" VARCHAR(180) NOT NULL,
     "rarity" VARCHAR(100) NOT NULL,
-    "art_path" VARCHAR(255) NOT NULL DEFAULT 'public/placeholder-image.svg',
+    "art_path" VARCHAR(255) NOT NULL DEFAULT '/public/placeholder-image.svg',
     "created_at" TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "modified_at" TIMESTAMPTZ,
     CONSTRAINT "CardClass_pkey" PRIMARY KEY ("pk_name")

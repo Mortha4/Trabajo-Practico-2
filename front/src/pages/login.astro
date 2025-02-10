@@ -1,6 +1,5 @@
 ---
 import GenericLayout from "../layouts/GenericLayout.astro";
-const API_URL = import.meta.env.API_URL;
 ---
 
 <GenericLayout class="is-flex is-justify-content-center is-align-items-center">
@@ -60,18 +59,20 @@ const API_URL = import.meta.env.API_URL;
             </div>
         </div>
     </form>
-    <script define:vars={{ API_URL }}>
+    <script>
+        import { API_URL } from "astro:env/client";
+
         document
-            .getElementById("login-form")
-            .addEventListener("submit", async function (event) {
+            ?.getElementById("login-form")
+            ?.addEventListener("submit", async function (event) {
                 event.preventDefault();
                 const loginFail = document.getElementById("login-fail-message");
                 const serverFail = document.getElementById(
                     "server-fail-message"
                 );
-                loginFail.classList.add("is-hidden");
-                serverFail.classList.add("is-hidden");
-                const form = event.target;
+                loginFail?.classList.add("is-hidden");
+                serverFail?.classList.add("is-hidden");
+                const form = event.target as HTMLFormElement;
                 const formData = new FormData(form);
                 const username = formData.get("username");
                 const password = formData.get("password");
@@ -85,11 +86,18 @@ const API_URL = import.meta.env.API_URL;
                     credentials: "include",
                 });
                 if (response.status === 200) {
-                    window.location.replace(`/dashboard`);
+                    const fetchUser = (await import("../scripts/fetchUser"))
+                        .default;
+                    const user = await fetchUser();
+                    const redirect =
+                        user.privilege === "Administrator"
+                            ? "/admin"
+                            : "/dashboard";
+                    window.location.replace(redirect);
                 } else if (response.status === 401) {
-                    loginFail.classList.remove("is-hidden");
+                    loginFail?.classList.remove("is-hidden");
                 } else {
-                    serverFail.classList.remove("is-hidden");
+                    serverFail?.classList.remove("is-hidden");
                 }
             });
     </script>

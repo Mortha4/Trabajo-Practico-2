@@ -14,7 +14,8 @@ import UserPortalLayout from "../layouts/UserPortalLayout.astro";
 <UserPortalLayout title="Collection">
     <script>
         import { API_URL } from "astro:env/client";
-        import { user } from "../scripts/fetchUser";
+        import fetchUser from "../scripts/fetchUser";
+        const user = await fetchUser();
 
         async function fetchCards(query = "") {
             const cardsResponse = await fetch(
@@ -30,14 +31,13 @@ import UserPortalLayout from "../layouts/UserPortalLayout.astro";
             );
 
             if (cardsResponse.status === 200) {
-                const cards = await cardsResponse.json()
-                cards.forEach ((card)=>{
+                const cards = await cardsResponse.json();
+                cards.forEach((card: any) => {
                     card["art-url"] = card.artUrl;
                     delete card.artUrl;
-                })
-                return cards
-            }
-            else console.error(cardsResponse);
+                });
+                return cards;
+            } else console.error(cardsResponse);
         }
 
         function populateCollection(cards: any[]) {

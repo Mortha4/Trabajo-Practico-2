@@ -1,15 +1,10 @@
 ---
-import GenericLayout from "../layouts/GenericLayout.astro";
-import UserPortalNavbar from "../components/UserPortalNavbar.astro";
-import CardPack from "../components//CompactCardPack.astro";
-import Card from "../components/Card.astro";
-import CardFilter from "../components/CardFilter.astro";
-import RadioTabs from "../components/RadioTabs.astro";
-import ProfileDashboard from "../components/ProfileDashboard.astro";
-import SearchBar from "../components/SearchBar.astro";
-import StickyTopbar from "../components/StickyTopbar.astro";
+import GenericLayout from "../../layouts/GenericLayout.astro";
+import UserPortalNavbar from "../../components/UserPortalNavbar.astro";
+import RadioTabs from "../../components/RadioTabs.astro";
+import ProfileDashboard from "../../components/ProfileDashboard.astro";
+import StickyTopbar from "../../components/StickyTopbar.astro";
 const API_URL = import.meta.env.API_URL;
-const FRONT_URL = import.meta.env.FRONT_URL;
 const formId = "card-filter-form";
 const emptyResultMessageId = "empty-result-message";
 ---
@@ -21,7 +16,7 @@ const emptyResultMessageId = "empty-result-message";
     >
         async function fetchCards(query = "") {
             const cardsResponse = await fetch(
-                `${API_URL}/api/v1/cards${query}`, 
+                `${API_URL}/api/v1/cards${query}`,
                 {
                     headers: {
                         Accept: "application/json",
@@ -37,14 +32,17 @@ const emptyResultMessageId = "empty-result-message";
         }
 
         async function deleteCard(cardName) {
-            const response = await fetch(`${API_URL}/api/v1/cards/${cardName}`, {
-                method: "DELETE",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                },
-                credentials: "include",
-            });
+            const response = await fetch(
+                `${API_URL}/api/v1/cards/${cardName}`,
+                {
+                    method: "DELETE",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                    },
+                    credentials: "include",
+                }
+            );
 
             if (response.status === 200) {
                 console.log(`Card ${cardName} deleted successfully`);
@@ -87,26 +85,26 @@ const emptyResultMessageId = "empty-result-message";
                 for (const card of cards) {
                     card["art-url"] = card.artUrl;
                     delete card.artUrl;
-                    
+
                     const gameCard = document.createElement("game-card");
                     $(gameCard).attr(card);
                     gameCard.setAttribute("data-name", card.name); // Agregar nombre como atributo
-                    
+
                     collection?.appendChild(gameCard);
                 }
             }
         }
 
-        async function handleSearch(event) {
-            event.preventDefault();
-            const formData = new FormData(event.target);
-            const urlParams = new URLSearchParams();
-            for (const [key, value] of formData.entries())
-                if (value.toString().trim() !== "")
-                    urlParams.append(key, value.toString());
-            cards = await fetchCards(`?${urlParams.toString()}`);
-            populateCollection(cards);
-        }
+        // async function handleSearch(event) {
+        // event.preventDefault();
+        // const formData = new FormData(event.target);
+        // const urlParams = new URLSearchParams();
+        // for (const [key, value] of formData.entries())
+        // if (value.toString().trim() !== "")
+        // urlParams.append(key, value.toString());
+        // cards = await fetchCards(`?${urlParams.toString()}`);
+        // populateCollection(cards);
+        // }
 
         const response = await fetch(`${API_URL}/api/v1/session`, {
             headers: {
@@ -119,6 +117,10 @@ const emptyResultMessageId = "empty-result-message";
         if (response.status !== 200) window.location.replace(`/login`);
 
         const user = await response.json();
+
+        if (user.privilege !== "Administrator")
+            window.location.replace(`/dashboard`);
+
         let cards = await fetchCards();
         populateCollection(cards);
 
@@ -130,70 +132,96 @@ const emptyResultMessageId = "empty-result-message";
                 )
             );
 
-        document
-            .getElementById(formId)
-            .addEventListener("submit", handleSearch);
+        // document
+        // .getElementById(formId)
+        // .addEventListener("submit", handleSearch);
 
         document.addEventListener("DOMContentLoaded", () => {
             // Modal handling
-            document.querySelectorAll(".js-modal-trigger").forEach((trigger) => {
-                const modalId = trigger.getAttribute("data-target");
-                const modal = document.getElementById(modalId);
-                if (modal) {
-                    trigger.addEventListener("click", () => {
-                        modal.classList.add("is-active");
-                    });
-                }
-            });
-
-            document.querySelectorAll(".modal .delete, .js-modal-close, .modal-background").forEach((close) => {
-                close.addEventListener("click", () => {
-                    close.closest(".modal").classList.remove("is-active");
-                });
-            });
-
-            document.querySelector("#deleteModal .button.is-danger").addEventListener("click", async () => {
-                const cardName = document.querySelector("#deleteModal input").value.trim();
-                if (cardName === "") {
-                    alert("Please enter the card name to delete.");
-                    return;
-                }
-
-                const deleted = await deleteCard(cardName);
-                if (deleted) {
-                    const cardElement = document.querySelector(`.card[data-name="${cardName}"]`);
-                    if (cardElement) {
-                        cardElement.remove();
+            document
+                .querySelectorAll(".js-modal-trigger")
+                .forEach((trigger) => {
+                    const modalId = trigger.getAttribute("data-target");
+                    const modal = document.getElementById(modalId);
+                    if (modal) {
+                        trigger.addEventListener("click", () => {
+                            modal.classList.add("is-active");
+                        });
                     }
-                    alert(`Card ${cardName} deleted successfully.`);
-                } else {
-                    alert(`Error deleting card ${cardName}.`);
-                }
+                });
 
-                // Cerrar el modal
-                document.getElementById("deleteModal").classList.remove("is-active");
-            });
+            document
+                .querySelectorAll(
+                    ".modal .delete, .js-modal-close, .modal-background"
+                )
+                .forEach((close) => {
+                    close.addEventListener("click", () => {
+                        close.closest(".modal").classList.remove("is-active");
+                    });
+                });
+
+            document
+                .querySelector("#deleteModal .button.is-danger")
+                .addEventListener("click", async () => {
+                    const cardName = document
+                        .querySelector("#deleteModal input")
+                        .value.trim();
+                    if (cardName === "") {
+                        alert("Please enter the card name to delete.");
+                        return;
+                    }
+
+                    const deleted = await deleteCard(cardName);
+                    if (deleted) {
+                        const cardElement = document.querySelector(
+                            `.card[data-name="${cardName}"]`
+                        );
+                        if (cardElement) {
+                            cardElement.remove();
+                        }
+                        alert(`Card ${cardName} deleted successfully.`);
+                    } else {
+                        alert(`Error deleting card ${cardName}.`);
+                    }
+
+                    // Cerrar el modal
+                    document
+                        .getElementById("deleteModal")
+                        .classList.remove("is-active");
+                });
         });
     </script>
 
     <UserPortalNavbar />
-    <main>        
-        <ProfileDashboard></ProfileDashboard>
-        
+    <main>
+        <ProfileDashboard />
+
         <section class="collection p-5">
             <StickyTopbar>
                 <RadioTabs>
                     <li>
                         <label>
                             Season
-                            <input checked name="grouping" value="season" type="radio" autocomplete="off"/>
+                            <input
+                                checked
+                                name="grouping"
+                                value="season"
+                                type="radio"
+                                autocomplete="off"
+                            />
                         </label>
                     </li>
                 </RadioTabs>
 
                 <div class="buttons-container">
-                    <button class="button is-success js-modal-trigger" data-target="addModal">Add Card</button>
-                    <button class="button is-danger js-modal-trigger" data-target="deleteModal">Delete Card</button>
+                    <button
+                        class="button is-success js-modal-trigger"
+                        data-target="addModal">Add Card</button
+                    >
+                    <button
+                        class="button is-danger js-modal-trigger"
+                        data-target="deleteModal">Delete Card</button
+                    >
                 </div>
 
                 <div id="addModal" class="modal">
@@ -201,71 +229,115 @@ const emptyResultMessageId = "empty-result-message";
                     <div class="modal-card">
                         <header class="modal-card-head">
                             <p class="modal-card-title">Add Card</p>
-                            <button class="delete js-modal-close" aria-label="close"></button>
+                            <button
+                                class="delete js-modal-close"
+                                aria-label="close"></button>
                         </header>
                         <section class="modal-card-body">
                             <form id="addCardForm">
                                 <div class="field">
                                     <label class="label">Card Name</label>
                                     <div class="control">
-                                        <input class="input" type="text" placeholder="Enter card name" required />
+                                        <input
+                                            class="input"
+                                            type="text"
+                                            placeholder="Enter card name"
+                                            required
+                                        />
                                     </div>
-        
+
                                     <label class="label">Card title</label>
                                     <div class="control">
-                                        <input class="input" type="text" placeholder="Enter card title" required />
+                                        <input
+                                            class="input"
+                                            type="text"
+                                            placeholder="Enter card title"
+                                            required
+                                        />
                                     </div>
-                                    
+
                                     <label class="label">Season</label>
                                     <div class="control">
-                                        <input class="input" type="number" placeholder="Enter season" min="1" max="6" required />
+                                        <input
+                                            class="input"
+                                            type="number"
+                                            placeholder="Enter season"
+                                            min="1"
+                                            max="6"
+                                            required
+                                        />
                                     </div>
-        
+
                                     <label class="label">Biohazard lvl</label>
                                     <div class="control">
-                                        <input class="input" type="number" placeholder="Enter biohazard level" min="1" max="5" required />
+                                        <input
+                                            class="input"
+                                            type="number"
+                                            placeholder="Enter biohazard level"
+                                            min="1"
+                                            max="5"
+                                            required
+                                        />
                                     </div>
-        
-        
                                 </div>
                                 <div class="field">
-                                    <label class="label">Card Description</label>
+                                    <label class="label">Card Description</label
+                                    >
                                     <div class="control">
-                                        <textarea class="textarea" placeholder="Enter description" required></textarea>
+                                        <textarea
+                                            class="textarea"
+                                            placeholder="Enter description"
+                                            required></textarea>
                                     </div>
                                 </div>
                             </form>
                         </section>
                         <footer class="modal-card-foot">
-                            <button class="button is-success" type="submit" form="addCardForm">Save</button>
-                            <button class="button js-modal-close">Cancel</button>
+                            <button
+                                class="button is-success"
+                                type="submit"
+                                form="addCardForm">Save</button
+                            >
+                            <button class="button js-modal-close">Cancel</button
+                            >
                         </footer>
                     </div>
-                </div>        
+                </div>
 
                 <div id="deleteModal" class="modal">
                     <div class="modal-background"></div>
                     <div class="modal-card">
                         <header class="modal-card-head">
                             <p class="modal-card-title">Delete Card</p>
-                            <button class="delete js-modal-close" aria-label="close"></button>
+                            <button
+                                class="delete js-modal-close"
+                                aria-label="close"></button>
                         </header>
                         <section class="modal-card-body">
-                            <label class="label">Enter Card Name to Delete</label>
+                            <label class="label"
+                                >Enter Card Name to Delete</label
+                            >
                             <div class="control">
-                                <input class="input" type="text" placeholder="Enter card name"/>
-                            </div>  
+                                <input
+                                    class="input"
+                                    type="text"
+                                    placeholder="Enter card name"
+                                />
+                            </div>
                         </section>
                         <footer class="modal-card-foot">
                             <button class="button is-danger">Delete</button>
-                            <button class="button js-modal-close">Cancel</button>
+                            <button class="button js-modal-close">Cancel</button
+                            >
                         </footer>
                     </div>
                 </div>
-
             </StickyTopbar>
 
-            <h1 id={emptyResultMessageId} class="is-hidden subtitle has-text-centered">
+            <h1
+                id={emptyResultMessageId}
+                class="is-hidden subtitle has-text-centered"
+            >
                 No cards to display.
             </h1>
             <div class="cards"></div>
@@ -297,7 +369,6 @@ const emptyResultMessageId = "empty-result-message";
     }
 </style>
 
-
 <style>
     @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap");
 
@@ -323,26 +394,25 @@ const emptyResultMessageId = "empty-result-message";
 
     @media screen and (max-width: 1200px) {
         .buttons-container {
-            left: 900px; 
+            left: 900px;
         }
     }
 
     @media screen and (max-width: 992px) {
         .buttons-container {
-            position: static; 
-            margin-left: 500px; 
+            position: static;
+            margin-left: 500px;
         }
     }
 
     @media screen and (max-width: 768px) {
         .buttons-container {
-            flex-direction: column; 
-            align-items: center; 
-            height: auto; 
+            flex-direction: column;
+            align-items: center;
+            height: auto;
             margin: 10px;
         }
     }
-
 
     .collection > .cards {
         display: grid;
@@ -369,7 +439,7 @@ const emptyResultMessageId = "empty-result-message";
     }
 
     .collection .cards {
-        margin-top: 10px; 
+        margin-top: 10px;
     }
 </style>
 
