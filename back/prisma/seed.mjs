@@ -226,10 +226,11 @@ const cards = await prisma.cardClass.createMany({
     ],
 });
 
-const season1Pack = await prisma.cardPackType.create({
+const PackBasic = await prisma.cardPackType.create({
     data: {
-        name: "season_1_pack",
-        title: "Paquete Temporada 1",
+
+        name: "paquete_basico",
+        title: "Pack Basico",
         drops: {
             create: [
                 { cardName: "walter_white" },
@@ -260,18 +261,44 @@ const season1Pack = await prisma.cardPackType.create({
         },
         dropQuantity: 3,
         cooldown: moment.duration({ minutes: 1 }),
+        wrapperImagePath: "/public/logo-pack.png" ,
     },
 });
 
-const testPackEpic = await prisma.cardPackType.create({
+const PackRare = await prisma.cardPackType.create({
     data: {
-        name: "paquete_prueba_epico",
-        title: "Paquete de prueba epico",
+        name: "paquete_raro",
+        title: "Pack Raro",
         drops: {
-            create: [{ cardName: "combo" }],
+            create: 
+            [
+                {cardName:"skyler_white"},
+                {cardName: "hank_schrander"},
+                {cardName: "tuco_salamanca"},
+            ]
         },
-        dropQuantity: 10,
-        cooldown: moment.duration({ minutes: 5 }),
+        dropQuantity: 3,
+        cooldown: moment.duration({ minutes: 59 }),
+        wrapperImagePath: "/public/walter-white.png"
+    },
+});
+
+const PackEpic = await prisma.cardPackType.create({
+    data: {
+        name: "paquete_epico",
+        title: "Pack Epico",
+        drops: {
+            create: 
+            [
+                { cardName: "combo" },
+                {cardName: "heisenberg"},
+                {cardName: "blue_meth"},
+                
+            ],
+        },
+        dropQuantity: 3,
+        cooldown: moment.duration({ minutes: 59 }),
+        wrapperImagePath: "/public/heisenberg.png"
     },
 });
 
@@ -317,7 +344,7 @@ const user = await prisma.user.create({
         packOpening: {
             create: [
                 {
-                    packName: "season_1_pack",
+                    packName: "paquete_basico",
                     details: {
                         create: [
                             {
@@ -361,7 +388,7 @@ const user2 = await prisma.user.create({
         packOpening: {
             create: [
                 {
-                    packName: "season_1_pack",
+                    packName: "paquete_basico",
                     details: {
                         create: [
                             {
