@@ -17,113 +17,127 @@ const cards = await prisma.cardClass.createMany({
             name: "walter_white",
             title: "Walter White",
             season: CardSeason.Season1,
-            description: "Walter Hartwell White es un profesor de química que, tras ser diagnosticado con cáncer de pulmón inoperable, decide fabricar metanfetamina para poder mantener a su familia.",
+            description:
+                "Walter Hartwell White es un profesor de química que, tras ser diagnosticado con cáncer de pulmón inoperable, decide fabricar metanfetamina para poder mantener a su familia.",
             rarity: "Rare",
-            artPath: "public/cards/walter.jpg"
+            artPath: "/public/cards/walter.jpg",
         },
         {
             name: "jesse_pinkman",
             title: "Jesse Pinkman",
             season: CardSeason.Season1,
-            description: "Jesse era un consumidor, fabricante y traficante de poca monta de metanfetamina. El prestaba poca atención a las clases de química de su profesor, el propio Walter.",
+            description:
+                "Jesse era un consumidor, fabricante y traficante de poca monta de metanfetamina. El prestaba poca atención a las clases de química de su profesor, el propio Walter.",
             rarity: "Rare",
-            artPath: "public/cards/jesse.jpg"
+            artPath: "/public/cards/jesse.jpg",
         },
         {
             name: "skyler_white",
             title: "Skyler White",
             season: CardSeason.Season1,
-            description: "Skyler White (de soltera Lambert) es la mujer de Walter White y madre de Walter White Jr. y Holly White. Skyler ha tenido múltiples trabajos o actividades para obtener dinero. ",
+            description:
+                "Skyler White (de soltera Lambert) es la mujer de Walter White y madre de Walter White Jr. y Holly White. Skyler ha tenido múltiples trabajos o actividades para obtener dinero. ",
             rarity: "Rare",
-            artPath: "public/cards/skyler.jpg"
+            artPath: "/public/cards/skyler.jpg",
         },
         {
             name: "walter_jr",
             title: "Walter Jr.",
             season: CardSeason.Season1,
-            description: "Walter Hartwell White Jr. o 'Flynn' es el hijo de Walter y Skyler White y el hermano de Holly White. Estudia en el mismo instituto en el que su padre imparte clases. ",
+            description:
+                "Walter Hartwell White Jr. o 'Flynn' es el hijo de Walter y Skyler White y el hermano de Holly White. Estudia en el mismo instituto en el que su padre imparte clases. ",
             rarity: "Rare",
-            artPath: "public/cards/walter_jr.jpg"
+            artPath: "/public/cards/walter_jr.jpg",
         },
         {
             name: "hank_schrander",
             title: "Henry 'Hank' Schrander",
             season: CardSeason.Season1,
-            description: "Henry R. 'Hank' Schrader es el marido de Marie Schrader (hermana de Skyler White) y agente especial a cargo de las oficinas de la DEA en Albuquerque. ",
+            description:
+                "Henry R. 'Hank' Schrader es el marido de Marie Schrader (hermana de Skyler White) y agente especial a cargo de las oficinas de la DEA en Albuquerque. ",
             rarity: "Rare",
-            artPath: "public/cards/hank.jpg"
+            artPath: "/public/cards/hank.jpg",
         },
         {
             name: "marie_schrander",
             title: "Marie Schrander",
             season: CardSeason.Season1,
-            description: "Marie Schrader (de soltera Lambert) es la hermana de Skyler White y mujer del agente de la DEA Hank Schrader. ",
+            description:
+                "Marie Schrader (de soltera Lambert) es la hermana de Skyler White y mujer del agente de la DEA Hank Schrader. ",
             rarity: "Rare",
-            artPath: "public/cards/marie.jpg"
+            artPath: "/public/cards/marie.jpg",
         },
         {
             name: "steve_gomez",
             title: "Steve Gomez",
             season: CardSeason.Season1,
-            description: "fue compañero y buen amigo de Hank en las oficinas de la DEA de Albuquerque . Apodado 'Gomie' por Hank, a menudo colabora en la investigación de Heisenberg y el cristal azul. ",
+            description:
+                "fue compañero y buen amigo de Hank en las oficinas de la DEA de Albuquerque . Apodado 'Gomie' por Hank, a menudo colabora en la investigación de Heisenberg y el cristal azul. ",
             rarity: "Common",
-            artPath: "public/cards/steve.jpg"
+            artPath: "/public/cards/steve.jpg",
         },
         {
             name: "carmen_molina",
             title: "Carmen Molina",
             season: CardSeason.Season1,
-            description: "Carmen Molina es la directora del instituto J.P. Wynne, donde Walter es profesor de química. ",
+            description:
+                "Carmen Molina es la directora del instituto J.P. Wynne, donde Walter es profesor de química. ",
             rarity: "Common",
-            artPath: "public/cards/carmen.jpg"
+            artPath: "/public/cards/carmen.jpg",
         },
         {
             name: "krazy_8",
             title: "Loco-8",
             season: CardSeason.Season1,
-            description: "Domingo Gallardo Molina (alias 'Loco-8') es un distribuidor de metanfetamina previamente asociado con Jesse Pinkman y Emilio Koyama. ",
+            description:
+                "Domingo Gallardo Molina (alias 'Loco-8') es un distribuidor de metanfetamina previamente asociado con Jesse Pinkman y Emilio Koyama. ",
             rarity: "Common",
-            artPath: "public/cards/krazy.jpg"
+            artPath: "/public/cards/krazy.jpg",
         },
         {
             name: "tuco_salamanca",
             title: "Tuco Salamanca",
             season: CardSeason.Season1,
-            description: "Tuco Salamanca es un traficante de drogas mexicano que actuó brevemente como distribuidor de metanfetamina para Walter White y Jesse Pinkman. ",
+            description:
+                "Tuco Salamanca es un traficante de drogas mexicano que actuó brevemente como distribuidor de metanfetamina para Walter White y Jesse Pinkman. ",
             rarity: "Rare",
-            artPath: "public/cards/tuco.jpg"
+            artPath: "/public/cards/tuco.jpg",
         },
         {
             name: "gretchen_schwartz",
             title: "Gretchen Schwartz",
             season: CardSeason.Season1,
-            description: "Gretchen Schwartz es la antigua compañera de química de Walter y co-fundadora de Gray Matter Technologies. ",
+            description:
+                "Gretchen Schwartz es la antigua compañera de química de Walter y co-fundadora de Gray Matter Technologies. ",
             rarity: "Common",
-            artPath: "public/cards/gretchen.jpg"
+            artPath: "/public/cards/gretchen.jpg",
         },
         {
             name: "skinny_pete",
             title: "Flaco Pete",
             season: CardSeason.Season1,
-            description: "Peter 'Flaco Pete' es uno de los mejores amigos de Jesse. Cuando estuvo en la cárcel, donde conoció a Tuco Salamanca, a quien luego presenta a Jesse para que hagan negocios. ",
+            description:
+                "Peter 'Flaco Pete' es uno de los mejores amigos de Jesse. Cuando estuvo en la cárcel, donde conoció a Tuco Salamanca, a quien luego presenta a Jesse para que hagan negocios. ",
             rarity: "Common",
-            artPath: "public/cards/pete.jpg"
+            artPath: "/public/cards/pete.jpg",
         },
         {
             name: "badger",
             title: "Badger",
             season: CardSeason.Season1,
-            description: "Brandon 'Badger' Mayhew es uno de los tres amigos de Jesse que acaban haciendo negocios con él. Posteriormente, acaba trabajando en la venta del producto de Walter y Jesse. ",
+            description:
+                "Brandon 'Badger' Mayhew es uno de los tres amigos de Jesse que acaban haciendo negocios con él. Posteriormente, acaba trabajando en la venta del producto de Walter y Jesse. ",
             rarity: "Common",
-            artPath: "public/cards/badger.jpg"
+            artPath: "/public/cards/badger.jpg",
         },
         {
             name: "combo",
             title: "Combo",
             season: CardSeason.Season1,
-            description: "Christian 'Combo' Ortega es uno de los tres amigos de Jesse que trabajaron para él en el negocio del tráfico de su metanfetamina. ",
+            description:
+                "Christian 'Combo' Ortega es uno de los tres amigos de Jesse que trabajaron para él en el negocio del tráfico de su metanfetamina. ",
             rarity: "Common",
-            artPath: "public/cards/combo.jpg"
+            artPath: "/public/cards/combo.jpg",
         },
         {
             name: "laboratory",
@@ -131,39 +145,43 @@ const cards = await prisma.cardClass.createMany({
             season: CardSeason.Season1,
             description: "Jesse we need to cook",
             rarity: "Epic",
-            artPath: "public/cards/truck.jpg"
+            artPath: "/public/cards/truck.jpg",
         },
         {
             name: "heisenberg",
             title: "Heisenberg",
             season: CardSeason.Season1,
-            description: "Heisenberg es todo un ícono tanto en el mundo criminal cómo en las oficinas de la DEA, puesto que es irreconocible, y el único capaz de cocinar la famosa metanfetamina azúl. ",
+            description:
+                "Heisenberg es todo un ícono tanto en el mundo criminal cómo en las oficinas de la DEA, puesto que es irreconocible, y el único capaz de cocinar la famosa metanfetamina azúl. ",
             rarity: "Epic",
-            artPath: "public/cards/heisenberg.jpg"
+            artPath: "/public/cards/heisenberg.jpg",
         },
         {
             name: "meth",
             title: "Metanfetamina",
             season: CardSeason.Season1,
-            description: "Fabricada por Walter y Jesse en un principio, esta era simple metanfetamina hecha por el modo de la pseudoefedrina. Su color común es el blanco.",
+            description:
+                "Fabricada por Walter y Jesse en un principio, esta era simple metanfetamina hecha por el modo de la pseudoefedrina. Su color común es el blanco.",
             rarity: "Common",
-            artPath: "public/cards/meth.jpg"
+            artPath: "/public/cards/meth.jpg",
         },
         {
             name: "chili_meth",
             title: "Metanfetamina con chili",
             season: CardSeason.Season1,
-            description: "Fabricada por Jesse y Emilio Koyama, antes de la asociación de este primero con Walter. Es metanfetamina con la diferencia de que el ingrediente secreto de esta era el chili.",
+            description:
+                "Fabricada por Jesse y Emilio Koyama, antes de la asociación de este primero con Walter. Es metanfetamina con la diferencia de que el ingrediente secreto de esta era el chili.",
             rarity: "Rare",
-            artPath: "public/cards/chili_meth.jpg"
+            artPath: "/public/cards/chili_meth.jpg",
         },
         {
             name: "blue_meth",
             title: "Metanfetamina Azul",
             season: CardSeason.Season1,
-            description: "Walter y Jesse tuvieron que cocinar la metanfetamina con una alternativa siendo esta la metilamina, que le otorgaba un color característico al cristal siendo este el azul.",
+            description:
+                "Walter y Jesse tuvieron que cocinar la metanfetamina con una alternativa siendo esta la metilamina, que le otorgaba un color característico al cristal siendo este el azul.",
             rarity: "Epic",
-            artPath: "public/cards/blue_meth.jpg"
+            artPath: "/public/cards/blue_meth.jpg",
         },
         {
             name: "meme_1",
@@ -171,7 +189,7 @@ const cards = await prisma.cardClass.createMany({
             season: CardSeason.Season1,
             description: "I'm not having sex with you right now, Waltuh.",
             rarity: "MEME",
-            artPath: "public/cards/meme1.jpg"
+            artPath: "/public/cards/meme1.jpg",
         },
         {
             name: "meme_2",
@@ -179,7 +197,7 @@ const cards = await prisma.cardClass.createMany({
             season: CardSeason.Season1,
             description: "¿Ke quieres Yesi?",
             rarity: "MEME",
-            artPath: "public/cards/meme2.jpg"
+            artPath: "/public/cards/meme2.jpg",
         },
         {
             name: "meme_3",
@@ -187,7 +205,7 @@ const cards = await prisma.cardClass.createMany({
             season: CardSeason.Season1,
             description: "YEAH, SCIENCE BITCH",
             rarity: "MEME",
-            artPath: "public/cards/meme3.jpg"
+            artPath: "/public/cards/meme3.jpg",
         },
         {
             name: "meme_4",
@@ -195,7 +213,7 @@ const cards = await prisma.cardClass.createMany({
             season: CardSeason.Season1,
             description: "El inicio de todo",
             rarity: "MEME",
-            artPath: "public/cards/meme4.jpg"
+            artPath: "/public/cards/meme4.jpg",
         },
         {
             name: "meme_5",
@@ -203,7 +221,7 @@ const cards = await prisma.cardClass.createMany({
             season: CardSeason.Season1,
             description: "You're goddamn right!",
             rarity: "MEME",
-            artPath: "public/cards/meme5.jpg"
+            artPath: "/public/cards/meme5.jpg",
         },
     ],
 });

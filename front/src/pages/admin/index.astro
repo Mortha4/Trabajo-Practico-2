@@ -1,0 +1,16 @@
+---
+import ProfileDashboard from "../../components/ProfileDashboard.astro";
+import UserPortalLayout from "../../layouts/UserPortalLayout.astro";
+---
+
+<UserPortalLayout>
+    <ProfileDashboard />
+    <div class="buttons">
+        <button class="button is-primary">
+            <a href="/admin/cards">Edit cards</a>
+        </button>
+        <button class="button is-primary">
+            <a href="/admin/cardpacks">Edit cardpacks</a>
+        </button>
+    </div>
+</UserPortalLayout>

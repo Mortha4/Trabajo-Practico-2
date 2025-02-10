@@ -1,0 +1,160 @@
+---
+import Card from "../components/Card.astro";
+---
+
+<script>
+    class CardPack extends HTMLElement {
+        static observedAttributes = [
+            "title",
+            "drops",
+            "wrapper-image-url",
+            "class",
+            "cooldown",
+            "last-opened",
+            "name",
+            "drop-quantity",
+        ];
+        #shadowRoot;
+        constructor() {
+            super();
+            let template = document.getElementById("card-pack-template");
+            //@ts-ignore
+            let templateContent = template.content;
+            this.#shadowRoot = this.attachShadow({ mode: "open" });
+            this.#shadowRoot.appendChild(templateContent.cloneNode(true));
+        }
+
+        attributeChangedCallback(
+            name: string,
+            oldValue: string,
+            newValue: string
+        ) {
+            switch (name) {
+                case "title":
+                    this.#shadowRoot.querySelector(".pack-title")!.textContent =
+                        newValue;
+                    break;
+                case "wrapper-image-url":
+                    this.#shadowRoot.querySelector(
+                        ".img_card-pack"
+                    )!.textContent = newValue;
+                    break;
+            }
+        }
+    }
+</script>
+<template id="card-pack-template">
+    <div
+        class="card-pack is-flex is-justify-content-center is-align-content-center"
+    >
+        <div>
+            <h1 class="pack-title is-flex is-justify-content-center">Titulo</h1>
+
+            <img class="img_card-pack" src="logo-pack.png" alt="imagen" />
+
+            <div
+                class="box-buttom is-flex is-justify-content-center js-modal-trigger"
+                data-target="modal-example"
+            >
+                <a class="boton popup-btn" href="#">OPEN</a>
+            </div>
+
+            <div id="modal-example" class="modal">
+                <div class="modal-background"></div>
+
+                <div class="modal-card">
+                    <header class="modal-card-head">
+                        <p class="modal-card-title has-text-centered">
+                            Cartas desbloqueadas
+                        </p>
+                    </header>
+
+                    <section class="modal-card-body is-justify-content-center">
+                        <div
+                            class="is-flex is-justify-content-space-around is-align-items-stretch is-flex-wrap-wrap"
+                        >
+                            <div class="cards">
+                                <Card />
+                                <Card />
+                                <Card />
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style is:inline>
+        @import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
+        @import url("https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css");
+        @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css");
+        .pack-title {
+            color: black;
+            font-size: 20px;
+        }
+
+        .modal-card {
+            width: 50%;
+        }
+
+        .cards {
+            display: grid;
+            height: 100%;
+            gap: 10px;
+            justify-content: space-around;
+            align-content: space-around;
+            grid-template-columns: repeat(auto-fill, 2.5in);
+            grid-auto-rows: auto;
+        }
+
+        .card-pack {
+            display: flex;
+            background-image: radial-gradient(
+                circle 1224px at 10.6% 8.8%,
+                rgba(255, 255, 255, 1) 0%,
+                rgba(153, 202, 251, 1) 100.2%
+            );
+            width: 250px;
+            height: 350px;
+            border-radius: 10px;
+            padding: 16px 8px;
+            margin: 5px;
+            gap: 20px;
+            box-shadow: -3px 7px 7px -7px rgba(0, 0, 0, 0.75);
+        }
+
+        .img_card-pack {
+            height: 200px;
+        }
+
+        .boton {
+            background-image: linear-gradient(
+                to right,
+                #232526 0%,
+                #414345 51%,
+                #232526 100%
+            );
+            margin: 10px;
+            padding: 15px 45px;
+            text-align: center;
+            text-transform: uppercase;
+            transition: 0.5s;
+            background-size: 200% auto;
+            color: white;
+            box-shadow: 0 0 20px #eee;
+            border-radius: 10px;
+            display: block;
+        }
+
+        .boton:hover {
+            background-position: right center;
+            color: #fff;
+            text-decoration: none;
+        }
+
+        .modal {
+            z-index: 100;
+        }
+    </style>
+</template>

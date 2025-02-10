@@ -10,7 +10,9 @@ const { "container-class": slotContainerClasses } = Astro.props;
 ---
 
 <script>
-    import { user } from "../scripts/fetchUser";
+    import fetchUser from "../scripts/fetchUser";
+    const user = await fetchUser();
+    if (!user) window.location.replace("/login");
     const usernameDisplay = document.getElementById(
         "profile-showcase-username"
     )!;
@@ -36,7 +38,7 @@ const { "container-class": slotContainerClasses } = Astro.props;
                 <img
                     id="profile-showcase-image"
                     class="image"
-                    src="default-profile-picture.svg"
+                    src="/public/default-profile-picture.svg"
                     alt="profile picture"
                 />
             </figure>
