@@ -76,6 +76,8 @@
             let current_date= moment();
             let next_open=moment_lastopened.add(moment_cooldown);
             let timer= next_open.diff(current_date);
+
+
             let cronometro = moment.utc(timer).format("HH:mm:ss");
             this.#shadowRoot!.querySelector(".boton")!.textContent = cronometro;
         }
