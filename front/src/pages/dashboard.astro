@@ -2,11 +2,11 @@
 import GenericLayout from "../layouts/GenericLayout.astro";
 import UserPortalNavbar from "../components/UserPortalNavbar.astro";
 import ProfileDashboard from "../components/ProfileDashboard.astro";
-import CardPack from "../components/CardPack.astro";
 ---
 
 <GenericLayout title="Dashboard" class="blue-background">
     <UserPortalNavbar />
+
     <main>
         <ProfileDashboard
             container-class="is-flex is-justify-content-space-around is-align-items-stretch"
@@ -26,11 +26,11 @@ import CardPack from "../components/CardPack.astro";
         </ProfileDashboard>
 
         <div
-            class="section is-medium is-flex is-justify-content-space-around is-flex-wrap-wrap"
+            class="cardpacks-container section is-medium is-flex is-justify-content-space-around is-flex-wrap-wrap"
         >
-            <CardPack pack-title="Paquete 1" />
-            <CardPack pack-title="Paquete 2" />
-            <CardPack pack-title="Paquete 3" />
+            <card-pack ></card-pack>
+            <card-pack ></card-pack>
+            <card-pack ></card-pack>
         </div>
     </main>
 </GenericLayout>
@@ -52,35 +52,57 @@ import CardPack from "../components/CardPack.astro";
 </style>
 
 <script>
-    document.addEventListener("DOMContentLoaded", () => {
-        // OPen modal
-        const modalTriggers = document.querySelectorAll(".js-modal-trigger");
-        modalTriggers.forEach((trigger) => {
-            const modalId = trigger.getAttribute("data-target");
-            if (modalId) {
-                // Verify that modalId is not null
-                const modal = document.getElementById(modalId);
-                if (modal) {
-                    // Verify that the modal exists
-                    trigger.addEventListener("click", () => {
-                        modal.classList.add("is-active");
-                    });
-                }
-            }
-        });
 
-        // Close modal
-        const modalCloses = document.querySelectorAll(
-            ".modal .delete, .js-modal-close, .modal-background"
-        );
-        modalCloses.forEach((close) => {
-            close.addEventListener("click", () => {
-                const modal = close.closest(".modal");
-                if (modal) {
-                    //Verify that the modal exists
-                    modal.classList.remove("is-active");
+    import { API_URL } from "astro:env/client";
+    import { user } from "../scripts/fetchUser";
+
+
+        //funcion para consumir paquetes
+        async function fetchCardPacks(query = "") {
+            const cardpacksResponse = await fetch(
+                `${API_URL}/api/v1/users/${user.username}/cardpacks${query}`,
+                {
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                    },
+                    method: "GET",
+                    credentials: "include",
                 }
-            });
-        });
-    });
+            );
+
+            if (cardpacksResponse.status === 200) return await cardpacksResponse.json();
+            else console.error(cardpacksResponse);
+        }
+
+        function populateDashboard(cardpacks: any[]){
+
+            //tomamos el contenedor de packs y lo vaciamos
+            const cardpacks_container = document.querySelector(
+                ".cardpacks-container"
+            ) as HTMLDivElement;
+            cardpacks_container.innerHTML = "";
+
+        
+
+            for(const cardpack of cardpacks){
+                const CardPackNuevo=document.createElement("card-pack");
+                CardPackNuevo.setAttribute("title",cardpack.title);
+                CardPackNuevo.setAttribute("wrapperimageurl",cardpack.wrapperImageUrl);
+                CardPackNuevo.setAttribute("cooldown",cardpack.cooldown);
+                CardPackNuevo.setAttribute("lastopened",cardpack.lastOpened);
+                cardpacks_container?.appendChild(CardPackNuevo);
+
+            }
+
+
+
+        }
+
+        //variable donde se almacena el consumido
+        let cardpacks=await fetchCardPacks();
+        populateDashboard(cardpacks);
+        console.log(cardpacks);
+
+
 </script>
