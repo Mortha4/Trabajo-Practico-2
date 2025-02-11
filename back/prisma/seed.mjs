@@ -260,7 +260,7 @@ const PackBasic = await prisma.cardPackType.create({
             ],
         },
         dropQuantity: 3,
-        cooldown: moment.duration({ minutes: 1 }),
+        cooldown: moment.duration({ seconds: 10 }),
         wrapperImagePath: "/public/logo-pack.png" ,
     },
 });
@@ -278,7 +278,7 @@ const PackRare = await prisma.cardPackType.create({
             ]
         },
         dropQuantity: 3,
-        cooldown: moment.duration({ minutes: 59 }),
+        cooldown: moment.duration({ seconds: 10 }),
         wrapperImagePath: "/public/walter-white.png"
     },
 });
@@ -297,7 +297,7 @@ const PackEpic = await prisma.cardPackType.create({
             ],
         },
         dropQuantity: 3,
-        cooldown: moment.duration({ minutes: 59 }),
+        cooldown: moment.duration({ seconds: 10 }),
         wrapperImagePath: "/public/heisenberg.png"
     },
 });
