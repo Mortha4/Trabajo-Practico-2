@@ -190,6 +190,71 @@ const emptyResultMessageId = "empty-result-message";
                         .classList.remove("is-active");
                 });
         });
+
+        document
+        .getElementById("delete-card-button")
+        ?.addEventListener("click", async () => {
+            const cardName = document.querySelector("#deleteModal input").value.trim();
+
+            if (!cardName) {
+                alert("Please enter the card name to delete.");
+                return;
+            }
+
+            const response = await fetch(`${API_URL}/api/v1/cards/${cardName}`, {
+                method: "DELETE",
+                credentials: "include",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+            });
+
+            if (response.status === 204) {
+                alert(`Card "${cardName}" deleted successfully.`);
+                document.querySelector(`.card[data-name="${cardName}"]`)?.remove();
+                window.location.reload();
+            } else {
+                console.error("Error deleting card:", response);
+                alert("Failed to delete card. Please try again.");
+            }
+            document.getElementById("deleteModal").classList.remove("is-active");
+        });
+
+        document
+    .getElementById("addCardForm")
+    ?.addEventListener("submit", async (event) => {
+        event.preventDefault();
+
+        const form = event.target 
+        const request = Object.fromEntries(new FormData(form));
+
+
+        try {
+            const response = await fetch(`${API_URL}/api/v1/cards`, {
+    
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                body:JSON.stringify(request)
+            });
+
+            if (response.ok) {
+                window.location.reload()
+            } else {
+                const errorData = await response.json().catch(() => null);
+                console.error("Error adding card:", response.status, errorData);
+                alert("Failed to add card. Please try again.");
+            }
+        } catch (error) {
+            console.error("Request failed:", error);
+            alert("An error occurred while adding the card.");
+        } 
+    }); 
+
     </script>
 
     <UserPortalNavbar />
@@ -236,12 +301,13 @@ const emptyResultMessageId = "empty-result-message";
                         <section class="modal-card-body">
                             <form id="addCardForm">
                                 <div class="field">
-                                    <label class="label">Card Name</label>
+                                    <label class="label">Card name</label>
                                     <div class="control">
                                         <input
+                                            name="name"
                                             class="input"
                                             type="text"
-                                            placeholder="Enter card name"
+                                            placeholder="Enter card title"
                                             required
                                         />
                                     </div>
@@ -249,6 +315,7 @@ const emptyResultMessageId = "empty-result-message";
                                     <label class="label">Card title</label>
                                     <div class="control">
                                         <input
+                                            name="title"
                                             class="input"
                                             type="text"
                                             placeholder="Enter card title"
@@ -259,11 +326,10 @@ const emptyResultMessageId = "empty-result-message";
                                     <label class="label">Season</label>
                                     <div class="control">
                                         <input
+                                            name="season"
                                             class="input"
-                                            type="number"
+                                            type="text"
                                             placeholder="Enter season"
-                                            min="1"
-                                            max="6"
                                             required
                                         />
                                     </div>
@@ -271,11 +337,10 @@ const emptyResultMessageId = "empty-result-message";
                                     <label class="label">Biohazard lvl</label>
                                     <div class="control">
                                         <input
+                                            name="rarity"
                                             class="input"
-                                            type="number"
+                                            type="text"
                                             placeholder="Enter biohazard level"
-                                            min="1"
-                                            max="5"
                                             required
                                         />
                                     </div>
@@ -285,6 +350,7 @@ const emptyResultMessageId = "empty-result-message";
                                     >
                                     <div class="control">
                                         <textarea
+                                            name="description"
                                             class="textarea"
                                             placeholder="Enter description"
                                             required></textarea>
@@ -295,11 +361,12 @@ const emptyResultMessageId = "empty-result-message";
                         <footer class="modal-card-foot">
                             <button
                                 class="button is-success"
-                                type="submit"
-                                form="addCardForm">Save</button
-                            >
-                            <button class="button js-modal-close">Cancel</button
-                            >
+                                type="submit" 
+                                form="addCardForm"
+                                id="add-card-button">
+                                Save</button>
+                            <button class="button js-modal-close">
+                                Cancel</button>
                         </footer>
                     </div>
                 </div>
@@ -309,26 +376,28 @@ const emptyResultMessageId = "empty-result-message";
                     <div class="modal-card">
                         <header class="modal-card-head">
                             <p class="modal-card-title">Delete Card</p>
-                            <button
-                                class="delete js-modal-close"
+                            <button 
+                                class="delete js-modal-close" 
                                 aria-label="close"></button>
                         </header>
                         <section class="modal-card-body">
-                            <label class="label"
-                                >Enter Card Name to Delete</label
-                            >
+                            <label class="label">
+                                Enter Card Name to Delete</label>
                             <div class="control">
-                                <input
-                                    class="input"
-                                    type="text"
-                                    placeholder="Enter card name"
-                                />
-                            </div>
+                                <input 
+                                    class="input" 
+                                    type="text" 
+                                    placeholder="Enter card name"/>
+                            </div>  
                         </section>
                         <footer class="modal-card-foot">
-                            <button class="button is-danger">Delete</button>
-                            <button class="button js-modal-close">Cancel</button
-                            >
+                            <button 
+                                class="button is-danger" 
+                                id="delete-card-button">
+                                Delete</button>
+                            <button 
+                                class="button js-modal-close">
+                                Cancel</button>
                         </footer>
                     </div>
                 </div>
