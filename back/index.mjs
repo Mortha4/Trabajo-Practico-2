@@ -10,7 +10,7 @@ import { PrismaSessionStore } from "@quixo3/prisma-session-store";
 import { cookieAuth, basicAuth } from "./src/middleware/Authentication.js";
 import { StatusCodes } from "http-status-codes";
 import cors from "cors";
-const PORT = process.env.EXPRESS_PORT ?? 3000;
+const PORT = process.env.API_PORT ?? 3000;
 
 const app = express();
 
@@ -22,7 +22,7 @@ const apiDoc = YAML.parse(fs.readFileSync(docsPath).toString());
 
 app.use(
     cors({
-        origin: ["http://localhost", "http://localhost:3000"],
+        origin: [process.env.FRONT_URL, process.env.API_URL],
         credentials: true,
         methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
         preflightContinue: false,
@@ -82,7 +82,7 @@ app.use(
         cookie: {
             maxAge: SESSION_LENGTH_MS,
             sameSite: "lax",
-            domain: "localhost",
+            domain: process.env.API_DOMAIN 
         },
         store: new PrismaSessionStore(prisma, {
             dbRecordIdIsSessionId: true,
@@ -96,5 +96,7 @@ app.use(
     swaggerUi.serve,
     swaggerUi.setup(null, { swaggerOptions: { url: "/api/v1/docs.json" } })
 );
+
+app.use(express.static(import.meta.dirname + "/public"));
 
 app.listen(PORT, () => console.log(`API listening on port ${PORT}`));

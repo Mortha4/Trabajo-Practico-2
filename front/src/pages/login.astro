@@ -89,6 +89,8 @@ import GenericLayout from "../layouts/GenericLayout.astro";
                     const fetchUser = (await import("../scripts/fetchUser"))
                         .default;
                     const user = await fetchUser();
+                    console.log(user);
+                    
                     const redirect =
                         user.privilege === "Administrator"
                             ? "/admin"

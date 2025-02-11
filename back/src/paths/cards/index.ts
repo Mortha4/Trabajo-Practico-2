@@ -5,9 +5,9 @@ import StatusCodes from "http-status-codes";
 import {
     PrismaError,
     SecurityScopes,
+    deformatSeason,
     formatSeason,
     prisma,
-    deformatSeason,
 } from "../../globals.js";
 
 export default function () {
@@ -75,7 +75,7 @@ export default function () {
                 data: {
                     name,
                     title,
-                    season:deformatSeason(season),
+                    season: deformatSeason(season),
                     description,
                     rarity,
                 },
