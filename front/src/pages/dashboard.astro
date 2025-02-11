@@ -52,7 +52,7 @@ import ProfileDashboard from "../components/ProfileDashboard.astro";
 </style>
 
 <script>
-
+    import moment from "moment";
     import { API_URL } from "astro:env/client";
     import { user } from "../scripts/fetchUser";
 
@@ -72,6 +72,24 @@ import ProfileDashboard from "../components/ProfileDashboard.astro";
             );
 
             if (cardpacksResponse.status === 200) return await cardpacksResponse.json();
+            else console.error(cardpacksResponse);
+        }
+
+
+        //revisar (debugear metodo post) (necesito subir la carta que se abrio recien)
+        async function postCardpackopenings(query = ""){
+            const cardpacksResponse= await fetch(
+                `${API_URL}/users/${user.username}/cardpacks/${query}/openings`,
+                {
+                    headers:{
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                    },
+                    method: "POST",
+                    credentials: "include",
+                }
+            );
+            if(cardpacksResponse.status ===200) return await cardpacksResponse.json();
             else console.error(cardpacksResponse);
         }
 
