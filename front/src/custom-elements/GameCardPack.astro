@@ -27,7 +27,6 @@
             this.#shadowRoot.appendChild(templateContent.cloneNode(true));
 
 
-
             //boton popup
 
             // OPen modal
@@ -63,30 +62,22 @@
 
 
         activatebuttom(){
+            //inserta un texto y habilita el boton
+
             this.#shadowRoot!.querySelector(".boton")!.textContent = "OPEN";
             this.#shadowRoot!.querySelector(".boton")?.removeAttribute("disabled");
-            //necesito borrar disabled en .boton
+            
         }
 
         disablebuttom(){
-            let cooldown= this.getAttribute("cooldown");
-            let lastopened=this.getAttribute("lastopened");
-            let moment_cooldown=moment.duration(cooldown);
-            let moment_lastopened=moment(lastopened);
-            let current_date= moment();
-            let next_open=moment_lastopened.add(moment_cooldown);
-            let timer= next_open.diff(current_date);
-
-
-            let cronometro = moment.utc(timer).format("HH:mm:ss");
-            this.#shadowRoot!.querySelector(".boton")!.textContent = cronometro;
+            this.#shadowRoot!.querySelector(".boton")!.setAttribute("disabled","true");
         }
 
         connectedCallback(){
                 this.#interval=setInterval(() => {
 
                 let cooldown= this.getAttribute("cooldown");
-                let lastopened=this.getAttribute("lastopened");
+                let lastopened=this.getAttribute("lastopened"); //toma el valor mas reciente de lastopened
 
             
 
@@ -111,10 +102,8 @@
                 if(timer > 0){
                     let cronometro = moment.utc(timer).format("HH:mm:ss");
                     this.#shadowRoot!.querySelector(".boton")!.textContent = cronometro;
-                    console.log(this.getAttribute("title"));
-                    console.log(cronometro);
+                    this.disablebuttom();
                 }else{
-                    this.#shadowRoot!.querySelector(".boton")!.textContent = "OPEN";
                     this.activatebuttom();
                 }
 
@@ -257,7 +246,7 @@
             <!-- boton de abrir -->
             <div
                 class="box-buttom is-flex is-justify-content-center ">
-                <button  disabled class="boton popup-btn js-modal-trigger" data-target="modal-example"></button>
+                <button disabled class="boton popup-btn js-modal-trigger" data-target="modal-example"></button>
             </div>
     
             <!-- ventana emergente de abrir -->
@@ -287,21 +276,8 @@
                 </div>
             </div>
 
-            <p class="contador is-flex is-justify-content-center"></p>
-
-
-
         </div>
 
-
-
-
-
-
-
     </div>
-
-
-
 
 </template>
