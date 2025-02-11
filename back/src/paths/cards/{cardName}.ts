@@ -7,7 +7,7 @@ import {
 } from "@prisma/client";
 import { Operation } from "express-openapi";
 import StatusCodes from "http-status-codes";
-import { PrismaError, SecurityScopes, prisma } from "../../globals.js";
+import { PrismaError, SecurityScopes, deformatSeason, prisma } from "../../globals.js";
 
 export default function () {
     const DELETE: Operation = async (req, res) => {
@@ -67,7 +67,7 @@ export default function () {
                 where: { name: cardName },
                 data: {
                     title,
-                    season,
+                    season: deformatSeason(season),
                     description,
                     rarity,
                 },

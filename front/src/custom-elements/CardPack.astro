@@ -3,7 +3,6 @@
     import fetchUser from "../scripts/fetchUser";
     import moment from "moment";
 
-    const user = await fetchUser();
     class CardPack extends HTMLElement {
         //atributo html
         static observedAttributes = [
@@ -92,6 +91,7 @@
         }
 
         async postCardpackopenings() {
+            const user = await fetchUser();
             const cardpacksResponse = await fetch(
                 `${API_URL}/api/v1/users/${user.username}/cardpacks/${this.getAttribute("name")}/openings`,
                 {

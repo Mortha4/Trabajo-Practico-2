@@ -6,4 +6,5 @@ node_modules
 # the back/node_modules folder must exist in the host to prevent a mount error
 # when starting the backend container
 back/node_modules/**
+back/public
 back/dist

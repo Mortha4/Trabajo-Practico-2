@@ -1,9 +1,9 @@
 import { API_URL } from "astro:env/client";
 import fetchSession from "./fetchSession";
 
-const session = await fetchSession();
 
 export default async function fetchUser() {
+    const session = await fetchSession();
     if (!session) return null;
     const response = await fetch(
         `${API_URL}/api/v1/users/${session.username}`,

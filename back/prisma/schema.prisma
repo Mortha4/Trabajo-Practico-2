@@ -85,7 +85,7 @@ model UserData {
     username           String        @id @map("pk_username") @db.VarChar(32)
     profileName        String        @map("profile_name") @db.VarChar(45)
     email              String        @unique @map("email_uq") @db.VarChar(255)
-    profilePicturePath String        @default("/public/default-profile-picture.svg") @map("profile_picture_path") @db.VarChar(255)
+    profilePicturePath String        @default("/default-profile-picture.svg") @map("profile_picture_path") @db.VarChar(255)
     password           String        @db.VarChar(20) // TODO: implement hashing
     privilege          UserPrivilege @default(Standard)
     createdAt          DateTime      @default(now()) @map("created_at") @db.Timestamptz()
@@ -114,7 +114,7 @@ view FlattenedUser {
 model CardPackType {
     name             String        @id @map("pk_name") @db.VarChar(32)
     title            String        @db.VarChar(60)
-    wrapperImagePath String        @default("/public/placeholder-image.svg") @map("wrapper_image_path") @db.VarChar(255)
+    wrapperImagePath String        @default("/placeholder-image.svg") @map("wrapper_image_path") @db.VarChar(255)
     cooldown         String        @db.Text
     dropQuantity     Int           @map("drop_quantity")
     createdAt        DateTime      @default(now()) @map("created_at") @db.Timestamptz()
@@ -135,7 +135,7 @@ model CardClass {
     season                CardSeason
     description           String            @db.VarChar(180)
     rarity                String            @db.VarChar(100)
-    artPath               String            @default("/public/placeholder-image.svg") @map("art_path") @db.VarChar(255)
+    artPath               String            @default("/placeholder-image.svg") @map("art_path") @db.VarChar(255)
     createdAt             DateTime          @default(now()) @map("created_at") @db.Timestamptz()
     modifiedAt            DateTime?         @updatedAt @map("modified_at") @db.Timestamptz()
     rarityObject          Rarity            @relation(name: "CardClass_IsClassifiedBy_Rarity", map: "CardClass_IsClassifiedBy_Rarity", fields: [rarity], references: [name])
