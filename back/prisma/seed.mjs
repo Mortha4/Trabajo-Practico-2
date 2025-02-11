@@ -228,7 +228,6 @@ const cards = await prisma.cardClass.createMany({
 
 const PackBasic = await prisma.cardPackType.create({
     data: {
-
         name: "paquete_basico",
         title: "Pack Basico",
         drops: {
@@ -261,7 +260,7 @@ const PackBasic = await prisma.cardPackType.create({
         },
         dropQuantity: 3,
         cooldown: moment.duration({ seconds: 10 }),
-        wrapperImagePath: "/public/logo-pack.png" ,
+        wrapperImagePath: "/public/logo-pack.png",
     },
 });
 
@@ -270,16 +269,15 @@ const PackRare = await prisma.cardPackType.create({
         name: "paquete_raro",
         title: "Pack Raro",
         drops: {
-            create: 
-            [
-                {cardName:"skyler_white"},
-                {cardName: "hank_schrander"},
-                {cardName: "tuco_salamanca"},
-            ]
+            create: [
+                { cardName: "skyler_white" },
+                { cardName: "hank_schrander" },
+                { cardName: "tuco_salamanca" },
+            ],
         },
         dropQuantity: 3,
         cooldown: moment.duration({ seconds: 10 }),
-        wrapperImagePath: "/public/walter-white.png"
+        wrapperImagePath: "/public/walter-white.png",
     },
 });
 
@@ -288,17 +286,15 @@ const PackEpic = await prisma.cardPackType.create({
         name: "paquete_epico",
         title: "Pack Epico",
         drops: {
-            create: 
-            [
+            create: [
                 { cardName: "combo" },
-                {cardName: "heisenberg"},
-                {cardName: "blue_meth"},
-                
+                { cardName: "heisenberg" },
+                { cardName: "blue_meth" },
             ],
         },
         dropQuantity: 3,
         cooldown: moment.duration({ seconds: 10 }),
-        wrapperImagePath: "/public/heisenberg.png"
+        wrapperImagePath: "/public/heisenberg.png",
     },
 });
 

@@ -44,9 +44,10 @@ import UserPortalLayout from "../layouts/UserPortalLayout.astro";
         //rellena coleccion solo recibe arrays parametro cards
         function populateCollection(cards: any[]) {
             const message = document.getElementById("empty-result-message"); //tomar el elemento de html por el id
-            if (cards.length === 0) message!.classList.remove("is-hidden"); //listar clases del html y remover del mensaje del css
+            if (cards.length === 0)
+                message!.classList.remove("is-hidden"); //listar clases del html y remover del mensaje del css
             else message!.classList.add("is-hidden");
- 
+
             //agarra name grouping checked/agrupar
             const grouping = (
                 document.querySelector(
@@ -95,7 +96,7 @@ import UserPortalLayout from "../layouts/UserPortalLayout.astro";
         const cardsCollectedDisplay = document.getElementById(
             "cards-collected-stat"
         )!;
-        
+
         //que ocurre aca??
 
         const cardsSeenDisplay = document.getElementById("cards-seen-stat")!;
@@ -165,7 +166,7 @@ import UserPortalLayout from "../layouts/UserPortalLayout.astro";
             ).toISOString()}
         />
     </ProfileDashboard>
-    
+
     <section class="collection p-5">
         <StickyTopbar>
             <SearchBar

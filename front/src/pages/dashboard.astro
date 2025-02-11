@@ -28,9 +28,9 @@ import ProfileDashboard from "../components/ProfileDashboard.astro";
         <div
             class="cardpacks-container section is-medium is-flex is-justify-content-space-around is-flex-wrap-wrap"
         >
-            <card-pack ></card-pack>
-            <card-pack ></card-pack>
-            <card-pack ></card-pack>
+            <card-pack></card-pack>
+            <card-pack></card-pack>
+            <card-pack></card-pack>
         </div>
     </main>
 </GenericLayout>
@@ -58,56 +58,47 @@ import ProfileDashboard from "../components/ProfileDashboard.astro";
 
     const user = await fetchUser();
 
-
-        //funcion para consumir paquetes
-        async function fetchCardPacks() {
-            const cardpacksResponse = await fetch(
-                `${API_URL}/api/v1/users/${user.username}/cardpacks`,
-                {
-                    headers: {
-                        Accept: "application/json",
-                        "Content-Type": "application/json",
-                    },
-                    method: "GET",
-                    credentials: "include",
-                }
-            );
-
-            if (cardpacksResponse.status === 200) return await cardpacksResponse.json();
-            else console.error(cardpacksResponse);
-        }
-
-
-
-
-        function populateDashboard(cardpacks: any[]){
-
-            //tomamos el contenedor de packs y lo vaciamos
-            const cardpacks_container = document.querySelector(
-                ".cardpacks-container"
-            ) as HTMLDivElement;
-            cardpacks_container.innerHTML = "";
-
-        
-
-            for(const cardpack of cardpacks){
-                const CardPackNuevo=document.createElement("card-pack"); //web component
-                CardPackNuevo.setAttribute("name",cardpack.name);
-                CardPackNuevo.setAttribute("title",cardpack.title);
-                CardPackNuevo.setAttribute("wrapperimageurl",cardpack.wrapperImageUrl);
-                CardPackNuevo.setAttribute("cooldown",cardpack.cooldown);
-                CardPackNuevo.setAttribute("lastopened",cardpack.lastOpened);
-                cardpacks_container?.appendChild(CardPackNuevo);
-
+    //funcion para consumir paquetes
+    async function fetchCardPacks() {
+        const cardpacksResponse = await fetch(
+            `${API_URL}/api/v1/users/${user.username}/cardpacks`,
+            {
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                method: "GET",
+                credentials: "include",
             }
+        );
 
+        if (cardpacksResponse.status === 200)
+            return await cardpacksResponse.json();
+        else console.error(cardpacksResponse);
+    }
 
+    function populateDashboard(cardpacks: any[]) {
+        //tomamos el contenedor de packs y lo vaciamos
+        const cardpacks_container = document.querySelector(
+            ".cardpacks-container"
+        ) as HTMLDivElement;
+        cardpacks_container.innerHTML = "";
 
+        for (const cardpack of cardpacks) {
+            const CardPackNuevo = document.createElement("card-pack"); //web component
+            CardPackNuevo.setAttribute("name", cardpack.name);
+            CardPackNuevo.setAttribute("title", cardpack.title);
+            CardPackNuevo.setAttribute(
+                "wrapperimageurl",
+                cardpack.wrapperImageUrl
+            );
+            CardPackNuevo.setAttribute("cooldown", cardpack.cooldown);
+            CardPackNuevo.setAttribute("lastopened", cardpack.lastOpened);
+            cardpacks_container?.appendChild(CardPackNuevo);
         }
+    }
 
-        //variable donde se almacena el consumido
-        let cardpacks=await fetchCardPacks();
-        populateDashboard(cardpacks);
-
-
+    //variable donde se almacena el consumido
+    let cardpacks = await fetchCardPacks();
+    populateDashboard(cardpacks);
 </script>
