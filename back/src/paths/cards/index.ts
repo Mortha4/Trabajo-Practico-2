@@ -7,6 +7,7 @@ import {
     SecurityScopes,
     formatSeason,
     prisma,
+    deformatSeason,
 } from "../../globals.js";
 
 export default function () {
@@ -74,7 +75,7 @@ export default function () {
                 data: {
                     name,
                     title,
-                    season,
+                    season:deformatSeason(season),
                     description,
                     rarity,
                 },
