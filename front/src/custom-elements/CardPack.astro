@@ -1,23 +1,17 @@
-
-
 <script>
     import { API_URL } from "astro:env/client";
     import fetchUser from "../scripts/fetchUser";
     import moment from "moment";
 
     const user = await fetchUser();
-    class CardPack extends HTMLElement{
-
+    class CardPack extends HTMLElement {
         //atributo html
-        static observedAttributes = 
-        [
-            
+        static observedAttributes = [
             "title",
             "class",
             "wrapperimageurl",
             "cooldown",
             "lastopened",
-            
         ];
         //atributo del objeto
         #shadowRoot;
@@ -30,11 +24,11 @@
             this.#shadowRoot = this.attachShadow({ mode: "open" });
             this.#shadowRoot.appendChild(templateContent.cloneNode(true));
 
-
             //boton popup
 
             // OPen modal
-            const modalTriggers = this.#shadowRoot.querySelectorAll(".js-modal-trigger");
+            const modalTriggers =
+                this.#shadowRoot.querySelectorAll(".js-modal-trigger");
             modalTriggers.forEach((trigger) => {
                 const modalId = trigger.getAttribute("data-target");
                 if (modalId) {
@@ -64,144 +58,127 @@
             });
         }
 
-        populateCardPack(cards: any[]){
-            const card_container= this.#shadowRoot.querySelector(".cards_container")as HTMLDivElement;
-            card_container.innerHTML= "";
+        populateCardPack(cards: any[]) {
+            const card_container = this.#shadowRoot.querySelector(
+                ".cards_container"
+            ) as HTMLDivElement;
+            card_container.innerHTML = "";
 
-            for(const card of cards){
-                const CardNuevo=this.#shadowRoot.ownerDocument.createElement("game-card");
-                CardNuevo.setAttribute("title",card.title);
-                CardNuevo.setAttribute("description",card.description);
-                CardNuevo.setAttribute("rarity",card.rarity);
-                CardNuevo.setAttribute("art-url",card.artUrl);
+            for (const card of cards) {
+                const CardNuevo =
+                    this.#shadowRoot.ownerDocument.createElement("game-card");
+                CardNuevo.setAttribute("title", card.title);
+                CardNuevo.setAttribute("description", card.description);
+                CardNuevo.setAttribute("rarity", card.rarity);
+                CardNuevo.setAttribute("art-url", card.artUrl);
                 card_container.appendChild(CardNuevo);
             }
-            
-
         }
 
-        activatebuttom(){
+        activatebuttom() {
             //inserta un texto y habilita el boton
 
             this.#shadowRoot!.querySelector(".boton")!.textContent = "OPEN";
-            this.#shadowRoot!.querySelector(".boton")?.removeAttribute("disabled");
-            
+            this.#shadowRoot!.querySelector(".boton")?.removeAttribute(
+                "disabled"
+            );
         }
 
-        disablebuttom(){
-            this.#shadowRoot!.querySelector(".boton")!.setAttribute("disabled","true");
+        disablebuttom() {
+            this.#shadowRoot!.querySelector(".boton")!.setAttribute(
+                "disabled",
+                "true"
+            );
         }
 
-        async postCardpackopenings(){
-            const cardpacksResponse= await fetch(
+        async postCardpackopenings() {
+            const cardpacksResponse = await fetch(
                 `${API_URL}/api/v1/users/${user.username}/cardpacks/${this.getAttribute("name")}/openings`,
                 {
-                    headers:{
+                    headers: {
                         Accept: "application/json",
                         "Content-Type": "application/json",
                     },
                     method: "POST",
                     credentials: "include",
                 }
-
             );
-            if(cardpacksResponse.status ===200) return await cardpacksResponse.json();
+            if (cardpacksResponse.status === 200)
+                return await cardpacksResponse.json();
             else console.error(cardpacksResponse);
-
         }
 
-        async open_card(){
-            this.setAttribute("lastopened",moment().toISOString());
+        async open_card() {
+            this.setAttribute("lastopened", moment().toISOString());
 
-            let cards=await this.postCardpackopenings();
+            let cards = await this.postCardpackopenings();
             console.log(cards);
             this.populateCardPack(cards);
-
         }
 
-        
+        connectedCallback() {
+            setInterval(() => {
+                let cooldown = this.getAttribute("cooldown");
+                let lastopened = this.getAttribute("lastopened"); //toma el valor mas reciente de lastopened
 
-        connectedCallback(){
-                setInterval(() => {
-
-                let cooldown= this.getAttribute("cooldown");
-                let lastopened=this.getAttribute("lastopened"); //toma el valor mas reciente de lastopened
-
-            
-
-                if(cooldown === null || cooldown === "null"){
+                if (cooldown === null || cooldown === "null") {
                     return;
                 }
 
-
-                if(lastopened === "null"){
+                if (lastopened === "null") {
                     this.activatebuttom();
-                    return ;
+                    return;
                 }
 
-                let moment_cooldown=moment.duration(cooldown);
-                let moment_lastopened=moment(lastopened);
-                let current_date= moment();
+                let moment_cooldown = moment.duration(cooldown);
+                let moment_lastopened = moment(lastopened);
+                let current_date = moment();
 
+                let next_open = moment_lastopened.add(moment_cooldown);
+                let timer = next_open.diff(current_date);
 
-                let next_open=moment_lastopened.add(moment_cooldown);
-                let timer= next_open.diff(current_date);
-
-                if(timer > 0){
+                if (timer > 0) {
                     let cronometro = moment.utc(timer).format("HH:mm:ss");
-                    this.#shadowRoot!.querySelector(".boton")!.textContent = cronometro;
+                    this.#shadowRoot!.querySelector(".boton")!.textContent =
+                        cronometro;
                     this.disablebuttom();
-                }else{
+                } else {
                     this.activatebuttom();
                 }
-
             }, 1000);
 
-            this.#shadowRoot.querySelector(".boton")?.addEventListener("click",()=>{
-                this.open_card();
-                
-            })
+            this.#shadowRoot
+                .querySelector(".boton")
+                ?.addEventListener("click", () => {
+                    this.open_card();
+                });
         }
 
         attributeChangedCallback(
             name: string,
             oldValue: string,
             newValue: string
-        ){
-            switch(name){
+        ) {
+            switch (name) {
                 case "title":
-                    this.#shadowRoot.querySelector(".pack-title")!.textContent=
-                    newValue;
+                    this.#shadowRoot.querySelector(".pack-title")!.textContent =
+                        newValue;
                     break;
                 case "wrapperimageurl":
                     this.#shadowRoot
                         .querySelector(".img_card-pack")
-                        ?.setAttribute(
-                            "src",
-                            newValue ?? "logo-pack.png"
-                        );
+                        ?.setAttribute("src", newValue ?? "logo-pack.png");
                     break;
-
             }
         }
-
- 
-
-
     }
     customElements.define("card-pack", CardPack);
-
-    
-
-    
 </script>
 
 <template id="card-pack-template">
-
     <style is:inline>
         @import url("https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css");
         @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css");
-
 
         .pack-title {
             color: black;
@@ -215,7 +192,10 @@
         .cards_container {
             display: grid;
             gap: 10px;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Ajuste dinámico */
+            grid-template-columns: repeat(
+                auto-fill,
+                minmax(250px, 1fr)
+            ); /* Ajuste dinámico */
             grid-auto-rows: auto;
             justify-content: center; /* Centra las cartas */
             align-content: start; /* Alinea las cartas desde el inicio del contenedor */
@@ -277,43 +257,38 @@
         .modal {
             z-index: 100;
         }
-
-
     </style>
 
-    
-
-
-    
     <div
         class="card-pack is-flex is-justify-content-center is-align-content-center"
     >
-        <div >
-
+        <div>
             <!-- titulo de paquete -->
             <h1 class="pack-title is-flex is-justify-content-center"></h1>
-    
+
             <!-- imagen de paquete -->
-            <img class="img_card-pack" alt="imagen"/>
-    
+            <img class="img_card-pack" alt="imagen" />
+
             <!-- boton de abrir -->
-            <div
-                class="box-buttom is-flex is-justify-content-center ">
-                <button disabled class="boton popup-btn js-modal-trigger" data-target="modal-example"></button>
+            <div class="box-buttom is-flex is-justify-content-center">
+                <button
+                    disabled
+                    class="boton popup-btn js-modal-trigger"
+                    data-target="modal-example"></button>
             </div>
-    
+
             <!-- ventana emergente de abrir -->
-    
-            <div id="modal-example" class="modal ">
+
+            <div id="modal-example" class="modal">
                 <div class="modal-background"></div>
-    
-                <div class="modal-card ">
+
+                <div class="modal-card">
                     <header class="modal-card-head">
                         <p class="modal-card-title has-text-centered">
                             Cartas desbloqueadas
                         </p>
                     </header>
-    
+
                     <section class="modal-card-body is-justify-content-center">
                         <div
                             class="is-flex is-justify-content-space-around is-align-items-stretch is-flex-wrap-wrap"
@@ -322,15 +297,11 @@
                                 <game-card class="is-skeleton"></game-card>
                                 <game-card class="is-skeleton"></game-card>
                                 <game-card class="is-skeleton"></game-card>
-                                
                             </div>
                         </div>
                     </section>
                 </div>
             </div>
-
         </div>
-
     </div>
-
 </template>
