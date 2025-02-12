@@ -1,7 +1,6 @@
 import { API_URL } from "astro:env/client";
 import fetchSession from "./fetchSession";
 
-
 export default async function fetchUser() {
     const session = await fetchSession();
     if (!session) return null;

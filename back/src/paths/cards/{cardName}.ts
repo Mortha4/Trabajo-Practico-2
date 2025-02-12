@@ -7,7 +7,12 @@ import {
 } from "@prisma/client";
 import { Operation } from "express-openapi";
 import StatusCodes from "http-status-codes";
-import { PrismaError, SecurityScopes, deformatSeason, prisma } from "../../globals.js";
+import {
+    PrismaError,
+    SecurityScopes,
+    deformatSeason,
+    prisma,
+} from "../../globals.js";
 
 export default function () {
     const DELETE: Operation = async (req, res) => {
