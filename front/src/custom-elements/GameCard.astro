@@ -1,4 +1,6 @@
 <script>
+import type { ACTION_ERROR_CODES } from "astro:actions";
+
     class GameCard extends HTMLElement {
         static observedAttributes = [
             "name",
@@ -16,6 +18,12 @@
             let templateContent = template.content;
             this.#shadowRoot = this.attachShadow({ mode: "open" });
             this.#shadowRoot.appendChild(templateContent.cloneNode(true));
+
+            var card = this.#shadowRoot.querySelector('.game-card')!;
+
+            card.addEventListener( 'click', function() {
+                card.classList.toggle('is-flipped');
+            });
         }
 
         updateHazard(newRarity: string) {
@@ -81,6 +89,8 @@
                     break;
             }
         }
+
+        
     }
     customElements.define("game-card", GameCard);
 </script>
@@ -98,13 +108,15 @@
             border-radius: 3.5mm;
             aspect-ratio: 5 / 7;
             transform-style: preserve-3d;
-            transition: transform 0.5s ease-in-out;
+            transition: transform 1s;
             position: relative;
+            cursor: pointer;
         }
 
-        .game-card:hover {
-            transform: scale(1.05);
-        }
+        .game-card.is-flipped {
+            transform:rotateY(-180deg);
+        }       
+
 
         .front,
         .white-border,
