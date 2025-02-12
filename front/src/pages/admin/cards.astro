@@ -192,69 +192,81 @@ const emptyResultMessageId = "empty-result-message";
         });
 
         document
-        .getElementById("delete-card-button")
-        ?.addEventListener("click", async () => {
-            const cardName = document.querySelector("#deleteModal input").value.trim();
+            .getElementById("delete-card-button")
+            ?.addEventListener("click", async () => {
+                const cardName = document
+                    .querySelector("#deleteModal input")
+                    .value.trim();
 
-            if (!cardName) {
-                alert("Please enter the card name to delete.");
-                return;
-            }
+                if (!cardName) {
+                    alert("Please enter the card name to delete.");
+                    return;
+                }
 
-            const response = await fetch(`${API_URL}/api/v1/cards/${cardName}`, {
-                method: "DELETE",
-                credentials: "include",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                },
+                const response = await fetch(
+                    `${API_URL}/api/v1/cards/${cardName}`,
+                    {
+                        method: "DELETE",
+                        credentials: "include",
+                        headers: {
+                            Accept: "application/json",
+                            "Content-Type": "application/json",
+                        },
+                    }
+                );
+
+                if (response.status === 204) {
+                    alert(`Card "${cardName}" deleted successfully.`);
+                    document
+                        .querySelector(`.card[data-name="${cardName}"]`)
+                        ?.remove();
+                    window.location.reload();
+                } else {
+                    console.error("Error deleting card:", response);
+                    alert("Failed to delete card. Please try again.");
+                }
+                document
+                    .getElementById("deleteModal")
+                    .classList.remove("is-active");
             });
-
-            if (response.status === 204) {
-                alert(`Card "${cardName}" deleted successfully.`);
-                document.querySelector(`.card[data-name="${cardName}"]`)?.remove();
-                window.location.reload();
-            } else {
-                console.error("Error deleting card:", response);
-                alert("Failed to delete card. Please try again.");
-            }
-            document.getElementById("deleteModal").classList.remove("is-active");
-        });
 
         document
-    .getElementById("addCardForm")
-    ?.addEventListener("submit", async (event) => {
-        event.preventDefault();
+            .getElementById("addCardForm")
+            ?.addEventListener("submit", async (event) => {
+                event.preventDefault();
 
-        const form = event.target 
-        const request = Object.fromEntries(new FormData(form));
+                const form = event.target;
+                const request = Object.fromEntries(new FormData(form));
 
+                try {
+                    const response = await fetch(`${API_URL}/api/v1/cards`, {
+                        method: "POST",
+                        credentials: "include",
+                        headers: {
+                            Accept: "application/json",
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify(request),
+                    });
 
-        try {
-            const response = await fetch(`${API_URL}/api/v1/cards`, {
-    
-                method: "POST",
-                credentials: "include",
-                headers: {
-                    Accept: "application/json",
-                    "Content-Type": "application/json",
-                },
-                body:JSON.stringify(request)
+                    if (response.ok) {
+                        window.location.reload();
+                    } else {
+                        const errorData = await response
+                            .json()
+                            .catch(() => null);
+                        console.error(
+                            "Error adding card:",
+                            response.status,
+                            errorData
+                        );
+                        alert("Failed to add card. Please try again.");
+                    }
+                } catch (error) {
+                    console.error("Request failed:", error);
+                    alert("An error occurred while adding the card.");
+                }
             });
-
-            if (response.ok) {
-                window.location.reload()
-            } else {
-                const errorData = await response.json().catch(() => null);
-                console.error("Error adding card:", response.status, errorData);
-                alert("Failed to add card. Please try again.");
-            }
-        } catch (error) {
-            console.error("Request failed:", error);
-            alert("An error occurred while adding the card.");
-        } 
-    }); 
-
     </script>
 
     <UserPortalNavbar />
@@ -361,12 +373,15 @@ const emptyResultMessageId = "empty-result-message";
                         <footer class="modal-card-foot">
                             <button
                                 class="button is-success"
-                                type="submit" 
+                                type="submit"
                                 form="addCardForm"
-                                id="add-card-button">
-                                Save</button>
+                                id="add-card-button"
+                            >
+                                Save</button
+                            >
                             <button class="button js-modal-close">
-                                Cancel</button>
+                                Cancel</button
+                            >
                         </footer>
                     </div>
                 </div>
@@ -376,28 +391,32 @@ const emptyResultMessageId = "empty-result-message";
                     <div class="modal-card">
                         <header class="modal-card-head">
                             <p class="modal-card-title">Delete Card</p>
-                            <button 
-                                class="delete js-modal-close" 
+                            <button
+                                class="delete js-modal-close"
                                 aria-label="close"></button>
                         </header>
                         <section class="modal-card-body">
                             <label class="label">
-                                Enter Card Name to Delete</label>
+                                Enter Card Name to Delete</label
+                            >
                             <div class="control">
-                                <input 
-                                    class="input" 
-                                    type="text" 
-                                    placeholder="Enter card name"/>
-                            </div>  
+                                <input
+                                    class="input"
+                                    type="text"
+                                    placeholder="Enter card name"
+                                />
+                            </div>
                         </section>
                         <footer class="modal-card-foot">
-                            <button 
-                                class="button is-danger" 
-                                id="delete-card-button">
-                                Delete</button>
-                            <button 
-                                class="button js-modal-close">
-                                Cancel</button>
+                            <button
+                                class="button is-danger"
+                                id="delete-card-button"
+                            >
+                                Delete</button
+                            >
+                            <button class="button js-modal-close">
+                                Cancel</button
+                            >
                         </footer>
                     </div>
                 </div>

@@ -82,7 +82,7 @@ app.use(
         cookie: {
             maxAge: SESSION_LENGTH_MS,
             sameSite: "lax",
-            domain: process.env.API_DOMAIN 
+            domain: process.env.API_DOMAIN,
         },
         store: new PrismaSessionStore(prisma, {
             dbRecordIdIsSessionId: true,
