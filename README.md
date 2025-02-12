@@ -4,8 +4,8 @@
 Final assignment for the "Introducción al Desarrollo de Software" subject of the
 Computer Engineering program of the University of Buenos Aires.
 Code and documentation will be in English whereas issues, reviews, and other
-discussions will be in Spanish. Tasks will be tracked on [Trello][1], and
-patches will be merged once all team members have reviewed them. See the [docs](docs/README.md) for project documentation.
+discussions will be in Spanish. Tasks will be tracked on <a href="https://trello.com/b/FrVAu7L0/tp2-intro">Trello</a>, and
+patches will be merged once all team members have reviewed them. See the <a href="docs/README.md">docs</a> for project documentation.
 </p>
 
 ## Collaborators
@@ -39,5 +39,3 @@ patches will be merged once all team members have reviewed them. See the [docs](
 - Docker (v27.5.1) compose (v2.29.7) for easier development.
 - Prettier for consistent formatting.
 - Mocha for some basic testing.
-
-[1]: https://trello.com/b/FrVAu7L0/tp2-intro "Trello"
