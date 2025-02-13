@@ -14,6 +14,9 @@
         ];
         //atributo del objeto
         #shadowRoot;
+        #audio;
+
+        
 
         constructor() {
             super();
@@ -55,6 +58,17 @@
                     }
                 });
             });
+
+            this.#audio= new Audio('select.mp3')
+
+            this.#shadowRoot.querySelector(".card-pack")!.addEventListener("mouseenter",()=> {
+                if(this.#audio.paused){
+                    this.#audio.currentTime = 0;
+                    this.#audio.play();
+                }
+            });
+            this.#shadowRoot.querySelector(".card-pack")!.addEventListener("mouseleave",()=> this.#audio.pause ());
+
         }
 
         populateCardPack(cards: any[]) {
@@ -108,6 +122,7 @@
             else console.error(cardpacksResponse);
         }
 
+        
         async open_card() {
             this.setAttribute("lastopened", moment().toISOString());
 
@@ -185,6 +200,15 @@
             font-size: 20px;
         }
 
+        .modal{
+            position:fixed;
+            bottom: 0;
+            right: 0;
+            width: 100vw;
+            height: 100vh;
+
+        }
+
         .modal-card {
             width: 50%;
         }
@@ -202,6 +226,15 @@
             padding: 10px; /* Agrega algo de espacio dentro del contenedor */
         }
 
+        .card-pack:hover{
+            filter: drop-shadow(5px 5px 10px #000000);
+        }
+
+
+
+
+
+
         .card-pack {
             display: flex;
             background-image: radial-gradient(
@@ -216,6 +249,7 @@
             margin: 5px;
             gap: 20px;
             box-shadow: -3px 7px 7px -7px rgba(0, 0, 0, 0.75);
+            transition: filter .2s ease-out;
         }
 
         .img_card-pack {
@@ -251,10 +285,11 @@
         
 
         .boton:hover {
-            background-position: right center; /* change the direction of the change here */
+            background-position: right center; 
             color: #fff;
             text-decoration: none;
-        }
+        } 
+       
 
         .modal {
             z-index: 100;
@@ -264,7 +299,7 @@
     <div
         class="card-pack is-flex is-justify-content-center is-align-content-center"
     >
-        <div>
+        <div >
             <!-- titulo de paquete -->
             <h1 class="pack-title is-flex is-justify-content-center"></h1>
 
@@ -279,31 +314,36 @@
                     data-target="modal-example"></button>
             </div>
 
-            <!-- ventana emergente de abrir -->
 
-            <div id="modal-example" class="modal">
-                <div class="modal-background"></div>
 
-                <div class="modal-card">
-                    <header class="modal-card-head">
-                        <p class="modal-card-title has-text-centered">
-                            Cartas desbloqueadas
-                        </p>
-                    </header>
+        </div>
 
-                    <section class="modal-card-body is-justify-content-center">
-                        <div
-                            class="is-flex is-justify-content-space-around is-align-items-stretch is-flex-wrap-wrap"
-                        >
-                            <div class="cards_container">
-                                <game-card class="is-skeleton"></game-card>
-                                <game-card class="is-skeleton"></game-card>
-                                <game-card class="is-skeleton"></game-card>
-                            </div>
-                        </div>
-                    </section>
+
+
+    </div>
+
+    <div id="modal-example" class="modal">
+        <div class="modal-background"></div>
+
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title has-text-centered">
+                    Cartas desbloqueadas
+                </p>
+            </header>
+
+            <section class="modal-card-body is-justify-content-center">
+                <div
+                    class="is-flex is-justify-content-space-around is-align-items-stretch is-flex-wrap-wrap"
+                >
+                    <div class="cards_container">
+                        <game-card class="is-skeleton"></game-card>
+                        <game-card class="is-skeleton"></game-card>
+                        <game-card class="is-skeleton"></game-card>
+                    </div>
                 </div>
-            </div>
+            </section>
         </div>
     </div>
+
 </template>
