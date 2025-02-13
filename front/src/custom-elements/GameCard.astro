@@ -9,6 +9,7 @@
             "rarity",
             "art-url",
             "class",
+            "quantity"
         ];
         #shadowRoot;
         constructor() {
@@ -76,13 +77,24 @@
                     )!.textContent = newValue;
                     this.updateHazard(newValue);
                     break;
+                case "quantity":
+                    const span = this.#shadowRoot.querySelector(".quantity")!;
+                    span.textContent = "x"+newValue;
+                    const value = parseInt(newValue);
+                    if (Number.isNaN(value))
+                        break;
+                    if (value > 1)
+                        span.classList.remove("is-hidden");
+                    else 
+                        span.classList.add("is-hidden");
+                    break; 
                 case "class":
                     const isSkeleton = newValue.includes("is-skeleton");
                     const callback = isSkeleton
                         ? DOMTokenList.prototype.add
                         : DOMTokenList.prototype.remove;
                     this.#shadowRoot
-                        .querySelectorAll("div.game-card > *")
+                        .querySelectorAll("div.game-card > div")
                         .forEach((element) =>
                             callback.apply(element.classList, ["is-hidden"])
                         );
@@ -187,6 +199,21 @@
             backface-visibility: hidden;
             background-color: blue;
         }
+
+        .quantity {
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            min-width: 2rem;
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 6;
+        }
     </style>
     <div class="game-card">
         <div class="white-border"></div>
@@ -210,5 +237,6 @@
         <div class="back">
             <img src="back-card.jpg" alt="" class="brand" />
         </div>
+        <span class="quantity is-hidden">99</span>
     </div>
 </template>

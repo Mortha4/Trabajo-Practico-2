@@ -85,6 +85,7 @@
                 CardNuevo.setAttribute("description", card.description);
                 CardNuevo.setAttribute("rarity", card.rarity);
                 CardNuevo.setAttribute("art-url", card.artUrl);
+                CardNuevo.setAttribute("quantity", card.quantity);
                 card_container.appendChild(CardNuevo);
             }
         }
@@ -288,21 +289,20 @@
     </style>
 
     <div
-        class="card-pack is-flex is-justify-content-center is-align-content-center"
+        class="card-pack is-flex is-flex-direction-column is-justify-content-center is-align-content-center"
     >
-        <div>
             <!-- titulo de paquete -->
             <h1 class="pack-title is-flex is-justify-content-center"></h1>
 
             <!-- imagen de paquete -->
-            <img class="img_card-pack" alt="imagen" />
+            <img class="img_card-pack is-align-self-center" alt="imagen" />
 
             <!-- boton de abrir -->
             <div class="box-buttom is-flex is-justify-content-center">
                 <button
                     disabled
                     class="boton popup-btn js-modal-trigger"
-                    data-target="modal-example"></button>
+                    data-target="modal-example">Loading...</button>
             </div>
         </div>
     </div>
