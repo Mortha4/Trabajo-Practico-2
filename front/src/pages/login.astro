@@ -7,9 +7,10 @@ import GenericLayout from "../layouts/GenericLayout.astro";
         <div class="logo">
             <a class="is-flex is-justify-content-center" href="/">
                 <img src="/icon_menu.png" alt="Logo" class="logo-img" />
-                <span class="title is-size-1 is-size-3-mobile">BrakingBadTCG</span>
+                <span class="title is-size-1 is-size-3-mobile"
+                    >BrakingBadTCG</span
+                >
             </a>
-            
         </div>
         <div class="field">
             <label class="label">Username</label>
@@ -112,6 +113,12 @@ import GenericLayout from "../layouts/GenericLayout.astro";
         margin: var(--bulma-size-2);
     }
 
+    @media (prefers-color-scheme: dark) {
+        .logo-img {
+            filter: invert(100%);
+        }
+    }
+
     @media (max-width: 768px) {
         .logo {
             margin: var(--bulma-size-4);
@@ -119,7 +126,7 @@ import GenericLayout from "../layouts/GenericLayout.astro";
     }
 
     .logo-img {
-    width: 100px; 
-    height: auto;
+        width: 100px;
+        height: auto;
     }
 </style>

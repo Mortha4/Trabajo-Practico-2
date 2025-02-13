@@ -77,10 +77,10 @@ const API_URL = import.meta.env.API_URL;
     <form class="box">
         <div class="logo">
             <a class="is-flex is-justify-content-center" href="/">
-                <i
-                    class="fa-solid fa-icons title m-0 is-size-1 is-size-3-mobile is-flex is-align-items-center"
-                ></i>
-                <span class="title is-size-1 is-size-3-mobile">Project</span>
+                <img src="/icon_menu.png" alt="Logo" class="logo-img" />
+                <span class="title is-size-1 is-size-3-mobile"
+                    >BrakingBadTCG</span
+                >
             </a>
         </div>
         <div class="field is-horizontal">
@@ -233,6 +233,17 @@ const API_URL = import.meta.env.API_URL;
 
     .logo {
         margin: var(--bulma-size-2);
+    }
+
+    .logo-img {
+        width: 100px;
+        height: auto;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .logo-img {
+            filter: invert(100%);
+        }
     }
 
     @media (max-width: 768px) {
