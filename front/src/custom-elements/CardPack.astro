@@ -16,8 +16,6 @@
         #shadowRoot;
         #audio;
 
-        
-
         constructor() {
             super();
             let template = document.getElementById("card-pack-template"); //clona el template
@@ -59,16 +57,19 @@
                 });
             });
 
-            this.#audio= new Audio('select.mp3')
+            this.#audio = new Audio("select.mp3");
 
-            this.#shadowRoot.querySelector(".card-pack")!.addEventListener("mouseenter",()=> {
-                if(this.#audio.paused){
-                    this.#audio.currentTime = 0;
-                    this.#audio.play();
-                }
-            });
-            this.#shadowRoot.querySelector(".card-pack")!.addEventListener("mouseleave",()=> this.#audio.pause ());
-
+            this.#shadowRoot
+                .querySelector(".card-pack")!
+                .addEventListener("mouseenter", () => {
+                    if (this.#audio.paused) {
+                        this.#audio.currentTime = 0;
+                        this.#audio.play();
+                    }
+                });
+            this.#shadowRoot
+                .querySelector(".card-pack")!
+                .addEventListener("mouseleave", () => this.#audio.pause());
         }
 
         populateCardPack(cards: any[]) {
@@ -122,7 +123,6 @@
             else console.error(cardpacksResponse);
         }
 
-        
         async open_card() {
             this.setAttribute("lastopened", moment().toISOString());
 
@@ -200,13 +200,12 @@
             font-size: 20px;
         }
 
-        .modal{
-            position:fixed;
+        .modal {
+            position: fixed;
             bottom: 0;
             right: 0;
             width: 100vw;
             height: 100vh;
-
         }
 
         .modal-card {
@@ -226,14 +225,9 @@
             padding: 10px; /* Agrega algo de espacio dentro del contenedor */
         }
 
-        .card-pack:hover{
+        .card-pack:hover {
             filter: drop-shadow(5px 5px 10px #000000);
         }
-
-
-
-
-
 
         .card-pack {
             display: flex;
@@ -249,7 +243,7 @@
             margin: 5px;
             gap: 20px;
             box-shadow: -3px 7px 7px -7px rgba(0, 0, 0, 0.75);
-            transition: filter .2s ease-out;
+            transition: filter 0.2s ease-out;
         }
 
         .img_card-pack {
@@ -282,14 +276,11 @@
             display: block;
         }
 
-        
-
         .boton:hover {
-            background-position: right center; 
+            background-position: right center;
             color: #fff;
             text-decoration: none;
-        } 
-       
+        }
 
         .modal {
             z-index: 100;
@@ -299,7 +290,7 @@
     <div
         class="card-pack is-flex is-justify-content-center is-align-content-center"
     >
-        <div >
+        <div>
             <!-- titulo de paquete -->
             <h1 class="pack-title is-flex is-justify-content-center"></h1>
 
@@ -313,13 +304,7 @@
                     class="boton popup-btn js-modal-trigger"
                     data-target="modal-example"></button>
             </div>
-
-
-
         </div>
-
-
-
     </div>
 
     <div id="modal-example" class="modal">
@@ -345,5 +330,4 @@
             </section>
         </div>
     </div>
-
 </template>

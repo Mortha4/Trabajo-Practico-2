@@ -1,5 +1,5 @@
 <script>
-import type { ACTION_ERROR_CODES } from "astro:actions";
+    import type { ACTION_ERROR_CODES } from "astro:actions";
 
     class GameCard extends HTMLElement {
         static observedAttributes = [
@@ -19,10 +19,10 @@ import type { ACTION_ERROR_CODES } from "astro:actions";
             this.#shadowRoot = this.attachShadow({ mode: "open" });
             this.#shadowRoot.appendChild(templateContent.cloneNode(true));
 
-            var card = this.#shadowRoot.querySelector('.game-card')!;
+            var card = this.#shadowRoot.querySelector(".game-card")!;
 
-            card.addEventListener( 'click', function() {
-                card.classList.toggle('is-flipped');
+            card.addEventListener("click", function () {
+                card.classList.toggle("is-flipped");
             });
         }
 
@@ -89,8 +89,6 @@ import type { ACTION_ERROR_CODES } from "astro:actions";
                     break;
             }
         }
-
-        
     }
     customElements.define("game-card", GameCard);
 </script>
@@ -114,9 +112,8 @@ import type { ACTION_ERROR_CODES } from "astro:actions";
         }
 
         .game-card.is-flipped {
-            transform:rotateY(-180deg);
-        }       
-
+            transform: rotateY(-180deg);
+        }
 
         .front,
         .white-border,
