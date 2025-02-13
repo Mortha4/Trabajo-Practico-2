@@ -57,7 +57,7 @@
                 });
             });
 
-            this.#audio = new Audio("select.mp3");
+            this.#audio = new Audio("/select.mp3");
 
             this.#shadowRoot
                 .querySelector(".card-pack")!
@@ -306,28 +306,27 @@
             >
         </div>
     </div>
-</template>
+    <div id="modal-example" class="modal">
+        <div class="modal-background"></div>
 
-<div id="modal-example" class="modal">
-    <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title has-text-centered">
+                    Cartas desbloqueadas
+                </p>
+            </header>
 
-    <div class="modal-card">
-        <header class="modal-card-head">
-            <p class="modal-card-title has-text-centered">
-                Cartas desbloqueadas
-            </p>
-        </header>
-
-        <section class="modal-card-body is-justify-content-center">
-            <div
-                class="is-flex is-justify-content-space-around is-align-items-stretch is-flex-wrap-wrap"
-            >
-                <div class="cards_container">
-                    <game-card class="is-skeleton"></game-card>
-                    <game-card class="is-skeleton"></game-card>
-                    <game-card class="is-skeleton"></game-card>
+            <section class="modal-card-body is-justify-content-center">
+                <div
+                    class="is-flex is-justify-content-space-around is-align-items-stretch is-flex-wrap-wrap"
+                >
+                    <div class="cards_container">
+                        <game-card class="is-skeleton"></game-card>
+                        <game-card class="is-skeleton"></game-card>
+                        <game-card class="is-skeleton"></game-card>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
+        </div>
     </div>
-</div>
+</template>

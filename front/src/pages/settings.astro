@@ -22,6 +22,7 @@ import UserPortalLayout from "../layouts/UserPortalLayout.astro";
         }
 
         const user = await fetchUser();
+        if (!user) window.location.replace("/login");
 
         namedInputs.forEach(
             (input) => (input.placeholder = holdInputPlaceholders[input.name])
@@ -299,15 +300,17 @@ import UserPortalLayout from "../layouts/UserPortalLayout.astro";
         min-width: 5rem;
     }
     form {
-        flex-basis: 360px;
+        flex-basis: 374px;
         flex-grow: 1;
         flex-shrink: 0;
         /* min-width: 360px; */
     }
     figure.image {
         border-radius: 50%;
+        width: 340px;
+        aspect-ratio: 1 / 1;
     }
-    @media (max-width: 850px) {
+    @media (max-width: 856px) {
         .settings-container {
             flex-direction: column;
         }
