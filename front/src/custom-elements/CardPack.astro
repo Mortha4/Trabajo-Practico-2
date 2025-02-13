@@ -291,43 +291,43 @@
     <div
         class="card-pack is-flex is-flex-direction-column is-justify-content-center is-align-content-center"
     >
-            <!-- titulo de paquete -->
-            <h1 class="pack-title is-flex is-justify-content-center"></h1>
+        <!-- titulo de paquete -->
+        <h1 class="pack-title is-flex is-justify-content-center"></h1>
 
-            <!-- imagen de paquete -->
-            <img class="img_card-pack is-align-self-center" alt="imagen" />
+        <!-- imagen de paquete -->
+        <img class="img_card-pack is-align-self-center" alt="imagen" />
 
-            <!-- boton de abrir -->
-            <div class="box-buttom is-flex is-justify-content-center">
-                <button
-                    disabled
-                    class="boton popup-btn js-modal-trigger"
-                    data-target="modal-example">Loading...</button>
-            </div>
-        </div>
-    </div>
-
-    <div id="modal-example" class="modal">
-        <div class="modal-background"></div>
-
-        <div class="modal-card">
-            <header class="modal-card-head">
-                <p class="modal-card-title has-text-centered">
-                    Cartas desbloqueadas
-                </p>
-            </header>
-
-            <section class="modal-card-body is-justify-content-center">
-                <div
-                    class="is-flex is-justify-content-space-around is-align-items-stretch is-flex-wrap-wrap"
-                >
-                    <div class="cards_container">
-                        <game-card class="is-skeleton"></game-card>
-                        <game-card class="is-skeleton"></game-card>
-                        <game-card class="is-skeleton"></game-card>
-                    </div>
-                </div>
-            </section>
+        <!-- boton de abrir -->
+        <div class="box-buttom is-flex is-justify-content-center">
+            <button
+                disabled
+                class="boton popup-btn js-modal-trigger"
+                data-target="modal-example">Loading...</button
+            >
         </div>
     </div>
 </template>
+
+<div id="modal-example" class="modal">
+    <div class="modal-background"></div>
+
+    <div class="modal-card">
+        <header class="modal-card-head">
+            <p class="modal-card-title has-text-centered">
+                Cartas desbloqueadas
+            </p>
+        </header>
+
+        <section class="modal-card-body is-justify-content-center">
+            <div
+                class="is-flex is-justify-content-space-around is-align-items-stretch is-flex-wrap-wrap"
+            >
+                <div class="cards_container">
+                    <game-card class="is-skeleton"></game-card>
+                    <game-card class="is-skeleton"></game-card>
+                    <game-card class="is-skeleton"></game-card>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>

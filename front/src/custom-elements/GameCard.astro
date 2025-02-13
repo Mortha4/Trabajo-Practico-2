@@ -9,7 +9,7 @@
             "rarity",
             "art-url",
             "class",
-            "quantity"
+            "quantity",
         ];
         #shadowRoot;
         constructor() {
@@ -79,15 +79,12 @@
                     break;
                 case "quantity":
                     const span = this.#shadowRoot.querySelector(".quantity")!;
-                    span.textContent = "x"+newValue;
+                    span.textContent = "x" + newValue;
                     const value = parseInt(newValue);
-                    if (Number.isNaN(value))
-                        break;
-                    if (value > 1)
-                        span.classList.remove("is-hidden");
-                    else 
-                        span.classList.add("is-hidden");
-                    break; 
+                    if (Number.isNaN(value)) break;
+                    if (value > 1) span.classList.remove("is-hidden");
+                    else span.classList.add("is-hidden");
+                    break;
                 case "class":
                     const isSkeleton = newValue.includes("is-skeleton");
                     const callback = isSkeleton
