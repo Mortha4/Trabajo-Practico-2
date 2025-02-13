@@ -1,0 +1,254 @@
+---
+import GenericLayout from "../layouts/GenericLayout.astro";
+const API_URL = import.meta.env.API_URL;
+---
+
+<GenericLayout class="is-flex is-justify-content-center is-align-items-center">
+    <script define:vars={{ API_URL }} type="module">
+        const inputs = document.querySelectorAll("input");
+        const helpers = document.querySelectorAll(".help");
+        inputs.forEach((input) =>
+            input.addEventListener("change", (event) => {
+                inputs.forEach((input) =>
+                    input.classList.remove("is-danger", "is-warning")
+                );
+                helpers.forEach((help) => help.classList.add("is-hidden"));
+            })
+        );
+        document
+            .querySelector("input[name=username]")
+            ?.addEventListener("invalid", (event) => {
+                const usernameInput = event.target;
+                if (usernameInput.value.length === 0) return;
+                usernameInput.classList.add("is-danger");
+                document
+                    .getElementById("username-bad-format-help")
+                    ?.classList.remove("is-hidden");
+            });
+        const passwordInputs = document.querySelectorAll(
+            "input[type=password]"
+        );
+
+        passwordInputs.forEach((input) =>
+            input.addEventListener("change", (event) => {
+                const eitherEmpty =
+                    passwordInputs[0].value.length === 0 ||
+                    passwordInputs[1].value.length === 0;
+                const passwordsMatch =
+                    passwordInputs[0].value === passwordInputs[1].value;
+                if (eitherEmpty || passwordsMatch) return;
+                passwordInputs.forEach((input) =>
+                    input.classList.add("is-warning")
+                );
+                document
+                    .getElementById("mismatched-passwords-help")
+                    ?.classList.remove("is-hidden");
+            })
+        );
+
+        document
+            .querySelector("form")
+            ?.addEventListener("submit", async (event) => {
+                event.preventDefault();
+                if (passwordInputs[0].value !== passwordInputs[1].value) return;
+
+                console.log(JSON.stringify(new FormData(event.target)));
+
+                const response = await fetch(`${API_URL}/api/v1/users`, {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify(
+                        Object.fromEntries(new FormData(event.target))
+                    ),
+                });
+
+                if (response.status === 204) {
+                    window.location.replace("/login");
+                } else {
+                    // TODO: give user feedback
+                    console.log(response);
+                    console.log(await response.json());
+                }
+            });
+    </script>
+    <form class="box">
+        <div class="logo">
+            <a class="is-flex is-justify-content-center" href="/">
+                <img src="/icon_menu.png" alt="Logo" class="logo-img" />
+                <span class="title is-size-1 is-size-3-mobile"
+                    >BrakingBadTCG</span
+                >
+            </a>
+        </div>
+        <div class="field is-horizontal">
+            <div class="field-label is-normal">
+                <label class="label">Profile Name</label>
+            </div>
+            <div class="field-body">
+                <div class="field is-expanded is-flex is-align-items-center">
+                    <div class="control has-icons-left is-flex-grow-1">
+                        <input
+                            name="profileName"
+                            autocomplete="off"
+                            required
+                            class="input"
+                            type="text"
+                            placeholder="Enter your profile name."
+                            minlength="1"
+                            maxlength="45"
+                        />
+                        <span class="icon is-small is-left">
+                            <i class="fa-solid fa-address-card"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="field is-horizontal">
+            <div class="field-label is-normal">
+                <label class="label">Username</label>
+            </div>
+            <div class="field-body">
+                <div class="field is-expanded">
+                    <div class="control has-icons-left has-icons-right">
+                        <input
+                            name="username"
+                            autocomplete="off"
+                            required
+                            pattern="^[a-z0-9_]+$"
+                            class="input"
+                            type="text"
+                            placeholder="Enter your username."
+                            minlength="1"
+                            maxlength="32"
+                        />
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-user"></i>
+                        </span>
+                        <!-- <span class="icon is-small is-right"> -->
+                        <!-- <i class="fas fa-check"></i> -->
+                        <!-- </span> -->
+                    </div>
+                    <!-- <p class="help is-success">This username is available</p> -->
+                    <p
+                        id="username-bad-format-help"
+                        class="help is-danger is-hidden"
+                    >
+                        Usernames cant contain uppercase letters or special
+                        characters.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="field is-horizontal">
+            <div class="field-label is-normal">
+                <label class="label">Email</label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <div class="control has-icons-left has-icons-right">
+                        <input
+                            name="email"
+                            autocomplete="off"
+                            required
+                            class="input"
+                            type="email"
+                            placeholder="Enter your email."
+                            maxlength="255"
+                        />
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-envelope"></i>
+                        </span>
+                        <!-- <span class="icon is-small is-right"> -->
+                        <!-- <i class="fas fa-exclamation-triangle"></i> -->
+                        <!-- </span> -->
+                    </div>
+                    <!-- <p class="help is-danger">This email is invalid</p> -->
+                </div>
+            </div>
+        </div>
+        <div class="field is-horizontal">
+            <div class="field-label is-normal">
+                <label class="label">Password</label>
+            </div>
+            <div class="field-body">
+                <div class="field">
+                    <p class="control has-icons-left">
+                        <input
+                            name="password"
+                            autocomplete="off"
+                            required
+                            class="input"
+                            type="password"
+                            placeholder="Enter your password."
+                            minlength="8"
+                            maxlength="20"
+                        />
+                        <span class="icon is-small is-left">
+                            <i class="fas fa-lock"></i>
+                        </span>
+                    </p>
+                </div>
+                <div class="field">
+                    <p class="control">
+                        <input
+                            id="password-repeat"
+                            autocomplete="off"
+                            required
+                            class="input"
+                            type="password"
+                            placeholder="Repeat your password."
+                            minlength="8"
+                            maxlength="20"
+                        />
+                    </p>
+                    <p
+                        id="mismatched-passwords-help"
+                        class="help is-warning is-hidden"
+                    >
+                        The passwords do not match.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <div class="field is-horizontal is-justify-content-space-between">
+            <div class="field-label"></div>
+            <div class="field-body is-justify-content-space-between">
+                <p class="help mt-2 mb-2 is-info is-flex is-align-items-center">
+                    <a href="/login"> Already have an account? Log in! </a>
+                </p>
+                <button type="submit" class="button is-primary">Sign up</button>
+            </div>
+        </div>
+    </form>
+</GenericLayout>
+<style>
+    .logo > a {
+        gap: 10px;
+    }
+
+    .logo {
+        margin: var(--bulma-size-2);
+    }
+
+    .logo-img {
+        width: 100px;
+        height: auto;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .logo-img {
+            filter: invert(100%);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .logo {
+            margin: var(--bulma-size-4);
+        }
+    }
+</style>

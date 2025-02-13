@@ -1,0 +1,12 @@
+---
+import GenericLayout from "./GenericLayout.astro";
+import UserPortalNavbar from "../components/UserPortalNavbar.astro";
+const { title, class: classList } = Astro.props;
+---
+
+<GenericLayout {title}>
+    <UserPortalNavbar />
+    <main class:list={[classList]}>
+        <slot />
+    </main>
+</GenericLayout>

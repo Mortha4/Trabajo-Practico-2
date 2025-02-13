@@ -1,0 +1,95 @@
+---
+import { Fragment } from "astro/jsx-runtime";
+// TODO: remove inline javascript on input fields and write a better function (allow keys)
+---
+
+<Fragment>
+    <fieldset name="rarities" class="is-flex is-flex-wrap-wrap checkboxes">
+        <legend class="label"> Choose the rarities <br /> </legend>
+        <label class="checkbox">
+            <input type="checkbox" name="rarities" value="Common" id="" />
+            1 Hazard
+        </label>
+        <label class="checkbox">
+            <input type="checkbox" name="rarities" value="Rare" id="" />
+            2 Hazard
+        </label>
+        <label class="checkbox">
+            <input type="checkbox" name="rarities" value="Epic" id="" />
+            3 Hazard
+        </label>
+        <label class="checkbox">
+            <input type="checkbox" name="rarities" value="MEME" id="" />
+            4 Hazard
+        </label>
+    </fieldset>
+    <fieldset name="seasons" class="is-flex is-flex-wrap-wrap checkboxes">
+        <legend class="label"> Choose the seasons <br /> </legend>
+        <label class="checkbox">
+            <input type="checkbox" name="seasons" value="Season 1" id="" />
+            Season 1
+        </label>
+        <label class="checkbox">
+            <input type="checkbox" name="seasons" value="Season 2" id="" />
+            Season 2
+        </label>
+        <label class="checkbox">
+            <input type="checkbox" name="seasons" value="Season 3" id="" />
+            Season 3
+        </label>
+        <label class="checkbox">
+            <input type="checkbox" name="seasons" value="Season 4" id="" />
+            Season 4
+        </label>
+        <label class="checkbox">
+            <input type="checkbox" name="seasons" value="Season 5" id="" />
+            Season 5
+        </label>
+    </fieldset>
+    <div class="quantity field">
+        <div class="control is-flex">
+            <label class="label m-0"> Quantity between: </label>
+            <input
+                class="input"
+                maxlength="9"
+                pattern="[0-9]+"
+                inputmode="numeric"
+                type="text"
+                name="minimumQuantity"
+                onkeydown="return (isFinite(Number(event.key)) && event.key !== ' ') || event.key === 'Delete' || event.key === 'Backspace'"
+            />
+            <span>and</span>
+            <input
+                class="input"
+                maxlength="9"
+                pattern="[0-9]+"
+                inputmode="numeric"
+                type="text"
+                name="maximumQuantity"
+                onkeydown="return (isFinite(Number(event.key)) && event.key !== ' ') || event.key === 'Delete' || event.key === 'Backspace'"
+            />
+        </div>
+    </div>
+</Fragment>
+<style>
+    @media (max-width: 768px) {
+        .field.quantity .control {
+            flex-direction: column;
+        }
+    }
+
+    .field.quantity label,
+    .field.quantity span {
+        display: flex;
+        align-items: center;
+    }
+
+    .field.quantity .control {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+
+    .field.quantity .control input {
+        max-width: 7rem;
+    }
+</style>

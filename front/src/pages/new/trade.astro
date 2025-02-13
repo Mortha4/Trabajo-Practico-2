@@ -1,0 +1,110 @@
+---
+import TradeDetail from "../../components/TradeDetail.astro";
+import UserPortalLayout from "../../layouts/UserPortalLayout.astro";
+---
+
+<script>
+    document.querySelectorAll(".buttons > button").forEach((child) =>
+        child.addEventListener("click", (event) => {
+            const buttonClicked = event.target as HTMLButtonElement;
+            buttonClicked.parentElement
+                ?.querySelector(".is-selected")
+                ?.classList.remove("is-selected", "is-primary");
+            buttonClicked.classList.add("is-selected", "is-primary");
+            console.log(buttonClicked);
+        })
+    );
+</script>
+<UserPortalLayout class="p-5 is-fullheight is-flex is-align-items-center">
+    <div class="card">
+        <div class="card-header p-3">
+            <h1 class="title">You offer</h1>
+            <h1 class="title">You request</h1>
+        </div>
+        <div class="card-content p-3 is-flex">
+            <TradeDetail class="is-flex-grow-1" />
+            <TradeDetail class="is-flex-grow-1" />
+        </div>
+        <div class="card-footer is-block p-3">
+            <div class="field is-flex-wrap-wrap is-grouped">
+                <div class="buttons has-addons is-flex-wrap-nowrap">
+                    <button class="button is-primary is-selected">Offer</button>
+                    <button class="button">Request</button>
+                </div>
+                <div class="control is-expanded">
+                    <div class="select">
+                        <select autocomplete="off">
+                            <option value="" selected hidden
+                                >Select a card</option
+                            >
+                            <option value="card_name">Card Name</option>
+                            <option value="card_name">Card Name</option>
+                            <option value="card_name">Card Name</option>
+                            <option value="card_name">Card Name</option>
+                            <option value="card_name">Card Name</option>
+                            <option value="card_name">Card Name</option>
+                        </select>
+                    </div>
+                </div>
+                <p class="control has-icons-left">
+                    <input id="quantity" class="input" type="text" min="1" />
+                    <span class="icon is-small is-left">
+                        <i>x</i>
+                    </span>
+                </p>
+                <div class="control">
+                    <button class="button is-info">Add</button>
+                </div>
+            </div>
+            <div
+                class="field is-grouped is-flex-wrap-wrap is-justify-content-space-between"
+            >
+                <div class="expiration control is-flex is-flex-wrap-wrap">
+                    <label class="label m-0">Expiration date:</label>
+                    <input type="date" name="expiration" class="input" />
+                </div>
+                <div class="control">
+                    <button type="submit" class="button is-success">Post</button
+                    >
+                </div>
+            </div>
+        </div>
+    </div>
+</UserPortalLayout>
+<style>
+    :global(.is-fullheight) {
+        height: 100%;
+    }
+    .card-header {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .card-content {
+        max-height: 200px;
+    }
+    :global(.card-content > ul:first-child) {
+        border-right: 2px solid white;
+    }
+    #quantity {
+        width: 8rem;
+    }
+    .expiration {
+        gap: 0.75rem;
+        flex-grow: 1;
+    }
+    .expiration > label {
+        text-wrap: nowrap;
+        display: flex;
+        align-items: center;
+    }
+    .expiration > input {
+        max-width: 10rem;
+    }
+
+    div.select,
+    .select select {
+        width: 100%;
+        max-width: none;
+    }
+</style>

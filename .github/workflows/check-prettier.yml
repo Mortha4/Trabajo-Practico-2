@@ -1,0 +1,19 @@
+name: Check formatting
+run-name: Checking formatting
+on:
+    push:
+        branches: [dev]
+    pull_request:
+        branches: [master, dev, backend, frontend]
+jobs:
+    check-format:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v2
+              with:
+                  ref: ${{ github.head_ref }}
+            - uses: actions/setup-node@v2
+              with:
+                  node-version: "23.x"
+            - run: npm ci
+            - run: npx prettier -c . && echo All files are formatted correctly

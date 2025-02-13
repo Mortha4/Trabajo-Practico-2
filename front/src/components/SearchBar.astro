@@ -1,0 +1,108 @@
+---
+/**
+ * filter-width: fit-content | match-searchbar | responsive
+ */
+const {
+    class: classList,
+    id,
+    action,
+    method,
+    name,
+    placeholder,
+    "filter-width": filterWidth,
+    "filter-class": filterClass,
+} = Astro.props;
+const hasAdvancedSearch = Astro.slots.has("default");
+---
+
+<script define:vars={{ id }} type="module">
+    document.getElementById(id).addEventListener("submit", (event) => {
+        const form = event.target;
+        form.querySelector("#advanced-search-toggle").checked = false;
+    });
+</script>
+<form class:list={[classList]} {id} {method} {action}>
+    <div class="field has-addons">
+        <div
+            class:list={[
+                "control is-expanded",
+                hasAdvancedSearch && "has-icons-left",
+            ]}
+        >
+            <input class="input" type="search" {name} {placeholder} />
+            {
+                hasAdvancedSearch && (
+                    <label class="icon is-small is-left">
+                        <i class="fa fa-filter" />
+                        <input
+                            type="checkbox"
+                            hidden
+                            id="advanced-search-toggle"
+                        />
+                    </label>
+                )
+            }
+        </div>
+        <div class="control">
+            <button class="button is-info" type="submit">
+                <span>
+                    <i class="fas fa-search"></i>
+                </span>
+            </button>
+        </div>
+    </div>
+    <div
+        class:list={[
+            "advanced-search",
+            filterWidth ?? "responsive",
+            filterClass,
+        ]}
+    >
+        <slot />
+    </div>
+</form>
+<style>
+    label.icon:has(input#advanced-search-toggle) {
+        pointer-events: all;
+    }
+
+    form {
+        position: relative;
+    }
+
+    div.advanced-search {
+        display: none;
+        background-color: var(--bulma-body-background-color);
+        border: solid white 1px;
+        border-radius: 10px;
+        margin-top: var(--bulma-field-block-spacing);
+        padding: var(--bulma-size-5);
+        position: absolute;
+    }
+
+    div.advanced-search.responsive {
+        width: 100%;
+        max-width: fit-content;
+    }
+
+    div.advanced-search.match-searchbar {
+        width: 100%;
+        max-width: none;
+    }
+
+    div.advanced-search.fit-content {
+        max-width: fit-content;
+        min-width: fit-content;
+        width: fit-content;
+    }
+
+    .field.has-addons {
+        margin-bottom: 0;
+    }
+    form:has(input#advanced-search-toggle:checked) > div.advanced-search {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        justify-content: space-between;
+    }
+</style>

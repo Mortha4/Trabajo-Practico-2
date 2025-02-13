@@ -1,0 +1,9 @@
+**/node_modules
+**/public
+**/package.json
+**/package-lock.json
+*.drawio
+**/.astro
+**/.vscode
+**/psql_data
+front/dist/**

@@ -1,0 +1,241 @@
+<script>
+    import type { ACTION_ERROR_CODES } from "astro:actions";
+
+    class GameCard extends HTMLElement {
+        static observedAttributes = [
+            "name",
+            "title",
+            "description",
+            "rarity",
+            "art-url",
+            "class",
+            "quantity",
+        ];
+        #shadowRoot;
+        constructor() {
+            super();
+            let template = document.getElementById("game-card-template");
+            //@ts-ignore
+            let templateContent = template.content;
+            this.#shadowRoot = this.attachShadow({ mode: "open" });
+            this.#shadowRoot.appendChild(templateContent.cloneNode(true));
+
+            var card = this.#shadowRoot.querySelector(".game-card")!;
+
+            card.addEventListener("click", function () {
+                card.classList.toggle("is-flipped");
+            });
+        }
+
+        updateHazard(newRarity: string) {
+            const hazardContainer =
+                this.#shadowRoot.querySelector(".front .hazard");
+            hazardContainer!.innerHTML = "";
+
+            const raritiesMap: Record<string, number> = {
+                Common: 1,
+                Rare: 2,
+                Epic: 3,
+                MEME: 4,
+            };
+            const hazards = raritiesMap[newRarity ?? ""];
+            for (let index = 0; index < hazards; index++) {
+                const hazard = document.createElement("i");
+                hazard.classList.add("fa-solid", "fa-biohazard");
+                hazardContainer?.appendChild(hazard);
+            }
+        }
+
+        attributeChangedCallback(
+            name: string,
+            oldValue: string,
+            newValue: string
+        ) {
+            switch (name) {
+                case "title":
+                    this.#shadowRoot.querySelector(".front h1")!.textContent =
+                        newValue;
+                    break;
+
+                case "description":
+                    this.#shadowRoot.querySelector(".front p")!.textContent =
+                        newValue;
+                    break;
+
+                case "art-url":
+                    this.#shadowRoot
+                        .querySelector(".front img")
+                        ?.setAttribute(
+                            "src",
+                            newValue ?? "placeholder-image.svg"
+                        );
+                    break;
+
+                case "rarity":
+                    this.#shadowRoot.querySelector(
+                        ".rarity > span"
+                    )!.textContent = newValue;
+                    this.updateHazard(newValue);
+                    break;
+                case "quantity":
+                    const span = this.#shadowRoot.querySelector(".quantity")!;
+                    span.textContent = "x" + newValue;
+                    const value = parseInt(newValue);
+                    if (Number.isNaN(value)) break;
+                    if (value > 1) span.classList.remove("is-hidden");
+                    else span.classList.add("is-hidden");
+                    break;
+                case "class":
+                    const isSkeleton = newValue.includes("is-skeleton");
+                    const callback = isSkeleton
+                        ? DOMTokenList.prototype.add
+                        : DOMTokenList.prototype.remove;
+                    this.#shadowRoot
+                        .querySelectorAll("div.game-card > div")
+                        .forEach((element) =>
+                            callback.apply(element.classList, ["is-hidden"])
+                        );
+                    break;
+            }
+        }
+    }
+    customElements.define("game-card", GameCard);
+</script>
+<template id="game-card-template">
+    <style is:inline>
+        @import url("https://cdn.jsdelivr.net/npm/bulma@1.0.2/css/bulma.min.css");
+        @import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css");
+        .white-border {
+            border: solid white 5px;
+            z-index: 5;
+        }
+        .game-card {
+            min-width: 2.5in;
+            min-height: 3.5in;
+            border-radius: 3.5mm;
+            aspect-ratio: 5 / 7;
+            transform-style: preserve-3d;
+            transition: transform 1s;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .game-card.is-flipped {
+            transform: rotateY(-180deg);
+        }
+
+        .front,
+        .white-border,
+        .back {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            border-radius: 3.5mm;
+            overflow: hidden;
+            border: solid white 5px;
+        }
+
+        .rarity {
+            color: white;
+        }
+
+        h1 {
+            text-align: center;
+            font-weight: 900;
+            font-size: large;
+            color: white;
+        }
+
+        p {
+            display: flex;
+            font-size: 0.9rem;
+            /* background-color: rgb(132, 0, 255); */
+            flex-basis: content;
+            padding: 1px;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            min-height: 0;
+            flex-grow: 1;
+            overflow: scroll;
+            border-radius: 0 0 2mm 2mm;
+            color: white;
+            font-family: var(--bulma-body-family);
+        }
+
+        .brand {
+            object-fit: cover;
+        }
+
+        .front > img {
+            aspect-ratio: 6 / 4;
+            width: 100%;
+            height: auto;
+            background-color: aqua;
+            border-radius: 1.5mm;
+            object-fit: cover;
+            object-position: center;
+        }
+
+        .front {
+            display: flex;
+            backface-visibility: hidden;
+            transform: rotateX(0deg);
+            padding: 0 5px 5px 5px;
+            background-image: url("/game-card-front-bg.jpg");
+            background-position: center;
+            background-size: cover;
+            background-color: rgba(0, 0, 0, 0.6);
+            background-blend-mode: darken;
+        }
+
+        .back {
+            transform: rotateY(180deg);
+            backface-visibility: hidden;
+            background-color: blue;
+        }
+
+        .quantity {
+            background-color: red;
+            color: white;
+            border-radius: 50%;
+            min-width: 2rem;
+            position: absolute;
+            bottom: -1px;
+            right: -1px;
+            aspect-ratio: 1 / 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 6;
+            backface-visibility: hidden;
+            transform-style: preserve-3d;
+        }
+    </style>
+    <div class="game-card">
+        <div class="white-border"></div>
+
+        <!-- carta rostro -->
+        <div class="front is-flex-direction-column is-align-items-stretch">
+            <h1>Title</h1>
+            <img alt="" />
+            <div class="rarity is-flex is-justify-content-space-between">
+                <span>Rarity</span>
+                <div class="hazard">
+                    <i class=""></i>
+                    <i class="fa-solid fa-biohazard"></i>
+                    <i class=""></i>
+                </div>
+            </div>
+            <p>Description</p>
+        </div>
+
+        <!-- carta espalda -->
+        <div class="back">
+            <img src="/back-card.jpg" alt="" class="brand" />
+        </div>
+        <span class="quantity is-hidden">99</span>
+    </div>
+</template>

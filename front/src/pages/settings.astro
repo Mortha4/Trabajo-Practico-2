@@ -1,0 +1,322 @@
+---
+import UserPortalNavbar from "../components/UserPortalNavbar.astro";
+import GenericLayout from "../layouts/GenericLayout.astro";
+import ProfileDashboard from "../components/ProfileDashboard.astro";
+import UserPortalLayout from "../layouts/UserPortalLayout.astro";
+---
+
+<UserPortalLayout class="hero is-link min-height">
+    <script>
+        import { API_URL } from "astro:env/client";
+        import fetchUser from "../scripts/fetchUser";
+
+        const holdInputPlaceholders: { [key: string]: string } = {};
+
+        const namedInputs = document.querySelectorAll(
+            "input[name]"
+        ) as NodeListOf<HTMLInputElement>;
+
+        for (const input of namedInputs) {
+            holdInputPlaceholders[input.name] = input.placeholder;
+            input.placeholder = "Loading...";
+        }
+
+        const user = await fetchUser();
+        if (!user) window.location.replace("/login");
+
+        namedInputs.forEach(
+            (input) => (input.placeholder = holdInputPlaceholders[input.name])
+        );
+
+        document.querySelectorAll("div.field.is-skeleton").forEach((div) => {
+            div.classList.remove("is-skeleton");
+            div.querySelector("input[disabled]")?.removeAttribute("disabled");
+        });
+
+        document
+            .querySelectorAll("button[disabled]")
+            .forEach((button) => button.removeAttribute("disabled"));
+
+        for (const field in user)
+            document
+                .querySelector(`input[name=${field}]`)
+                ?.setAttribute("value", user[field]);
+
+        const figure = document.querySelector("figure.image.is-skeleton");
+        figure?.classList.remove("is-skeleton");
+        figure
+            ?.querySelector("img")
+            ?.setAttribute("src", user.profilePictureUrl);
+
+        const inputs = document.querySelectorAll("input");
+        const helpers = document.querySelectorAll(".help");
+        inputs.forEach((input) =>
+            input.addEventListener("change", (event) => {
+                inputs.forEach((input) =>
+                    input.classList.remove("is-danger", "is-warning")
+                );
+                helpers.forEach((help) => help.classList.add("is-hidden"));
+            })
+        );
+        document
+            .querySelector("input[name=username]")
+            ?.addEventListener("invalid", (event) => {
+                const usernameInput = event.target as HTMLInputElement;
+                if (usernameInput.value.length === 0) return;
+                usernameInput.classList.add("is-danger");
+                document
+                    .getElementById("username-bad-format-help")
+                    ?.classList.remove("is-hidden");
+            });
+
+        document
+            .getElementById("user-deletion-button")
+            ?.addEventListener("click", async (event) => {
+                const response = await fetch(
+                    `${API_URL}/api/v1/users/${user.username}`,
+                    {
+                        method: "DELETE",
+                        credentials: "include",
+                        headers: {
+                            Accept: "application/json",
+                            "Content-Type": "application/json",
+                        },
+                    }
+                );
+
+                if (response.status === 204) {
+                    window.location.replace("/login");
+                }
+
+                console.error(response);
+                console.log(await response.json());
+            });
+
+        document
+            .getElementById("user-settings-form")
+            ?.addEventListener("submit", async (event) => {
+                event.preventDefault();
+
+                const form = event.target as HTMLFormElement;
+                const request = Object.fromEntries(new FormData(form));
+                for (const key in request)
+                    if (request[key] === "") delete request[key];
+
+                const response = await fetch(
+                    `${API_URL}/api/v1/users/${user.username}`,
+                    {
+                        method: "PATCH",
+                        headers: {
+                            Accept: "application/json",
+                            "Content-Type": "application/json",
+                        },
+                        credentials: "include",
+                        body: JSON.stringify(request),
+                    }
+                );
+
+                if (response.status === 204) {
+                    window.location.replace("/dashboard");
+                } else {
+                    //TODO: give user feedback
+                    console.error(response);
+                    console.log(await response.json());
+                }
+            });
+    </script>
+    <div
+        class="settings-container is-flex is-align-items-center is-justify-content-space-around p-5"
+    >
+        <figure class="image is-skeleton">
+            <img src="default-profile-picture.svg" alt="" />
+        </figure>
+        <form id="user-settings-form" class="box has-background-dark">
+            <div class="field is-horizontal">
+                <div class="field-label is-normal">
+                    <label class="label">Profile Name</label>
+                </div>
+                <div class="field-body">
+                    <div
+                        class="field is-skeleton is-expanded is-flex is-align-items-center"
+                    >
+                        <div class="control has-icons-left is-flex-grow-1">
+                            <input
+                                name="profileName"
+                                autocomplete="off"
+                                required
+                                disabled
+                                class="input"
+                                type="text"
+                                placeholder="Enter your new profile name."
+                                minlength="1"
+                                maxlength="45"
+                            />
+                            <span class="icon is-small is-left">
+                                <i class="fa-solid fa-address-card"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="field is-horizontal">
+                <div class="field-label is-normal">
+                    <label class="label">Username</label>
+                </div>
+                <div class="field-body">
+                    <div class="field is-skeleton is-expanded">
+                        <div class="control has-icons-left has-icons-right">
+                            <input
+                                name="username"
+                                autocomplete="off"
+                                required
+                                disabled
+                                pattern="^[a-z0-9_]+$"
+                                class="input"
+                                type="text"
+                                placeholder="Enter your new username."
+                                minlength="1"
+                                maxlength="32"
+                            />
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-user"></i>
+                            </span>
+                            <!-- <span class="icon is-small is-right"> -->
+                            <!-- <i class="fas fa-check"></i> -->
+                            <!-- </span> -->
+                        </div>
+                        <!-- <p class="help is-success">This username is available</p> -->
+                        <p
+                            id="username-bad-format-help"
+                            class="help is-danger is-hidden"
+                        >
+                            Usernames cant contain uppercase letters or special
+                            characters.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="field is-horizontal">
+                <div class="field-label is-normal">
+                    <label class="label">Email</label>
+                </div>
+                <div class="field-body">
+                    <div class="field is-skeleton">
+                        <div class="control has-icons-left has-icons-right">
+                            <input
+                                name="email"
+                                autocomplete="off"
+                                required
+                                disabled
+                                class="input"
+                                type="email"
+                                placeholder="Enter your new email."
+                                maxlength="255"
+                            />
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                            <!-- <span class="icon is-small is-right"> -->
+                            <!-- <i class="fas fa-exclamation-triangle"></i> -->
+                            <!-- </span> -->
+                        </div>
+                        <!-- <p class="help is-danger">This email is invalid</p> -->
+                    </div>
+                </div>
+            </div>
+            <div class="field is-horizontal">
+                <div class="field-label is-normal">
+                    <label class="label">Password</label>
+                </div>
+                <div class="field-body">
+                    <div class="field is-skeleton">
+                        <p class="control has-icons-left">
+                            <input
+                                name="password"
+                                autocomplete="off"
+                                required
+                                disabled
+                                class="input"
+                                type="password"
+                                placeholder="Current password."
+                                minlength="8"
+                                maxlength="20"
+                            />
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-lock"></i>
+                            </span>
+                        </p>
+                    </div>
+                    <div class="field is-skeleton">
+                        <p class="control">
+                            <input
+                                autocomplete="off"
+                                name="newPassword"
+                                class="input"
+                                type="password"
+                                disabled
+                                placeholder="New password."
+                                minlength="8"
+                                maxlength="20"
+                            />
+                        </p>
+                        <p
+                            id="mismatched-passwords-help"
+                            class="help is-warning is-hidden"
+                        >
+                            The passwords do not match.
+                        </p>
+                    </div>
+                </div>
+            </div>
+            <div class="field is-horizontal is-justify-content-space-between">
+                <div class="field-label"><label class="label"></label></div>
+                <div
+                    class="buttons field-body is-justify-content-space-between"
+                >
+                    <button type="submit" disabled class="button is-primary"
+                        >Update</button
+                    >
+                    <button
+                        type="button"
+                        id="user-deletion-button"
+                        disabled
+                        class="button is-danger">Delete user</button
+                    >
+                </div>
+            </div>
+        </form>
+    </div>
+</UserPortalLayout>
+<style is:global>
+    .min-height {
+        min-height: 100%;
+    }
+
+    .settings-container {
+        gap: 15px;
+        flex-grow: 1;
+    }
+    label {
+        min-width: 5rem;
+    }
+    form {
+        flex-basis: 374px;
+        flex-grow: 1;
+        flex-shrink: 0;
+        /* min-width: 360px; */
+    }
+    figure.image {
+        border-radius: 50%;
+        width: 340px;
+        aspect-ratio: 1 / 1;
+    }
+    @media (max-width: 856px) {
+        .settings-container {
+            flex-direction: column;
+        }
+        form {
+            flex-basis: auto;
+            flex-grow: unset;
+        }
+    }
+</style>

@@ -1,0 +1,228 @@
+openapi: "3.0.0"
+info:
+    title: bb-tcg-api
+    version: "1.0.0"
+servers:
+    - url: /api/v1
+paths: {}
+components:
+    securitySchemes:
+        BasicAuth:
+            type: http
+            scheme: basic
+        CookieAuth:
+            type: apiKey
+            in: cookie
+            name: token
+    parameters:
+        CardName:
+            in: path
+            name: cardName
+            required: true
+            description: "The card's identifier."
+            example: "valid_card_name345"
+            schema:
+                $ref: "#/components/schemas/StringIdentifier"
+        PackName:
+            in: path
+            name: packName
+            required: true
+            description: "The card pack's identifier."
+            example: some_pack4_name
+            schema:
+                $ref: "#/components/schemas/StringIdentifier"
+        Username:
+            in: path
+            name: username
+            description: "The user's identifier."
+            example: lazy_giraffe35
+            required: true
+            schema:
+                $ref: "#/components/schemas/StringIdentifier"
+        CardRarities:
+            in: query
+            name: rarities
+            allowEmptyValue: false
+            description: "A list of rarities for filtering."
+            style: form
+            explode: true
+            schema:
+                type: array
+                items:
+                    $ref: "#/components/schemas/Rarity"
+        CardSeasons:
+            in: query
+            name: seasons
+            allowEmptyValue: false
+            description: "A list of seasons for filtering."
+            style: form
+            explode: true
+            schema:
+                type: array
+                items:
+                    $ref: "#/components/schemas/Season"
+    schemas:
+        Password:
+            description: "A strong password for authentication purposes."
+            type: "string"
+            format: "password"
+            example: someStr0ngPassword__*
+            minLength: 8
+            maxLength: 20
+        StringIdentifier:
+            type: string
+            description: "A unique alphanumerical lowercase string that functions as a key."
+            example: valid_identifier123
+            pattern: "^[a-z0-9_]+$"
+            minLength: 1
+            maxLength: 32
+        User:
+            type: object
+            properties:
+                username:
+                    $ref: "#/components/schemas/StringIdentifier"
+                profileName:
+                    type: string
+                    example: Lost Giraffe
+                    minLength: 1
+                    maxLength: 45
+                privilege:
+                    type: string
+                    example: Standard
+                    readOnly: true
+                profilePictureUrl:
+                    type: string
+                    example: http://www.example.com/profilepicture.jpeg
+                    readOnly: true
+                email:
+                    type: string
+                    format: email
+                    maxLength: 255
+                createdAt:
+                    type: string
+                    format: date-time
+                    readOnly: true
+        CardClassData:
+            type: object
+            properties:
+                title:
+                    type: string
+                    example: Darker yet Darker
+                    minLength: 1
+                    maxLength: 60
+                season:
+                    $ref: "#/components/schemas/Season"
+                description:
+                    type: string
+                    example: Is that a cut on your face, or part of your eye? The gash weaves down as if you cry. The pain itself is reason why.
+                rarity:
+                    $ref: "#/components/schemas/Rarity"
+        CardClass:
+            allOf:
+                - properties:
+                      name:
+                          $ref: "#/components/schemas/StringIdentifier"
+                      artUrl:
+                          type: string
+                          example: http://www.example.com/cardart.jpeg
+                          readOnly: true
+                  required: [name, title, season, description, rarity, artUrl]
+                - $ref: "#/components/schemas/CardClassData"
+        CardPackData:
+            type: object
+            properties:
+                title:
+                    type: string
+                    example: Daily Card Pack
+                    minLength: 1
+                    maxLength: 60
+                dropQuantity:
+                    type: integer
+                    minimum: 0
+                    example: 5
+                cooldown:
+                    type: string
+                    format: duration
+                    example: PT1H
+        CardPack:
+            allOf:
+                - $ref: "#/components/schemas/CardPackData"
+                - properties:
+                      name:
+                          $ref: "#/components/schemas/StringIdentifier"
+                      wrapperImageUrl:
+                          type: string
+                          example: http://www.example.com/packwrapper.jpeg
+                          readOnly: true
+                      drops:
+                          type: array
+                          items:
+                              $ref: "#/components/schemas/CardClass"
+                  required:
+                      [
+                          name,
+                          title,
+                          wrapperImageUrl,
+                          dropQuantity,
+                          cooldown,
+                          drops,
+                      ]
+        Rarity:
+            type: string
+            enum: [Common, Rare, Epic, MEME]
+            minLength: 1
+            maxLength: 32
+        Season:
+            type: string
+            enum: ["Season 1", "Season 2", "Season 3", "Season 4", "Season 5"]
+    responses:
+        Unauthorized:
+            description: The client failed to authenticate itself to the server.
+        Forbidden:
+            description: The client does not have the required privileges to access the resource.
+        NotFound:
+            description: The resource requested does not exist.
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        required: [message]
+                        example: { "message": "User specified does not exist." }
+                        properties:
+                            message:
+                                type: string
+        BadRequest:
+            description: The request was invalid.
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        required: [errors]
+                        additionalProperties: false
+                        properties:
+                            status:
+                                type: number
+                                example: 400
+                            errors:
+                                type: array
+                                items:
+                                    type: object
+                                    required: [message]
+                                    additionalProperties: true
+                                    example:
+                                        {
+                                            "message": "Received a non-unique identifier.",
+                                        }
+                                    properties:
+                                        message:
+                                            type: string
+        InternalServerError:
+            description: "An internal server error occurred."
+            content:
+                application/json:
+                    schema:
+                        type: object
+                        properties:
+                            message:
+                                type: string
+                                example: Information related to the error.

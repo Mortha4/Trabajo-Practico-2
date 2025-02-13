@@ -1,0 +1,64 @@
+---
+import CardFilter from "../components/CardFilter.astro";
+import CardPack from "../components/CompactCardPack.astro";
+import ProfileDashboard from "../components/ProfileDashboard.astro";
+import SearchBar from "../components/SearchBar.astro";
+import StickyTopbar from "../components/StickyTopbar.astro";
+import Trade from "../components/Trade.astro";
+import TradeFilter from "../components/TradeFilter.astro";
+import UserPortalLayout from "../layouts/UserPortalLayout.astro";
+---
+
+<UserPortalLayout title="Marketplace">
+    <ProfileDashboard>
+        <div slot="stats">
+            <h2 slot="stat-1" class="is-size-4-tablet is-size-5-mobile">
+                Cards dealt
+            </h2>
+            <h4 slot="stat-1">234</h4>
+        </div>
+        <div slot="stats">
+            <h2 slot="stat-2" class="is-size-4-tablet is-size-5-mobile">
+                Trades
+            </h2>
+            <h4 slot="stat-2">123</h4>
+        </div>
+        <CardPack
+            slot="card-packs"
+            compact
+            pack-title="Goofy ahh pack"
+            last-opened={new Date(
+                new Date().getDate() - 1000 * 60 * 60 * 10
+            ).toISOString()}
+        />
+        <CardPack
+            slot="card-packs"
+            compact
+            class="is-hidden-touch is-hidden-desktop-only"
+            compact
+            pack-title="Rumbumptious pack"
+            last-opened={new Date(
+                new Date().getDate() - 1000 * 10
+            ).toISOString()}
+        />
+    </ProfileDashboard>
+    <section class="trades p-5">
+        <StickyTopbar>
+            <SearchBar
+                class="is-flex-grow-1"
+                filter-class="is-justify-content-center"
+            >
+                <TradeFilter />
+            </SearchBar>
+            <a href="/new/trade">
+                <button class="button is-primary">+ New trade</button>
+            </a>
+        </StickyTopbar>
+        <div class="is-flex is-flex-direction-column is-align-items-center">
+            <Trade receiver />
+            <Trade receiver />
+            <Trade receiver />
+        </div>
+    </section>
+</UserPortalLayout>
+<style></style>

@@ -1,0 +1,19 @@
+---
+const { class: classList } = Astro.props;
+---
+
+<div class:list={["sticky-topbar", classList]}>
+    <slot />
+</div>
+<style>
+    .sticky-topbar {
+        position: sticky;
+        top: 0;
+        display: flex;
+        background-color: var(--bulma-body-background-color);
+        gap: 20px;
+        height: var(--logo-height);
+        align-items: center;
+        z-index: 98;
+    }
+</style>

@@ -1,0 +1,242 @@
+---
+// TODO: Collection stats should be queried at runtime
+// TODO: Change RadioTabs to a dropdown on small viewport (width < 550)
+// TODO: Center cards when theres only one column
+import CardPack from "../components//CompactCardPack.astro";
+import CardFilter from "../components/CardFilter.astro";
+import RadioTabs from "../components/RadioTabs.astro";
+import ProfileDashboard from "../components/ProfileDashboard.astro";
+import SearchBar from "../components/SearchBar.astro";
+import StickyTopbar from "../components/StickyTopbar.astro";
+import UserPortalLayout from "../layouts/UserPortalLayout.astro";
+---
+
+<UserPortalLayout title="Collection">
+    <script>
+        import { API_URL } from "astro:env/client";
+        import fetchUser from "../scripts/fetchUser";
+        const user = await fetchUser();
+
+        //funcion para consumir cartas
+        async function fetchCards(query = "") {
+            const cardsResponse = await fetch(
+                `${API_URL}/api/v1/users/${user.username}/cards${query}`,
+                {
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                    },
+                    method: "GET",
+                    credentials: "include",
+                }
+            );
+
+            if (cardsResponse.status === 200) {
+                const cards = await cardsResponse.json();
+                cards.forEach((card: any) => {
+                    card["art-url"] = card.artUrl;
+                    delete card.artUrl;
+                });
+                return cards;
+            } else console.error(cardsResponse);
+        }
+
+        //rellena coleccion solo recibe arrays parametro cards
+        function populateCollection(cards: any[]) {
+            const message = document.getElementById("empty-result-message"); //tomar el elemento de html por el id
+            if (cards.length === 0)
+                message!.classList.remove("is-hidden"); //listar clases del html y remover del mensaje del css
+            else message!.classList.add("is-hidden");
+
+            //agarra name grouping checked/agrupar
+            const grouping = (
+                document.querySelector(
+                    "input[name=grouping]:checked"
+                ) as HTMLInputElement
+            ).value;
+
+            const groups = Object.groupBy(cards, (card) => card[grouping]); //gruping= rarity o season tomado de queryselector entonces muestra vector[rarity] o vector[season],mostrando los objetos raritys o los objetos season
+
+            //agarrar div de cartas,
+            const collection = document.querySelector(
+                ".cards"
+            ) as HTMLDivElement;
+            collection.innerHTML = ""; //pisar dentro del dib con string vacio
+
+            //recorre todos los grupos
+            for (const group in groups) {
+                const cards = groups[group]!;
+
+                const separator = document.createElement("h1");
+                separator.textContent = group;
+                // separator.appendChild(document.createElement("hr"));
+                collection.appendChild(separator);
+
+                for (const card of cards) {
+                    const gameCard = document.createElement("game-card");
+                    $(gameCard).attr(card);
+                    collection?.appendChild(gameCard);
+                }
+            }
+        }
+
+        //funcion para busqueda
+        async function handleSearch(event: SubmitEvent) {
+            event.preventDefault();
+            const formData = new FormData(event.target as HTMLFormElement);
+            const urlParams = new URLSearchParams();
+            for (const [key, value] of formData.entries())
+                if (value.toString().trim() !== "")
+                    urlParams.append(key, value.toString());
+            cards = await fetchCards(`?${urlParams.toString()}`);
+            populateCollection(cards);
+        }
+
+        //no entiendo esta funcion
+        const cardsCollectedDisplay = document.getElementById(
+            "cards-collected-stat"
+        )!;
+
+        //que ocurre aca??
+
+        const cardsSeenDisplay = document.getElementById("cards-seen-stat")!;
+        cardsCollectedDisplay.textContent = user.cardsCollected;
+        cardsCollectedDisplay.classList.remove("has-skeleton");
+        cardsSeenDisplay.textContent = user.cardsSeen;
+        cardsSeenDisplay.classList.remove("has-skeleton");
+
+        //objeto de cartas
+        let cards = await fetchCards();
+        populateCollection(cards);
+
+        document
+            .querySelectorAll("input[name=grouping]")
+            .forEach((input) =>
+                input.addEventListener("change", () =>
+                    populateCollection(cards)
+                )
+            );
+
+        document
+            .getElementById("card-filter-form")!
+            .addEventListener("submit", handleSearch);
+    </script>
+
+    <ProfileDashboard>
+        <div slot="stats">
+            <h2 slot="stat-1" class="is-size-4-tablet is-size-5-mobile">
+                Collected
+            </h2>
+            <h4
+                slot="stat-1"
+                id="cards-collected-stat"
+                class="subtitle has-skeleton"
+            >
+                0/20
+            </h4>
+        </div>
+        <div slot="stats">
+            <h2 slot="stat-2" class="is-size-4-tablet is-size-5-mobile">
+                Seen
+            </h2>
+            <h4
+                slot="stat-2"
+                id="cards-seen-stat"
+                class="subtitle has-skeleton"
+            >
+                0/20
+            </h4>
+        </div>
+        <CardPack
+            slot="card-packs"
+            compact
+            pack-title="Goofy ahh pack"
+            last-opened={new Date(
+                new Date().getDate() - 1000 * 60 * 60 * 10
+            ).toISOString()}
+        />
+        <CardPack
+            slot="card-packs"
+            compact
+            class="is-hidden-touch is-hidden-desktop-only"
+            compact
+            pack-title="Rumbumptious pack"
+            last-opened={new Date(
+                new Date().getDate() - 1000 * 10
+            ).toISOString()}
+        />
+    </ProfileDashboard>
+
+    <section class="collection p-5">
+        <StickyTopbar>
+            <SearchBar
+                id="card-filter-form"
+                class="is-flex-grow-1"
+                name="title"
+                placeholder="Card name"
+            >
+                <CardFilter />
+            </SearchBar>
+            <RadioTabs>
+                <li>
+                    <label>
+                        Season
+                        <input
+                            checked
+                            name="grouping"
+                            value="season"
+                            type="radio"
+                            autocomplete="off"
+                        />
+                    </label>
+                </li>
+                <li>
+                    <label>
+                        Rarity
+                        <input
+                            name="grouping"
+                            value="rarity"
+                            type="radio"
+                            autocomplete="off"
+                        />
+                    </label>
+                </li>
+            </RadioTabs>
+        </StickyTopbar>
+        <h1
+            id="empty-result-message"
+            class="is-hidden subtitle has-text-centered"
+        >
+            No cards to display.
+        </h1>
+        <div class="cards">
+            <game-card class="is-skeleton"></game-card>
+            <game-card class="is-skeleton"></game-card>
+            <game-card class="is-skeleton"></game-card>
+            <game-card class="is-skeleton"></game-card>
+        </div>
+    </section>
+</UserPortalLayout>
+<style is:global>
+    .collection > .cards {
+        display: grid;
+        height: 100%;
+        gap: 10px;
+        justify-content: space-around;
+        align-content: space-around;
+        grid-template-columns: repeat(auto-fill, 2.5in);
+        grid-auto-rows: auto;
+    }
+
+    .collection > .cards > h1 {
+        grid-column: 1 / -1;
+        border-bottom: 1px solid var(--bulma-body-color);
+        font-size: var(--bulma-size-3);
+        margin: 0;
+        margin-top: var(--bulma-size-6);
+    }
+
+    .cards > h1:first-child {
+        margin-top: 0;
+    }
+</style>

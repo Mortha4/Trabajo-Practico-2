@@ -1,0 +1,69 @@
+---
+import ProfileShowcase from "./ProfileShowcase.astro";
+---
+
+<ProfileShowcase
+    container-class="is-flex is-justify-content-space-around is-align-items-stretch"
+>
+    <div
+        class="stats-flex is-flex is-flex-grow-1 is-justify-content-center is-align-items-center"
+    >
+        <slot name="stats" />
+    </div>
+    <div
+        class="card-packs is-hidden-mobile is-flex-grow-2 is-justify-content-space-around is-flex-wrap-wrap"
+    >
+        <slot name="card-packs" />
+    </div>
+</ProfileShowcase>
+<style is:global>
+    color-background: green
+    
+    div.stats-flex h2,
+    div.stats-flex h4 {
+        width: 8rem;
+        text-align: right;
+    }
+
+    div.stats-flex {
+        flex-direction: row;
+        flex-basis: 8rem;
+        gap: 10px;
+    }
+
+    @container (max-width: 700px) and (min-height: 6rem /* Hacky way to check if the container is not wrapped */) {
+        div.stats-flex {
+            flex-direction: column;
+        }
+    }
+
+    @media (max-width: 768px) {
+        div.stats-flex {
+            flex-direction: row;
+        }
+        div.stats-flex h2,
+        div.stats-flex h4 {
+            text-align: center;
+        }
+    }
+
+    div.card-packs {
+        display: flex;
+        gap: 10px;
+    }
+
+    div.card-packs > :global(.card-pack) {
+        height: 100%;
+    }
+
+    @container (max-width: 500px) {
+        div.card-packs > div.card-pack:last-of-type {
+            display: none !important;
+        }
+    }
+    @container (height: 5rem /* Hacky way to check if the container is wrapped */) {
+        div.card-packs {
+            display: none;
+        }
+    }
+</style>

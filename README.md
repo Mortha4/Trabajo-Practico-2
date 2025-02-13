@@ -1,38 +1,41 @@
-# Final Assignment WEB Development 
+# Final Assignment WEB Development
+
+<p align="justify">
 Final assignment for the "Introducción al Desarrollo de Software" subject of the
-Computer Engineering degree of the University of Buenos Aires.
-
-## Technologies
-* Frontend:
-    * HTML
-    * CSS (Bulma Framework)
-    * JS (Vanilla)
-* Backend:
-    * express
-    * PrismaORM
-    * MariaDB
-
-## Conventions
-Code and documentation will be in English whereas issues, reviews, and other 
-discussions will be in Spanish. Tasks will be tracked on [Trello][1], and 
-patches will be merged once all team members have reviewed them.
+Computer Engineering program of the University of Buenos Aires.
+Code and documentation will be in English whereas issues, reviews, and other
+discussions will be in Spanish. Tasks will be tracked on <a href="https://trello.com/b/FrVAu7L0/tp2-intro">Trello</a>, and
+patches will be merged once all team members have reviewed them. See the <a href="docs/README.md">docs</a> for project documentation.
+</p>
 
 ## Collaborators
-* Fernandez, Jose Luis 
-* Kupa, Martin Ariel
-* Fasani, Ignacio Daniel
-* Argerich, Mariano
+
+- Fernandez, Jose Luis
+- Kupa, Martin Ariel
+- Fasani, Ignacio Daniel
+- Argerich, Mariano
 
 ## Assignment requirements
-* A web application with Client-Side Rendering and at least three views
-* A REST api supporting basic CRUD operations
-* Public deployment and hosting of the application
-* Use of git and github with a clean commit history
-* Persistent state in a relational database
 
+- A web application with Client-Side Rendering and at least three views
+- A REST api supporting basic CRUD operations
+- Public deployment and hosting of the application
+- Use of git and github with a clean commit history
+- Persistent state in a relational database
 
-## Build and Deployment
-* TODO
+## Dependencies
 
+- nodejs v22.12.0 with npm v9.2.0
+- PostgreSQL v17.2
 
-[1]: https://trello.com/b/FrVAu7L0/tp2-intro "Trello"
+## Frameworks
+
+- PrismaORM
+- express-openapi
+- Astro
+
+## Tooling
+
+- Docker (v27.5.1) compose (v2.29.7) for easier development.
+- Prettier for consistent formatting.
+- Mocha for some basic testing.

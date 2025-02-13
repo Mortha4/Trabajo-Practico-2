@@ -1,0 +1,132 @@
+---
+import GenericLayout from "../layouts/GenericLayout.astro";
+---
+
+<GenericLayout class="is-flex is-justify-content-center is-align-items-center">
+    <form class="box" id="login-form">
+        <div class="logo">
+            <a class="is-flex is-justify-content-center" href="/">
+                <img src="/icon_menu.png" alt="Logo" class="logo-img" />
+                <span class="title is-size-1 is-size-3-mobile"
+                    >BrakingBadTCG</span
+                >
+            </a>
+        </div>
+        <div class="field">
+            <label class="label">Username</label>
+            <div class="control has-icons-left has-icons-right">
+                <input
+                    class="input"
+                    type="text"
+                    placeholder="Enter your username"
+                    name="username"
+                    minlength="1"
+                    maxlength="32"
+                />
+                <span class="icon is-small is-left">
+                    <i class="fas fa-user"></i>
+                </span>
+            </div>
+        </div>
+        <div class="field">
+            <label class="label">Password</label>
+            <p class="control has-icons-left">
+                <input
+                    class="input"
+                    type="password"
+                    placeholder="Password"
+                    name="password"
+                    minlength="8"
+                    maxlength="20"
+                />
+                <span class="icon is-small is-left">
+                    <i class="fas fa-lock"></i>
+                </span>
+            </p>
+            <p id="login-fail-message" class="help is-danger is-hidden">
+                Wrong username or password.
+            </p>
+            <p id="server-fail-message" class="help is-danger is-hidden">
+                Something went wrong. Try again later.
+            </p>
+        </div>
+        <div class="field is-grouped is-justify-content-space-between">
+            <p class="help is-info is-flex is-align-items-center">
+                <a href="/signup"> Dont have an account? Sign up! </a>
+            </p>
+            <div class="control">
+                <button type="submit" class="button is-primary">Log in</button>
+            </div>
+        </div>
+    </form>
+    <script>
+        import { API_URL } from "astro:env/client";
+
+        document
+            ?.getElementById("login-form")
+            ?.addEventListener("submit", async function (event) {
+                event.preventDefault();
+                const loginFail = document.getElementById("login-fail-message");
+                const serverFail = document.getElementById(
+                    "server-fail-message"
+                );
+                loginFail?.classList.add("is-hidden");
+                serverFail?.classList.add("is-hidden");
+                const form = event.target as HTMLFormElement;
+                const formData = new FormData(form);
+                const username = formData.get("username");
+                const password = formData.get("password");
+                const response = await fetch(`${API_URL}/api/v1/session`, {
+                    method: "POST",
+                    headers: {
+                        Accept: "application/json",
+                        "Content-Type": "application/json",
+                        Authorization: `Basic ${btoa(`${username}:${password}`)}`,
+                    },
+                    credentials: "include",
+                });
+                if (response.status === 200) {
+                    const fetchUser = (await import("../scripts/fetchUser"))
+                        .default;
+                    const user = await fetchUser();
+                    console.log(user);
+
+                    const redirect =
+                        user.privilege === "Administrator"
+                            ? "/admin"
+                            : "/dashboard";
+                    window.location.replace(redirect);
+                } else if (response.status === 401) {
+                    loginFail?.classList.remove("is-hidden");
+                } else {
+                    serverFail?.classList.remove("is-hidden");
+                }
+            });
+    </script>
+</GenericLayout>
+<style>
+    .logo > a {
+        gap: 10px;
+    }
+
+    .logo {
+        margin: var(--bulma-size-2);
+    }
+
+    @media (prefers-color-scheme: dark) {
+        .logo-img {
+            filter: invert(100%);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .logo {
+            margin: var(--bulma-size-4);
+        }
+    }
+
+    .logo-img {
+        width: 100px;
+        height: auto;
+    }
+</style>

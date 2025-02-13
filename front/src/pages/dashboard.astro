@@ -1,0 +1,98 @@
+---
+import GenericLayout from "../layouts/GenericLayout.astro";
+import UserPortalNavbar from "../components/UserPortalNavbar.astro";
+import ProfileDashboard from "../components/ProfileDashboard.astro";
+---
+
+<GenericLayout title="Dashboard" class="blue-background">
+    <UserPortalNavbar />
+
+    <main>
+        <ProfileDashboard
+            container-class="is-flex is-justify-content-space-around is-align-items-stretch"
+        >
+            <div
+                class="stats-flex is-flex is-flex-grow-1 is-justify-content-center is-align-items-center"
+            >
+                <div>
+                    <h2 class="is-size-4-tablet is-size-5-mobile">Collected</h2>
+                    <h4>0/20</h4>
+                </div>
+                <div>
+                    <h2 class="is-size-4-tablet is-size-5-mobile">Seen</h2>
+                    <h4>0/20</h4>
+                </div>
+            </div>
+        </ProfileDashboard>
+
+        <div
+            class="cardpacks-container section is-medium is-flex is-justify-content-space-around is-flex-wrap-wrap"
+        >
+            <card-pack></card-pack>
+            <card-pack></card-pack>
+            <card-pack></card-pack>
+        </div>
+    </main>
+</GenericLayout>
+
+<style>
+    :global(:root) {
+        --bulma-body-background-color: #8bcc;
+    }
+
+    .stats-flex {
+        gap: 20px;
+    }
+</style>
+
+<script>
+    import moment from "moment";
+    import { API_URL } from "astro:env/client";
+    import fetchUser from "../scripts/fetchUser";
+
+    const user = await fetchUser();
+
+    //funcion para consumir paquetes
+    async function fetchCardPacks() {
+        const cardpacksResponse = await fetch(
+            `${API_URL}/api/v1/users/${user.username}/cardpacks`,
+            {
+                headers: {
+                    Accept: "application/json",
+                    "Content-Type": "application/json",
+                },
+                method: "GET",
+                credentials: "include",
+            }
+        );
+
+        if (cardpacksResponse.status === 200)
+            return await cardpacksResponse.json();
+        else console.error(cardpacksResponse);
+    }
+
+    function populateDashboard(cardpacks: any[]) {
+        //tomamos el contenedor de packs y lo vaciamos
+        const cardpacks_container = document.querySelector(
+            ".cardpacks-container"
+        ) as HTMLDivElement;
+        cardpacks_container.innerHTML = "";
+
+        for (const cardpack of cardpacks) {
+            const CardPackNuevo = document.createElement("card-pack"); //web component
+            CardPackNuevo.setAttribute("name", cardpack.name);
+            CardPackNuevo.setAttribute("title", cardpack.title);
+            CardPackNuevo.setAttribute(
+                "wrapperimageurl",
+                cardpack.wrapperImageUrl
+            );
+            CardPackNuevo.setAttribute("cooldown", cardpack.cooldown);
+            CardPackNuevo.setAttribute("lastopened", cardpack.lastOpened);
+            cardpacks_container?.appendChild(CardPackNuevo);
+        }
+    }
+
+    //variable donde se almacena el consumido
+    let cardpacks = await fetchCardPacks();
+    populateDashboard(cardpacks);
+</script>
